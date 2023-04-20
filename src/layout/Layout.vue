@@ -1,0 +1,20 @@
+<template>
+    <n-layout style="height: 100vh">
+        <n-layout-header style="height: 60px;" bordered>
+            <Header />
+        </n-layout-header>
+        <n-layout position="absolute" style="top: 60px; bottom: 60px" has-sider>
+            <n-layout :native-scrollbar="false">
+                <Main />
+            </n-layout>
+        </n-layout>
+        <n-layout-footer position="absolute" style="height: 60px;" bordered>
+            音乐播放器
+        </n-layout-footer>
+    </n-layout>
+</template>
+<script lang='ts' setup>
+import Main from './Main/Main.vue';
+import Header from './Header/Header.vue';
+</script>
+<style scoped lang="scss"></style>
