@@ -1,6 +1,9 @@
 import { defineStore } from "pinia";
 import type { ThemeStoreState } from "./interfaces";
+import { darkTheme } from "naive-ui";
+import pinia from "@/store";
 
+// 仓库数据源
 const data: ThemeStoreState = {
     /**
      * 主题颜色,null为亮色
@@ -26,6 +29,12 @@ const useThemeStore = defineStore("theme", {
             } else {
                 document.documentElement.classList.remove("dark")
             }
+        },
+        /**
+         * 切换主题颜色
+         */
+        toggleTheme() {
+            this.theme === null ? this.setTheme(darkTheme) : this.setTheme(null)
         }
     },
     getters: {
@@ -36,3 +45,11 @@ const useThemeStore = defineStore("theme", {
 })
 
 export default useThemeStore
+
+/**
+ * 在外部使用仓库钩子
+ * @returns 
+ */
+export const useThemeStoreWithout = () => {
+    return useThemeStore(pinia)
+}

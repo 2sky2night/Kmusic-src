@@ -8,24 +8,51 @@
 html {
   background-color: var(--bg-color);
 }
+button {
+  border: none;
+}
 
 /*亮色css变量*/
 :root {
+  --text-color: black;
   --bg-color: #fff;
-  --color-primary: #409eff;
+
+  --bg-box-color: #fff;
+
+  --color-primary: #2080f0;
+  --hover-bg-color: #f0f0f0;
+
+  --text-color-primary: #fff;
+  --bg-color-primary: #2080f0;
+
+  --hover-text-color-primary: #fff;
+  --hover-bg-color-primary: #2080f0;
+
+  --bg-btn-color: #fff;
 }
 
 /*深色变量*/
 html.dark {
+  --text-color: #fff;
+
+  --hover-bg-color: #59595e;
+
+  --bg-box-color: #59595e;
+
   --bg-color: black;
+
   --color-primary: #337ecc;
+
+  --hover-bg-color-primary: #33a6cc;
+
+  --bg-btn-color: #18181c;
 }
 
 /*element ui的css变量*/
 .element-ui {
   --el-color-white: #ffffff;
   --el-color-black: #000000;
-  --el-color-primary: #409eff;
+  --el-color-primary: ##4098fc;
   --el-color-primary-light-3: #79bbff;
   --el-color-primary-light-5: #a0cfff;
   --el-color-primary-light-7: #c6e2ff;
