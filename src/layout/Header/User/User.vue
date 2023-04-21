@@ -5,13 +5,18 @@
     </n-dropdown>
 </template>
 <script lang='ts' setup>
+import {useRouter} from 'vue-router'
 import { reactive } from 'vue'
 import options from './options'
 const option = reactive(options)
-
+const $router = useRouter()
 // 点击某一项时的回调,可以根据v的值来执行对应的事情.
 function handleSelect(v: string) {
     console.log(v);
+    switch (v) {
+        case 'login': $router.push('/login'); break;
+        default: console.log('点击了某一项');
+    }
 }
 
 </script>

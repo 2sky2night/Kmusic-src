@@ -7,8 +7,14 @@ const themeStore = useThemeStore()
 
 <template>
   <n-config-provider :theme="themeStore.theme" :theme-overrides="themeOverrides">
-    <Layout />
+    <n-message-provider>
+      <Layout />
+    </n-message-provider>
   </n-config-provider>
 </template>
 
-<style lang="scss"></style>
+<style lang="scss">
+.page {
+  min-height: 100%;
+}
+</style>

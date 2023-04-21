@@ -29,6 +29,8 @@ button {
   --hover-bg-color-primary: #79bbff;
 
   --bg-btn-color: #fff;
+
+  --main-bg-color: #fafafc;
 }
 
 /*深色变量*/
@@ -46,6 +48,8 @@ html.dark {
   --hover-bg-color-primary: #33a6cc;
 
   --bg-btn-color: #18181c;
+
+  --main-bg-color: #18181c;
 }
 
 /*element ui的css变量*/

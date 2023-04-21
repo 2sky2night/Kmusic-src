@@ -8,6 +8,8 @@ import './style.css'
 import 'vfonts/Lato.css'
 // 等宽字体
 import 'vfonts/FiraCode.css'
+// 引入进度条样式
+import 'nprogress/nprogress.css'
 
 export default {
     install(app: App) {

@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import nProgress from 'nprogress';
 import routes from "./routes";
 
 const router = createRouter({
@@ -12,7 +13,17 @@ const router = createRouter({
     // }
 })
 
+
+// 全局前置守卫
+router.beforeEach((to, from, next) => {
+    nProgress.start()
+    next()
+})
+
+// 全局后置守卫
 router.afterEach(to => {
+    // 关闭进度条
+    nProgress.done()
     document.title = to.meta.title as string || to.path
 })
 
