@@ -1,22 +1,23 @@
 <template>
     <n-dropdown trigger="click" :options="option" @select="handleSelect">
         <!--用户头像需要从仓库中获取-->
-        <n-avatar round :size="40" src="https://p4.music.126.net/SUeqMM8HOIpHv9Nhl9qt9w==/109951165647004069.jpg" />
+        <n-avatar round :size="40" :src="userStore.userData.avatar" />
     </n-dropdown>
 </template>
 <script lang='ts' setup>
+import message from '@/utils/message'
 import messagebox from '@/render/MessageBox'
 import { useRouter } from 'vue-router'
 import { reactive } from 'vue'
-import options from './options'
 import useUserStore from '@/store/user'
 import { loginMenu, unLoginMenu } from './options'
-// 获取配置项
-const option: any = reactive(options)
-// 获取路由对象
-const $router = useRouter()
 // 获取用户仓库
 const userStore = useUserStore()
+// 初始化渲染菜单栏
+const option: any = reactive(userStore.cookie && userStore.isLogin ? Object.assign([], loginMenu) : Object.assign([], unLoginMenu))
+// 获取路由对象
+const $router = useRouter()
+
 
 // 点击某一项时的回调,可以根据v的值来执行对应的事情.
 function handleSelect(v: string) {
@@ -40,7 +41,7 @@ async function logout() {
         // 返回首页
         $router.push('/')
     } catch (error) {
-        (window as any).$message.info('取消登出 👀')
+        message('取消登出 👀', 'info')
     }
 
 }

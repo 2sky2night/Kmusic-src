@@ -1,10 +1,16 @@
 import axios from 'axios'
 import nProgress from 'nprogress'
+import { useUserStoreWithout } from '@/store/user'
 import type { InternalAxiosRequestConfig, AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios'
+
+const userStore = useUserStoreWithout()
 
 const request = axios.create({
     baseURL: 'http://127.0.0.1:3000'
 })
+
+// 配置跨域请求携带cookie
+request.defaults.withCredentials = true
 
 // 请求拦截器
 request.interceptors.request.use((config: InternalAxiosRequestConfig) => {
@@ -12,6 +18,12 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     if (!config.url?.includes("login")) {
         // 开启进度条
         nProgress.start()
+    }
+    // 若当前仓库有cookie值就带上cookie
+    if (userStore.cookie && userStore.isLogin) {
+        document.cookie = userStore.cookie
+    } else {
+        document.cookie = ''
     }
 
     return config
@@ -34,10 +46,8 @@ request.interceptors.response.use((response: AxiosResponse) => {
  */
 export default {
     get<T = any>(url: string, config: AxiosRequestConfig = { params: {} }): Promise<T> {
-
         Reflect.set(config.params, 'timestamp', Date.now())
         console.log(config.params);
-
         return request.get(url, config)
     },
     post<T = any>(url: string, config: AxiosRequestConfig = {}): Promise<T> {

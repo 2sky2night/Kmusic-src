@@ -14,7 +14,7 @@ import { useUserStoreWithout } from '@/store/user'
 const userStore = useUserStoreWithout()
 
 // 获取主题仓库
-const useThemeStore = useThemeStoreWithout()
+const themeStore = useThemeStoreWithout()
 
 // 渲染图标虚拟DOM
 const renderIcon = (icon: Component) => {
@@ -32,10 +32,10 @@ function renderCustomHeader() {
         'div',
         { style: 'display:flex;padding:0 10px;height:50px;align-items: center;user-select: none;;', class: 'drop-down-header' },
         [
-            h(NAvatar, { src: "https://p4.music.126.net/SUeqMM8HOIpHv9Nhl9qt9w==/109951165647004069.jpg" }),
+            h(NAvatar, { src: userStore.userData.avatar+'' }),
             h('div', { style: 'margin-left:5px;' }, [
-                h('h5', flag ? '用户名' : '未登录'),
-                h('div', { style: 'font-size:12px;' }, flag ? '等级 LV:0' : '登录尽享更多权益')
+                h('h5', flag ? userStore.userData.nickname+'' : '未登录'),
+                h('div', { style: 'font-size:12px;' }, flag ? `等级: ${userStore.userData.level}` : '登录尽享更多权益')
             ])
         ]
     )
@@ -45,11 +45,11 @@ function renderCustomHeader() {
 function renderTheme() {
     return h('div', {
         class: 'drop-down-box',
-        onClick: () => useThemeStore.toggleTheme()
+        onClick: () => themeStore.toggleTheme()
     }, [
         h('div', [
             h(NIcon, { size: 15 }, { default: () => h(ApertureIcon) }),
-            h('span', useThemeStore.themeFormat)
+            h('span', themeStore.themeFormat)
         ]),
     ]
     )
@@ -101,18 +101,3 @@ export const unLoginMenu = [
         icon: renderIcon(UserIcon)
     }
 ]
-
-// 渲染的配置项(需要根据当前登录状态动态的渲染数据)
-// 初始化渲染的列表
-let options = []
-
-if (userStore.cookie && userStore.isLogin) {
-    // 登陆过的列表
-    options = loginMenu
-} else {
-    // 未登录的列表
-    options = unLoginMenu
-}
-
-
-export default options as any

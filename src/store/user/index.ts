@@ -4,7 +4,13 @@ import UserStoreState from './interfaces'
 
 const data: UserStoreState = {
     isLogin: false,
-    cookie: null
+    cookie: null,
+    userData: {
+        id: null,
+        nickname: null,
+        avatar: 'https://p4.music.126.net/SUeqMM8HOIpHv9Nhl9qt9w==/109951165647004069.jpg',
+        level: 0
+    }
 }
 
 // 若本地有cookie值,就从本地加载数据
@@ -25,8 +31,23 @@ const useUserStore = defineStore('user', {
         },
         setCookie(value: string | null) {
             this.cookie = value
+        },
+        setUserId(value: number) {
+            this.userData.id = value
+        },
+        setUserData(nickname: string, avatar: string, level: number) {
+            this.userData.avatar = avatar
+            this.userData.nickname = nickname
+            this.userData.level = level
         }
-    }
+    },
+    // 开启数据持久化
+    persist: [
+        {
+            storage: localStorage,
+            paths: ["userData"],
+        },
+    ],
 })
 
 export default useUserStore
