@@ -2,8 +2,10 @@
     <header class="header">
         <LogoBtns />
         <Navigation />
-        <SearchBar />
-        <User />
+        <div class="header-item">
+            <SearchBar />
+            <User />
+        </div>
     </header>
 </template>
 <script lang='ts' setup>
@@ -13,11 +15,15 @@ import LogoBtns from './LogoBtns/LogoBtns.vue';
 import User from './User/User.vue';
 </script>
 <style scoped>
+.header-item{
+    display: flex;
+    align-items: center;
+}
 header {
     max-width: 1200px;
     margin: 0 auto;
     box-sizing: border-box;
-    padding: 0 20px;
+    padding: 0 10px;
     display: flex;
     height: 100%;
     align-items: center;

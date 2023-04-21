@@ -48,17 +48,16 @@ img {
     height: 30px;
 }
 
-// 在650px以下隐藏前进后退
-@media screen and (max-width:520px) {
+// 在610px以下隐藏前进后退
+@media screen and (max-width:630px) {
     button {
         display: none;
     }
 }
-
-// 小于370px时,当前组件
-@media screen and (max-width:400px) {
-    :deep() {
-        display: none !important;
+// 在360px以下隐藏所有
+@media screen and (max-width:350px) {
+    :deep(){
+        display: none;
     }
 }
 </style>

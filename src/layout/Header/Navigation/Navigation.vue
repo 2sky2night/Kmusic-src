@@ -34,8 +34,19 @@ function activeHandler(path: string) {
 // 若当前路由路径不为导航项中的任意一个时,取消所有导航项的激活效果
 // 访问二级路由,让对应的父级路由高亮
 watch(() => $route.path, (v) => {
-    // 获取当前路径的一级路由的路径
-    const path = $route.matched.slice(0)[0].path
+    let path = ''
+
+    // 若当前就是一级路由
+    if ($route.matched.length === 1) {
+        path = $route.matched[0].path
+    } else if ($route.matched.length === 2) {
+        // 若是二级路由获取当前路径的一级路由的路径,高亮对应的父路由导航栏
+        path = $route.matched.slice(0)[0].path
+    } else {
+        // 若访问的首页
+        path = '/'
+    }
+
 
     // 若当前访问的二级路由包括了一级路由的路径,则让对应的一级路由高亮
     // 当然也包括了一级路由,点击了一级路由也会设置高亮.
@@ -52,7 +63,7 @@ watch(() => $route.path, (v) => {
     // 否则就情况高亮效果
     // disActiveAll()
     // }
-})
+}, { immediate: true })
 
 </script>
 <style scoped lang="scss">
@@ -60,10 +71,10 @@ watch(() => $route.path, (v) => {
     display: flex;
 }
 
-// 小于370px时,缩小导航项的大小
-@media screen and (max-width:400px) {
-    :deep(li button) {
-        font-size: 13px;
+// 小于560px时,隐藏导航栏
+@media screen and (max-width:560px) {
+    .navigation {
+        display: none;
     }
 }
 </style>
