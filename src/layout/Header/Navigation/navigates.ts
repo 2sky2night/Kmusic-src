@@ -1,12 +1,19 @@
+import { useUserStoreWithout } from "@/store/user";
+// 用仓库的状态,来初始化渲染导航栏
+const userStore = useUserStoreWithout()
 /**
  * 导航路由表 
  */
 export default [
-    { path: '/', title: '首页', isActive: false, children: [] },
+    { path: '/', title: '首页', isActive: false, children: [], isShow: true },
     {
         path: '/discover',
         title: '发现',
         isActive: false,
+        /**
+         * 是否显示该导航栏
+         */
+        isShow: true,
         children: [
             /**
              * 为了迎合组件库的配置项api,只能将path和title改成key和label
@@ -29,6 +36,7 @@ export default [
         path: '/my',
         title: '我的',
         isActive: false,
+        isShow: userStore.cookie && userStore.isLogin ? true : false,
         children: [
             {
                 key: '/my/playlist',
@@ -48,7 +56,7 @@ export default [
             }
         ]
     },
-    { path: '/login', title: '登录', isActive: false, children: [] }
+    { path: '/login', title: '登录', isActive: false, children: [], isShow: !userStore.cookie && !userStore.isLogin ? true : false, }
 ]
 
 export interface NavChildren {

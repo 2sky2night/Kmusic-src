@@ -12,6 +12,8 @@ declare module '@vue/runtime-core' {
     Button: typeof import('./src/components/Button/Button.vue')['default']
     CodeLogin: typeof import('./src/components/CodeLogin/CodeLogin.vue')['default']
     Input: typeof import('./src/components/Input/Input.vue')['default']
+    Message: typeof import('./src/components/Message/Message.vue')['default']
+    MessageBox: typeof import('./src/components/MessageBox/MessageBox.vue')['default']
     MInput: typeof import('./src/components/Input/MInput.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']

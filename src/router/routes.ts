@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from "vue-router";
+import { useUserStoreWithout } from "@/store/user";
 
 const routes: RouteRecordRaw[] = [
     {
@@ -49,6 +50,22 @@ const routes: RouteRecordRaw[] = [
         meta: {
             title: "登录",
         },
+        beforeEnter(to, from, next) {
+            const userStore = useUserStoreWithout()
+            if (userStore.cookie && userStore.isLogin) {
+                // 已经登录了,不能进入该页面
+                (window as any).$message.error("不要重复登录!🙅‍");
+                // // 修正hash值
+                // location.hash = from.path
+                // // 修正浏览器的标题
+                // setTimeout(() => {
+                //     document.title = from.meta.title as string
+                // })
+                next(false)
+            } else {
+                next()
+            }
+        }
     },
     {
         path: "/my",

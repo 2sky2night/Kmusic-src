@@ -2,25 +2,42 @@
     <div class="code-login-box">
         <span class="tips">{{ codeTips }}</span>
         <div class="code-box">
-            <qrcode-vue v-if="codeData.unikey" :size="150" level="H" foreground="#4098fc"
-                :value="`https://music.163.com/login?codekey=${codeData.unikey}`" />
+            <div class="code-out" v-if="codeData.code === 800 && codeData.unikey">
+                二维码过期
+            </div>
+            <qrcode-vue v-if="codeData.unikey" :size="150" level="H" :background="themeStroe.theme ? '' : '#fff'"
+                foreground="#4098fc" :value="`https://music.163.com/login?codekey=${codeData.unikey}`" />
         </div>
+        <n-button v-if="codeData.code === 800 && codeData.unikey" size="small" @click="startCode">刷新二维码</n-button>
         <span class="tips">请打开云音乐&nbsp;APP&nbsp;扫码登陆</span>
+        <n-button @click="loginWithout" size="small" style="font-size: 12px;">测试账户直接登陆😎</n-button>
     </div>
 </template>
 <script lang='ts' setup>
+import useThemeStore from '@/store/theme'
 import { useMessage } from 'naive-ui'
 import QrcodeVue from 'qrcode.vue'
 import CodeData from './interfaces'
-import { getCodeState, getKeyCode, createCode } from '../../../../api/Login'
+import { getCodeState, getKeyCode, createCode } from '@/api/Login'
 import { reactive, onMounted, computed, onUnmounted } from 'vue'
+import useUserStore from '@/store/user'
+import { useRouter } from 'vue-router'
+
+// 获取主题仓库
+const themeStroe = useThemeStore()
+
+// 获取用户仓库
+const userStore = useUserStore()
+
+// 获取导航对象
+const $router = useRouter()
 
 // 计时器
 let timer: any = null
 // 组件的消息提示钩子
 const message = useMessage()
 // 二维码信息
-const codeData = reactive<CodeData>({ unikey: '', code: 800 })
+const codeData = reactive<CodeData>({ unikey: '', code: 800, cookie: null })
 
 // 二维码的提示信息
 const codeTips = computed(() => {
@@ -63,11 +80,15 @@ async function toCreateKey() {
 async function toGetCodeState() {
     try {
         const res = await getCodeState(codeData.unikey)
-        switch (res.code) {
-            case 800: message.error("二维码过期!"); break;
-            case 801: message.warning("等待扫码!"); break;
-            case 802: message.info("等待授权!"); break;
-            case 803: login(); break;
+        if (res.code === 803) {
+            // 获取cookies值
+            codeData.cookie = res.cookie
+            login()
+        } else if (res.code === 800) {
+            // 二维码过期的回调
+            //  关闭计时器
+            clearInterval(timer)
+            timer = null
         }
         codeData.code = res.code
     } catch (error) {
@@ -78,21 +99,37 @@ async function toGetCodeState() {
 //  登录成功的回调
 function login() {
     message.success("登录成功!")
+    //  登录成功关闭计时器
+    clearInterval(timer)
+    // 获取用户cookie值,并设置登录成功
+    userStore.setCookie(codeData.cookie as string)
+    // 设置登录状态为成功
+    userStore.setLogin(true)
+    // 将cookie保存在本地
+    localStorage.setItem('cookie', codeData.cookie as string)
+    // 跳转至用户页面
+    $router.push('/my')
 }
 
-// 二维码过期的回调
-
-
-onMounted(async () => {
+// 获取二维码,并开启轮询
+async function startCode() {
+    if (timer) {
+        // 若开启了定时器应该取消上次的定时器
+        console.log('清除定时器');
+        clearInterval(timer)
+    }
     try {
         await toCreateKey()
+        await toGetCodeState()
         // 开启定时器每500ms获取扫码状态
-        timer = setInterval(toGetCodeState, 5000)
+        timer = setInterval(toGetCodeState, 1000)
     } catch (error) {
         message.error("出错啦!!")
     }
 
-})
+}
+
+onMounted(startCode)
 
 // 销毁定时器
 onUnmounted(() => {
@@ -100,8 +137,38 @@ onUnmounted(() => {
 })
 
 
+// 直接登陆,将来需要被删除,只是测试哈.
+function loginWithout() {
+    const cookie = 'MUSIC_U=e74c97563270773573f00c57843bb95b5cae03ca5137cba467da73fbd5f1a0a2993166e004087dd3910eb75508bac8132ef4b3fabee164b9b084178e5538515432ecc34b69dd6f68d4dbf082a8813684; __csrf=44fc964338f9feaa0af3b241d14a67e3; NMTID=00OJ'
+    message.success("登录成功!")
+    //  登录成功关闭计时器
+    clearInterval(timer)
+    // 获取用户cookie值,并设置登录成功
+
+    userStore.setCookie(cookie)
+    // 设置登录状态为成功
+    userStore.setLogin(true)
+    // 将cookie保存在本地
+    localStorage.setItem('cookie', cookie)
+    // 跳转至用户页面
+    $router.push('/my')
+}
+
 </script>
 <style scoped lang="scss">
+// 二维码过期的遮罩层
+.code-out {
+    text-align: center;
+    line-height: 150px;
+    width: 150px;
+    font-weight: 600;
+    height: 150px;
+    background-color: var(--mask-hover-bg);
+    position: absolute;
+    -webkit-backdrop-filter: blur(1px);
+    backdrop-filter: blur(1px);
+}
+
 .code-login-box {
     height: 100%;
     display: flex;
@@ -115,6 +182,8 @@ onUnmounted(() => {
     }
 
     .code-box {
+        width: 150px;
+        position: relative;
         height: 150px;
         display: flex;
         align-items: center;

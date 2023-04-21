@@ -1,10 +1,10 @@
 <template>
-    <li>
+    <li :style="{display:isShow?'block':'none'}">
 
-        <Button @click="navigateTo" :title="title" v-if="children.length === 0" :type="isActive ? 'primary' : 'info'" />
+        <Button  @click="navigateTo" :title="title" v-if="children.length === 0" :type="isActive ? 'primary' : 'info'" />
 
         <n-dropdown v-else trigger="hover" :options="children" @select="handleSelect">
-            <Button :title="title" :type="isActive ? 'primary' : 'info'" />
+            <Button  :title="title" :type="isActive ? 'primary' : 'info'" />
         </n-dropdown>
 
     </li>
@@ -19,7 +19,8 @@ interface NavProps {
     title: string,
     path: string,
     isActive: boolean
-    children: NavChildren[]
+    children: NavChildren[],
+    isShow:boolean
 }
 // 自定义属性
 const props = defineProps<NavProps>()

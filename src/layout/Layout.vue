@@ -16,5 +16,8 @@
 <script lang='ts' setup>
 import Main from './Main/Main.vue';
 import Header from './Header/Header.vue';
+// 给window挂载全局消息组件函数
+import { useMessage } from 'naive-ui';
+(window as any).$message = useMessage()
 </script>
 <style scoped lang="scss"></style>

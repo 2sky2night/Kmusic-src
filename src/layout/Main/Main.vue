@@ -11,8 +11,11 @@
 
 </script>
 <style scoped>
+main{
+    position: relative;
+}
 .page-enter-active {
-    animation: pageMove 1s 1 ease-in-out;
+    animation: pageMove .5s 1 ease-in-out;
 }
 
 .page-leave-active {

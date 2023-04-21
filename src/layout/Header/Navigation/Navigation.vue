@@ -1,7 +1,7 @@
 <template>
     <ul class="navigation">
         <Navigate v-for="item in navigateList" :key="item.path" :title="item.title" :path="item.path"
-            :children="item.children" :is-active="item.isActive" />
+            :children="item.children" :is-active="item.isActive" :is-show="item.isShow" />
     </ul>
 </template>
 <script lang='ts' setup>
@@ -9,6 +9,11 @@ import Navigate from './Navigate/Navigate.vue';
 import navigates from './navigates'
 import { reactive, watch } from 'vue'
 import { useRoute } from 'vue-router';
+import useUserStore from '@/store/user';
+
+// 用户仓库
+const userStore = useUserStore()
+
 // 路由元信息
 const $route = useRoute()
 // 路由路径
@@ -64,6 +69,31 @@ watch(() => $route.path, (v) => {
     // disActiveAll()
     // }
 }, { immediate: true })
+
+// 监听仓库数据源的更新 动态渲染导航栏
+userStore.$subscribe((mutation, state) => {
+    // 若当前为登录状态显示我的导航项目
+    if (state.cookie && state.isLogin) {
+        navigateList.forEach(ele => {
+            if (ele.path === '/my') {
+                ele.isShow = true
+            }
+            if (ele.path === '/login') {
+                ele.isShow = false
+            }
+        })
+    } else {
+        //  未登录
+        navigateList.forEach(ele => {
+            if (ele.path === '/login') {
+                ele.isShow = true
+            }
+            if (ele.path === '/my') {
+                ele.isShow = false
+            }
+        })
+    }
+})
 
 </script>
 <style scoped lang="scss">

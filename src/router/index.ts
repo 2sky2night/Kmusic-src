@@ -1,6 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import nProgress from 'nprogress';
 import routes from "./routes";
+import { useUserStoreWithout } from '@/store/user';
+
+const userStore = useUserStoreWithout()
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -17,6 +20,23 @@ const router = createRouter({
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
     nProgress.start()
+
+    if (to.meta.auth) {
+        // 访问权限页面
+        if (userStore.isLogin && userStore.cookie) {
+            // 登录状态并有cookie值才能访问该页面
+            next()
+            return
+        } else {
+            // 未登录,不能访问
+            (window as any).$message.error('请先登录!');
+            next(from.path)
+            return
+        }
+    }
+
+    // 访问无权限页面
+    console.log('访问无权限页面');
     next()
 })
 

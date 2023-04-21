@@ -39,4 +39,9 @@ import CodeLogin from './components/CodeLogin/CodeLogin.vue'
     align-items: center;
     display: flex;
 }
+@media screen and (max-height:700px) { 
+    .page{
+        padding-top: 20px;
+    }
+}
 </style>
