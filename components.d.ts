@@ -41,5 +41,6 @@ declare module '@vue/runtime-core' {
     ThemeBtn: typeof import('./src/components/ThemeBtnExp/ThemeBtn.vue')['default']
     ThemeBtnEx: typeof import('./src/components/ThemeBtnExp/ThemeBtnEx.vue')['default']
     ThemeBtnExp: typeof import('./src/components/ThemeBtnExp/ThemeBtnExp.vue')['default']
+    UserInfor: typeof import('./src/components/UserInfor/UserInfor.vue')['default']
   }
 }

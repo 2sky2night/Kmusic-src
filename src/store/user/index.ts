@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import store from '@/store'
 import UserStoreState from './interfaces'
+import { setLocal, getLocal } from '@/utils/localStorage'
 
 const data: UserStoreState = {
     isLogin: false,
@@ -19,7 +20,15 @@ const cookie = localStorage.getItem('cookie')
 if (cookie) {
     data.cookie = cookie
     data.isLogin = true
+    // 若本地有用户数据,就从本地加载数据
+    const userData: any = getLocal('userData')
+    data.userData.avatar = userData.avatar
+    data.userData.level = userData.level
+    data.userData.id = userData.id
+    data.userData.nickname = userData.nickname
 }
+
+
 
 const useUserStore = defineStore('user', {
     state() {
@@ -39,12 +48,12 @@ const useUserStore = defineStore('user', {
             this.userData.avatar = avatar
             this.userData.nickname = nickname
             this.userData.level = level
+            setLocal('userData', this.userData)
         }
     },
     // 开启数据持久化
     persist: [
         {
-            storage: localStorage,
             paths: ["userData"],
         },
     ],
