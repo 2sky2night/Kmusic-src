@@ -98,11 +98,13 @@ userStore.$subscribe((mutation, state) => {
 </script>
 <style scoped lang="scss">
 .navigation {
+    justify-content: center;
+    flex-grow: 1;
     display: flex;
 }
 
-// 小于560px时,隐藏导航栏
-@media screen and (max-width:560px) {
+// 小于590px时,隐藏导航栏
+@media screen and (max-width:490px) {
     .navigation {
         display: none;
     }

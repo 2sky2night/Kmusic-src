@@ -16,7 +16,9 @@ import User from './User/User.vue';
 </script>
 <style scoped>
 .header-item{
+    flex-grow: 1;
     display: flex;
+    justify-content: flex-end;
     align-items: center;
 }
 header {

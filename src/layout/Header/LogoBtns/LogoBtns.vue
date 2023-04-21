@@ -1,17 +1,19 @@
 <template>
-    <n-space align="center">
-        <img src="../../../assets/vue.svg">
-        <button @click="navigate(false)">
-            <n-icon size="20">
-                <IosArrowBack />
-            </n-icon>
-        </button>
-        <button @click="navigate(true)">
-            <n-icon size="20">
-                <IosArrowForward />
-            </n-icon>
-        </button>
-    </n-space>
+    <div class="logo-btns">
+        <n-space align="center">
+            <img src="../../../assets/vue.svg">
+            <button @click="navigate(false)">
+                <n-icon size="20">
+                    <IosArrowBack />
+                </n-icon>
+            </button>
+            <button @click="navigate(true)">
+                <n-icon size="20">
+                    <IosArrowForward />
+                </n-icon>
+            </button>
+        </n-space>
+    </div>
 </template>
 <script lang='ts' setup>
 import { useRouter } from 'vue-router'
@@ -26,6 +28,9 @@ function navigate(value: boolean) {
 }
 </script>
 <style scoped lang="scss">
+.logo-btns{
+    flex-grow: 1;
+}
 button {
     cursor: pointer;
     display: flex;
@@ -54,9 +59,10 @@ img {
         display: none;
     }
 }
+
 // 在360px以下隐藏所有
 @media screen and (max-width:350px) {
-    :deep(){
+    :deep() {
         display: none;
     }
 }
