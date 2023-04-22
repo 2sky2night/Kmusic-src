@@ -3,7 +3,8 @@ const useRouteInfor = () => {
     const $route = useRoute()
     return {
         params: $route.params,
-        query:$route.query
+        query: $route.query,
+        $route
     }
 }
 
