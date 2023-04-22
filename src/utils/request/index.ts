@@ -2,6 +2,7 @@ import axios from 'axios'
 import nProgress from 'nprogress'
 import { useUserStoreWithout } from '@/store/user'
 import type { InternalAxiosRequestConfig, AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios'
+import message from '../message'
 
 const userStore = useUserStoreWithout()
 
@@ -30,6 +31,7 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 }, (error: AxiosError) => {
     // 停止进度条
     nProgress.done()
+    message('网络错误 😩', "error")
     return Promise.reject(error)
 })
 
@@ -37,8 +39,16 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 request.interceptors.response.use((response: AxiosResponse) => {
     // 停止进度条
     nProgress.done()
+    console.log('状态码:' + response.status);
+
+    if (response.status !== 200) {
+        message('加载数据错误 😅', "error")
+    }
     //  返回服务器响应的真实内容
     return response.data
+}, (error: AxiosError) => {
+    message('严重错误 😱', "error")
+    return Promise.reject(error)
 })
 
 /**

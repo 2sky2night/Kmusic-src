@@ -1,3 +1,4 @@
+import { Playlist } from "../indexfaces";
 /**
  * 用户详情信息的响应/user/detail
  */
@@ -92,4 +93,14 @@ export interface PrivacyItemUnlimit {
   college: boolean;
   gender: boolean;
   villageAge: boolean;
+}
+
+/**
+ * 用户歌单的响应体/album/sublist
+ */
+export interface PlaylistRes {
+  code: number;
+  more: boolean;
+  playlist: Playlist[];
+  version: string;
 }

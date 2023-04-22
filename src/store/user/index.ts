@@ -22,12 +22,19 @@ if (cookie) {
     data.isLogin = true
     // 若本地有用户数据,就从本地加载数据
     const userData: any = getLocal('userData')
-    data.userData.avatar = userData.avatar
-    data.userData.level = userData.level
-    data.userData.id = userData.id
-    data.userData.nickname = userData.nickname
+    console.log(userData);
+    
+    if (userData!== null) {
+        // 本地有数据
+        data.userData.avatar = userData.avatar
+        data.userData.level = userData.level
+        data.userData.id = userData.id
+        data.userData.nickname = userData.nickname
+    } else {
+        // 没有就初始化用户数据
+        setLocal('userData', data.userData)
+    }
 }
-
 
 
 const useUserStore = defineStore('user', {

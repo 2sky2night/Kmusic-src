@@ -18,5 +18,48 @@ const themeStore = useThemeStore()
   width: 100%;
   min-height: 100%;
   position: absolute;
+  padding: 0 10px;
 }
+
+/**列表相关**/
+.music-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.music-list ul {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0px, 1fr));
+  gap: 10px 20px;
+  margin-bottom: 10px;
+}
+
+@media screen and (max-width:1130px) {
+  .music-list ul {
+    grid-template-columns: repeat(5, minmax(0px, 1fr));
+  }
+}
+
+@media screen and (max-width:950px) {
+  .music-list ul {
+    grid-template-columns: repeat(4, minmax(0px, 1fr));
+  }
+}
+
+@media screen and (max-width:700px) {
+  .music-list ul {
+    box-sizing: border-box;
+    padding: 0 10px;
+    grid-template-columns: repeat(3, minmax(0px, 1fr));
+  }
+}
+
+@media screen and (max-width:450px) {
+  .music-list ul {
+    grid-template-columns: repeat(2, minmax(0px, 1fr));
+  }
+}
+
+/**列表相关结束**/
 </style>

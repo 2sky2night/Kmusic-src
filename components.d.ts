@@ -10,7 +10,9 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Button: typeof import('./src/components/Button/Button.vue')['default']
+    Card: typeof import('./src/components/PlayListCard/Card.vue')['default']
     CodeLogin: typeof import('./src/components/CodeLogin/CodeLogin.vue')['default']
+    ImgLoad: typeof import('./src/components/ImgLoad/ImgLoad.vue')['default']
     Input: typeof import('./src/components/Input/Input.vue')['default']
     Message: typeof import('./src/components/Message/Message.vue')['default']
     MessageBox: typeof import('./src/components/MessageBox/MessageBox.vue')['default']
@@ -34,13 +36,22 @@ declare module '@vue/runtime-core' {
     NModal: typeof import('naive-ui')['NModal']
     NResult: typeof import('naive-ui')['NResult']
     NSpace: typeof import('naive-ui')['NSpace']
+    NSpin: typeof import('naive-ui')['NSpin']
+    NTab: typeof import('naive-ui')['NTab']
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']
+    NTag: typeof import('naive-ui')['NTag']
+    PlaylistCard: typeof import('./src/components/Card/PlaylistCard.vue')['default']
+    PlayListCard: typeof import('./src/components/PlayListCard/PlayListCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TabBar: typeof import('./src/components/TabBar/TabBar.vue')['default']
     ThemeBtn: typeof import('./src/components/ThemeBtnExp/ThemeBtn.vue')['default']
     ThemeBtnEx: typeof import('./src/components/ThemeBtnExp/ThemeBtnEx.vue')['default']
     ThemeBtnExp: typeof import('./src/components/ThemeBtnExp/ThemeBtnExp.vue')['default']
     UserInfor: typeof import('./src/components/UserInfor/UserInfor.vue')['default']
+    UserItem: typeof import('./src/components/UserInfor/components/UserItem/UserItem.vue')['default']
+    UserPlaylist: typeof import('./src/components/UserPlaylist/UserPlaylist.vue')['default']
+    UserPlayList: typeof import('./src/components/UserPlayList/UserPlayList.vue')['default']
   }
 }

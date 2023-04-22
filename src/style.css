@@ -3,6 +3,7 @@
   padding: 0;
   list-style: none;
   outline: none;
+  -webkit-user-drag: none;
 }
 
 html {
@@ -14,6 +15,9 @@ button {
 
 /*亮色css变量*/
 :root {
+  --mask-text-color: #fff;
+  --mask-bg-color: #00000030;
+
   --text-color: black;
   --bg-color: #fff;
 
@@ -28,15 +32,19 @@ button {
   --hover-text-color-primary: #fff;
   --hover-bg-color-primary: #79bbff;
 
-  --mask-hover-bg:#ffffff9a
+  --mask-hover-bg: #ffffff9a;
 
   --bg-btn-color: #fff;
 
   --main-bg-color: #fafafc;
+
+  --box-border-color: #c8cbd0;
 }
 
 /*深色变量*/
 html.dark {
+  --box-border-color: #626469;
+
   --text-color: #fff;
 
   --hover-bg-color: #59595e;

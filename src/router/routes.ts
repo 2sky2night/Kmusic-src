@@ -129,6 +129,13 @@ const routes: RouteRecordRaw[] = [
         ]
     },
     {
+        path: '/playlist/:id',
+        component: () => import('@/pages/Playlist/Playlist.vue'),
+        meta: {
+            title: "歌单详情"
+        }
+    },
+    {
         path: "/404",
         name: "404",
         component: () => import("@/pages/404/404.vue"),

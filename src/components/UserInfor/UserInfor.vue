@@ -3,20 +3,50 @@
         <n-image :src="avatar" />
         <div class="information">
             <div class="top-infor">
-                <span>用户名称:{{ nickname }}</span>
-                <span>level:{{ level }}</span>
-                <span>性别:{{ gender }}</span>
+                <!--顶部用户信息-->
+                <div>
+                    <span class="username">{{ nickname }}</span>
+                    <n-icon size="20" :color="gender ? '#4098fc' : 'pink'">
+                        <ManOutlinedIcon v-if="gender" />
+                        <WomanOutlinedIcon v-else />
+                    </n-icon>
+                </div>
+                <div>
+                    <span>Lv.{{ level }}</span>
+                    <!--预留的关注按钮-->
+                    <slot></slot>
+                </div>
+
+            </div>
+            <ul>
+                <!--用户的其他信息-->
+                <UserItem title="动态" :value="eventCount" />
+                <UserItem title="关注" :value="follows" />
+                <UserItem title="粉丝" :value="followeds" />
+            </ul>
+            <!--用户简介以及创建天数-->
+            <div class="more-infor">
+                <span>个人介绍: {{ sigFormat }}</span>
+                <span>
+                    来到云村{{ createDays }}天了😀
+                </span>
             </div>
         </div>
-        <ul>
-            <li>动态:{{ eventCount }}</li>
-            <li>关注:{{ follows }}</li>
-            <li>粉丝:{{ followeds }}</li>
-        </ul>
-        <div>创建{{ createDays }}天了.</div>
+
     </div>
 </template>
 <script lang='ts' setup>
+import UserItem from './components/UserItem/UserItem.vue';
+import { computed } from 'vue'
+import { ManOutlined as ManOutlinedIcon, WomanOutlined as WomanOutlinedIcon } from '@vicons/antd'
+/**
+ * 格式化用户签名
+ */
+const sigFormat = computed(() => {
+    return props.signature ?
+        props.signature :
+        '这个人太懒了，简介也不写呢。'
+})
 /**
  * 用户信息组件的自定义属性
  */
@@ -43,5 +73,67 @@ const props = defineProps<{
      */
     createDays: number
 }>()
+
 </script>
-<style scoped></style>
+<style scoped lang="scss">
+.more-infor {
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-infor>div {
+    height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.user-infor {
+    display: flex;
+    .username {
+        font-size: 25px;
+        margin-right: 15px;
+    }
+
+    .information {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0 15px;
+    }
+}
+
+ul {
+    display: flex;
+    margin: 10px 0;
+    margin-right: 10px;
+    padding: 10px 0;
+    border-top: 1px solid var(--box-border-color);
+}
+
+
+@media screen and (max-width:585px) {
+    .user-infor {
+        align-items: center;
+        flex-direction: column;
+    }
+
+    :deep(.n-image img) {
+        width: 120px;
+        border-radius: 50%;
+    }
+
+    ul {
+        border: none;
+        justify-content: space-around;
+        margin: 0;
+
+        :deep(li) {
+            transform: scale(.9);
+        }
+    }
+
+    .information {
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+}</style>
