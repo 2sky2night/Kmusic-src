@@ -6,7 +6,7 @@
             </ul>
         </div>
         <div v-if="!isEmpty" class="pagination">
-            <n-pagination v-model:page="page" :page-count="10" />
+            <n-pagination v-model:page="page" :page-count="pages" />
         </div>
         <!--空内容-->
         <n-empty description="这一页没有内容呢 😅" v-if="isEmpty">
@@ -23,7 +23,7 @@ import type { Album } from '@/api/public/indexfaces';
 import type { StarAlbumRes } from '@/api/My/Album/inferfaces'
 import { getStarAlbum } from '@/api/My/Album';
 import useStarList from '@/hooks/useStarList'
-const { page, pages, list, isEmpty } = useStarList<StarAlbumRes, Album>(getStarAlbum)
+const { page, pages, list, isEmpty } = useStarList<StarAlbumRes, Album>(getStarAlbum,'my-album')
 </script>
 <style scoped>
 .star-page {

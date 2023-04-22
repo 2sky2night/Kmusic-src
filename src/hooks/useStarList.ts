@@ -8,12 +8,12 @@ import { useRouter,onBeforeRouteUpdate } from 'vue-router'
  * @param cb - 获取的api函数 统一需要传入page来获取某一页的数据
  * @returns 
  */
-const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>) => {
+const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>,name:string) => {
     const $router = useRouter()
     // 获取查询参数
-    const { query, $route } = useRouteInfor()
+    const { query, $route,params } = useRouteInfor()
     // 根据查询参数初始化页数
-    const page = ref(query.page ? + query.page : 1)
+    const page = ref(params.page ? + params.page : 1)
     // 一页多少条数据
     const limit = 20
     /**
@@ -69,20 +69,17 @@ const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>) => 
     // 监听当前页的变化
     watch(page, (v) => {
         $route.query.page = v + ''
-        console.log(123);
-        
-        // $router.push({
-        //     path: '/my/star-album',
-        //     query: {
-        //         page:v
-        //     }
-        // })
+        $router.push({
+            /**
+             * 要跳转的路由名称
+             */
+            name,
+            params: {
+                page:v
+            }
+        })
+        getData()
     })
-
-    // // 检测到路由更新要执行的回调
-    // onBeforeRouteUpdate(() => {
-    //     console.log('路由更新了');
-    // })
 
     return {
         page,

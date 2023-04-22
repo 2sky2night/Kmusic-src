@@ -4,6 +4,7 @@ import { useUserStoreWithout } from "@/store/user";
 const routes: RouteRecordRaw[] = [
     {
         path: "/",
+        name: 'home',
         component: () => import("@/pages/Home/Home.vue"),
         meta: {
             title: "首页",
@@ -11,6 +12,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: "/discover",
+        name: 'discover',
         component: () => import("@/pages/Discover/Discover.vue"),
         meta: {
             title: "发现",
@@ -19,9 +21,11 @@ const routes: RouteRecordRaw[] = [
             {
                 path: "",
                 redirect: "/discover/playlist",
+                name: 'discover-empty'
             },
             {
                 path: "playlist",
+                name: 'discover-playlist',
                 component: () =>
                     import("@/pages/Discover/children/PlayList/PlayList.vue"),
                 meta: {
@@ -30,6 +34,7 @@ const routes: RouteRecordRaw[] = [
             },
             {
                 path: "song",
+                name: 'discover-song',
                 component: () => import("@/pages/Discover/children/Song/Song.vue"),
                 meta: {
                     title: "发现歌曲",
@@ -37,6 +42,7 @@ const routes: RouteRecordRaw[] = [
             },
             {
                 path: "artist",
+                name: 'discover-artist',
                 component: () => import("@/pages/Discover/children/Artist/Artist.vue"),
                 meta: {
                     title: "发现歌手",
@@ -46,6 +52,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: "/login",
+        name: 'login',
         component: () => import("@/pages/Login/Login.vue"),
         meta: {
             title: "登录",
@@ -69,6 +76,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: "/my",
+        name: 'my',
         component: () => import("@/pages/My/My.vue"),
         meta: {
             title: "我的",
@@ -81,9 +89,11 @@ const routes: RouteRecordRaw[] = [
             {
                 path: "",
                 redirect: "/my/playlist",
+                name: 'my-empty'
             },
             {
                 path: "playlist",
+                name: 'my-playlist',
                 component: () => import("@/pages/My/children/PlayList/PlayList.vue"),
                 meta: {
                     title: "我的歌单",
@@ -94,7 +104,8 @@ const routes: RouteRecordRaw[] = [
                 },
             },
             {
-                path: "star-album",
+                path: "star-album/:page",
+                name: 'my-album',
                 component: () => import("@/pages/My/children/StarAlbum/StarAlbum.vue"),
                 meta: {
                     title: "收藏的专辑",
@@ -105,7 +116,8 @@ const routes: RouteRecordRaw[] = [
                 },
             },
             {
-                path: "star-artist",
+                path: "star-artist/:page",
+                name: 'my-artist',
                 component: () => import("@/pages/My/children/StarArtist/StarArtist.vue"),
                 meta: {
                     title: "收藏的歌手",
@@ -116,7 +128,8 @@ const routes: RouteRecordRaw[] = [
                 }
             },
             {
-                path: "star-mv",
+                path: "star-mv/:page",
+                name: 'my-mv',
                 component: () => import("@/pages/My/children/StarMV/StarMV.vue"),
                 meta: {
                     title: "收藏的mv",

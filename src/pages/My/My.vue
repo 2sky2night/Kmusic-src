@@ -31,9 +31,9 @@ import TabBar from '@/components/TabBar/TabBar.vue';
 // tabBar数据
 const list: TabBarList = [
     { path: '/my/playlist', title: '歌单' },
-    { path: '/my/star-album', title: '收藏的专辑' },
-    { path: '/my/star-artist', title: '收藏的歌手' },
-    { path: '/my/star-mv', title: '收藏的mv' },
+    { path: '/my/star-artist/1', title: '收藏的歌手' },
+    { path: '/my/star-album/1', title: '收藏的专辑' },
+    { path: '/my/star-mv/1', title: '收藏的mv' },
 ]
 // 用户仓库
 const userStore = useUserStore()

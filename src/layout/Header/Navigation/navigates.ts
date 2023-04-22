@@ -43,15 +43,15 @@ export default [
                 label: '我的歌单',
             },
             {
-                key: '/my/star-artist',
+                key: '/my/star-artist/1',
                 label: '收藏的歌手',
             },
             {
-                key: '/my/star-album',
+                key: '/my/star-album/1',
                 label: '收藏的专辑',
             },
             {
-                key: '/my/star-mv',
+                key: '/my/star-mv/1',
                 label: '收藏的mv',
             }
         ]
