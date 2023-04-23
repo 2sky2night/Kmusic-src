@@ -11,7 +11,7 @@
                         <WomanOutlinedIcon v-else />
                     </n-icon>
                 </div>
-                <div>
+                <div class="level">
                     <span>Lv.{{ level }}</span>
                     <!--预留的关注按钮-->
                     <slot></slot>
@@ -28,7 +28,7 @@
             <div class="more-infor">
                 <span>个人介绍: {{ sigFormat }}</span>
                 <span>
-                    来到云村{{ createDays }}天了😀
+                    来到云村 {{ createDays }} 天了😀
                 </span>
             </div>
         </div>
@@ -63,7 +63,7 @@ const props = defineProps<{
      * 粉丝
      */
     followeds: number;
-    signature: string;
+    signature: string | null;
     /**
      * 真为男
      */
@@ -90,8 +90,9 @@ const props = defineProps<{
 
 .user-infor {
     display: flex;
+
     .username {
-        font-size: 25px;
+        font-size: 30px;
         margin-right: 15px;
     }
 
@@ -112,6 +113,17 @@ ul {
 
 
 @media screen and (max-width:585px) {
+    .top-infor {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .more-infor {
+        span:nth-child(2) {
+            display: none;
+        }
+    }
+
     .user-infor {
         align-items: center;
         flex-direction: column;
@@ -134,4 +146,7 @@ ul {
         padding-top: 10px;
     }
 }
-</style>
+
+.level {
+    font-size: 25px;
+}</style>

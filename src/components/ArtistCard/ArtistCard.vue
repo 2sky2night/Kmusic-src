@@ -47,6 +47,7 @@ li {
 }
 
 .artist-cover {
+    min-height: 23vh;
     display: flex;
     align-items: center;
     justify-content: center;

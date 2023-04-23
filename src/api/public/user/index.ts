@@ -2,7 +2,7 @@ import type { UserDetailRes, PlaylistRes } from '@/api/public/user/interfaces'
 import request from '@/utils/request'
 
 /**
- * 账号信息（根据cookie获取用户信息）
+ * 账号信息（根据id获取用户信息）
  * @param uid - 用户id
  */
 export const getUserDetial = (uid: number) => {
