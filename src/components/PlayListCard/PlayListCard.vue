@@ -23,7 +23,7 @@
             </Transition>
 
         </div>
-        <div class="playlist-name" v-text="name" v-if="!isLoading" />
+        <div class="playlist-name" v-text="name" v-if="!isLoading" @click.stop="toPlaylistInfor" />
         <!--歌单作者的信息占位插槽-->
         <slot></slot>
     </li>
@@ -138,9 +138,14 @@ li {
 }
 
 .playlist-name {
+    transition: .3s;
     user-select: text;
     font-size: 13.5px;
     align-self: flex-start;
+    cursor: pointer;
+}
+.playlist-name:hover{
+    color:var(--text-hover)
 }
 
 .play-enter-active {

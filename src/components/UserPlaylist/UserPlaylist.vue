@@ -4,7 +4,7 @@
             <PlayListCard v-for="item in playlist" :key="item.id" :cover-img-url="item.coverImgUrl" :id="item.id"
                 :name="item.name" :play-count="item.playCount" />
         </ul>
-        <SkeletonList :length="10" v-if="isLoading"/>
+        <SkeletonList  :text-center="false" :cover-radius="8"  :length="10" v-if="isLoading"/>
         <n-button v-if="isEnd" class="more-btn" @click="getUserPlayList">点击加载更多</n-button>
     </div>
 </template>

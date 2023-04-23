@@ -1,6 +1,6 @@
 <template>
     <li>
-        <div class="mv-cover">
+        <div class="mv-cover" @click="toMvPage">
             <img :src="coverUrl">
             <div class="mv-data">
                 <span>{{ durationFormat(durationms) }}</span>
@@ -20,14 +20,22 @@
             </div>
         </div>
         <div class="mv-infor">
-            <n-ellipsis :line-clamp="2" style="word-break: break-all;" :tooltip="false">
-                <span> {{ title }}</span>
+            <n-ellipsis :tooltip="false">
+                <span @click.stop="toMvPage" style="font-size: 18px;"> {{ title }}</span>
             </n-ellipsis>
-            <span class="mv-creator-name">{{ creatorName }}</span>
+            <div class="createor-list">
+                <span class="mv-creator-name" v-for="(item, index) in creators" :key="item.userId">
+                    <span @click.stop="toUserPage(item.userId)">{{ item.userName }}</span>
+                    <n-divider vertical v-if="creators.length > 1 && index !== creators.length - 1" />
+                </span>
+            </div>
+
         </div>
     </li>
 </template>
 <script lang='ts' setup>
+import { useRouter } from 'vue-router'
+import { Createor } from '@/api/public/indexfaces'
 import { countFormat, durationFormat } from '@/utils/computed'
 import { PlaySquareOutlined as PlaySquareOutlinedIcon } from '@vicons/antd'
 import { Play as PlayIcon } from '@vicons/ionicons5'
@@ -46,14 +54,30 @@ interface MvCardProps {
      */
     coverUrl: string;
     /**
-     * mv作者
+     * mv作者们
      */
-    creatorName: string;
+    creators: Createor[];
     vid: string;
 }
+
 const props = defineProps<MvCardProps>()
+
+const $router = useRouter()
+
+function toUserPage(id: number) {
+    $router.push(`/user/${id}`)
+}
+
+function toMvPage() {
+    $router.push(`/mv/${props.vid}`)
+}
+
 </script>
 <style scoped lang="scss">
+.createor-list {
+    display: flex;
+}
+
 li {
     min-height: 100%;
     display: flex;
@@ -73,7 +97,7 @@ li {
     margin-bottom: 10px;
 
     img {
-        transition: .4s;
+        transition: .3s;
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -136,6 +160,7 @@ li {
             justify-content: center;
             align-items: center;
             backdrop-filter: blur(10px);
+
             i {
                 position: relative;
                 left: 3px;
@@ -164,11 +189,11 @@ li {
     flex-direction: column;
 
     span {
+        cursor: pointer;
         transition: .3s;
-        font-size: 15px;
     }
-
     .mv-creator-name {
+        cursor: pointer;
         font-size: 12px;
         color: var(--text-dark)
     }

@@ -1,24 +1,17 @@
 <template>
     <div class="star-page">
         <div class="music-list">
-            <ul v-if="!isEmpty&&!isLoading">
-                <AlbumCard v-for="item in list" :key="item.id" :pic-url="item.picUrl" :id="item.id"
-                    :name="item.name" :sub-time="item.subTime"
-                />
+            <ul v-if="!isEmpty && !isLoading">
+                <AlbumCard v-for="item in list" :key="item.id" :pic-url="item.picUrl" :id="item.id" :name="item.name"
+                    :sub-time="item.subTime" :artists="item.artists" />
             </ul>
-            <SkeletonList v-if="isLoading" :length="10"/>
+            <SkeletonList :text-center="false" :cover-radius="8" v-if="isLoading" :length="10" />
         </div>
         <div v-if="!isEmpty && pages > 1" class="pagination">
             <n-pagination v-model:page="page" :page-count="pages" />
         </div>
         <!--空内容-->
-        <n-empty description="这一页没有内容呢 😅" v-if="isEmpty">
-            <template #extra>
-                <n-button size="small">
-                    看看别的 ?
-                </n-button>
-            </template>
-        </n-empty>
+        <EmptyPage v-if="isEmpty" />
     </div>
 </template>
 <script lang='ts' setup>

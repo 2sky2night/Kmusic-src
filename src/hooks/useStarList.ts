@@ -2,6 +2,7 @@ import { onMounted, reactive, ref, watch } from 'vue'
 import useRouteInfor from './useRouteInfor'
 import message from '@/utils/message'
 import { useRouter } from 'vue-router'
+import { countPage } from '@/utils/computed'
 /**
  * T为调用接口的返回值,D为数据的类型
  *  获取用户收藏数据钩子
@@ -29,6 +30,7 @@ const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>, nam
     const hasMore = ref(true)
     // 请求到空的页数
     const isEmpty = ref(false)
+
     /**
      * 获取数据的函数
      */
@@ -41,7 +43,7 @@ const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>, nam
         // 请求到了空的页数
         if (res.data.length === 0) {
             isEmpty.value = true
-            message("请求的页数非法", "error")
+            message("请求的页数非法或还没有收藏呢", "warning")
             isLoading.value = false
             return
         }
@@ -60,16 +62,24 @@ const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>, nam
     }
 
     onMounted(async () => {
-        // 获取到总条数
-        const count: number = await getData()
-        const page = count / limit
-        if (page === parseInt(page + '')) {
-            // 若为整数,设置总页数
-            pages.value = page
+
+        // 判断当前请求页数是否大于1
+        if (page.value > 1) {
+            // 获取第一页的数据,因为只有请求第一页时才能获得总页数
+            const res:any = await cb(1)
+            pages.value = countPage(limit, res.count)
+            // 获取请求的某一页
+            getData()
+        } else if (page.value === 1) {
+            // 获取到总条数
+            const count: number = await getData()
+            pages.value=countPage(limit,count)
         } else {
-            // 若不为整数
-            pages.value = Math.floor(page) + 1
+            message("请求参数非法","error")
+            isEmpty.value = true
+            isLoading.value=false
         }
+
     })
 
     // 监听页数发生变化就更新路由

@@ -156,6 +156,27 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/mv/:id',
+        component: () => import('@/pages/MV/MV.vue'),
+        meta: {
+            title: 'mv 详情页'
+        }
+    },
+    {
+        path: '/user/:id',
+        component: () => import('@/pages/User/User.vue'),
+        meta: {
+            title: '用户详情页'
+        }
+    },
+    {
+        path: '/artist/:id',
+        component: () => import('@/pages/Artist/Artist.vue'),
+        meta: {
+            title: '歌手详情页'
+        }
+    },
+    {
         path: "/404",
         name: "404",
         component: () => import("@/pages/404/404.vue"),

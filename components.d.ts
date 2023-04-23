@@ -10,9 +10,12 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AlbumCard: typeof import('./src/components/AlbumCard/AlbumCard.vue')['default']
+    Artist: typeof import('./src/components/ArtistCard/Artist.vue')['default']
+    ArtistCard: typeof import('./src/components/ArtistCard/ArtistCard.vue')['default']
     Button: typeof import('./src/components/Button/Button.vue')['default']
     Card: typeof import('./src/components/PlayListCard/Card.vue')['default']
     CodeLogin: typeof import('./src/components/CodeLogin/CodeLogin.vue')['default']
+    EmptyPage: typeof import('./src/components/EmptyPage/EmptyPage.vue')['default']
     ImgLoad: typeof import('./src/components/ImgLoad/ImgLoad.vue')['default']
     Input: typeof import('./src/components/Input/Input.vue')['default']
     Message: typeof import('./src/components/Message/Message.vue')['default']
@@ -23,6 +26,7 @@ declare module '@vue/runtime-core' {
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
+    NDivider: typeof import('naive-ui')['NDivider']
     NDropdown: typeof import('naive-ui')['NDropdown']
     NEllipsis: typeof import('naive-ui')['NEllipsis']
     NEmpty: typeof import('naive-ui')['NEmpty']

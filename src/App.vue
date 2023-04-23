@@ -72,6 +72,7 @@ const themeStore = useThemeStore()
 
 .pagination {
   align-self: center;
+  margin-bottom: 30px;
 }
 
 /*收藏页相关的样式结束*/

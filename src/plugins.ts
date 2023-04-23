@@ -15,6 +15,8 @@ import SkeletonList from '@/components/SkeletonList/SkeletonList.vue';
 import PlayListCardVue from "./components/PlayListCard/PlayListCard.vue";
 import AlbumCard from '@/components/AlbumCard/AlbumCard.vue';
 import MvCard from '@/components/MvCard/MvCard.vue'
+import ArtistCard from '@/components/ArtistCard/ArtistCard.vue'
+import EmptyPage from '@/components/EmptyPage/EmptyPage.vue'
 export default {
     install(app: App) {
         // 安装pinia仓库
@@ -27,5 +29,7 @@ export default {
         app.component('PlayListCardVue', PlayListCardVue)
         app.component('AlbumCard', AlbumCard)
         app.component('MvCard', MvCard)
+        app.component('ArtistCard', ArtistCard)
+        app.component('EmptyPage', EmptyPage)
     }
 }

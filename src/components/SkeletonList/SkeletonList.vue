@@ -1,9 +1,14 @@
 <template>
     <ul>
-        <SkeletonCard v-for="(item, index) in Array.from({ length })" :key="index" />
+        <SkeletonCard :text-center="textCenter" 
+        :cover-radius="coverRadius"
+         v-for="(item, index) in Array.from({ length })" :key="index" />
     </ul>
 </template>
 <script lang='ts' setup>
 import SkeletonCard from '../SkeletonCard/SkeletonCard.vue';
-const props = defineProps<{ length: number }>()
+const props = withDefaults(defineProps<{ length: number; coverRadius: number;textCenter:boolean }>(), {
+    coverRadius: 8,
+    textCenter:false
+})
 </script>

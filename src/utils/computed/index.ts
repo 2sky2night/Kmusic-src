@@ -22,3 +22,19 @@ export const durationFormat = (value: number) => {
     const second = Math.round(secends % 60)
     return `${minute}:${second > 9 ? second : '0' + second}`
 }
+
+/**
+ * 计算出总页数
+ * @param limit - 每页多少条
+ * @param count - 一共多少条
+ */
+export const countPage = (limit:number,count:number) => {
+    const pagesNum = count / limit
+    if (pagesNum === parseInt(pagesNum + '')) {
+        // 若为整数,设置总页数
+        return pagesNum
+    } else {
+        // 若不为整数
+        return Math.floor(pagesNum) + 1
+    }
+}

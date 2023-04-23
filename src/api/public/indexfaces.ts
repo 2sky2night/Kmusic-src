@@ -148,10 +148,7 @@ export interface MV {
     /**
      * mv的创建者
      */
-    creator: {
-        userId: number;
-        userName: string;
-    }[];
+    creator: Createor[];
     /**
      * mv的持续时间
      */
@@ -168,4 +165,9 @@ export interface MV {
      * mv的id
      */
     vid: string;
+}
+
+export interface Createor {
+    userId: number;
+    userName: string;
 }

@@ -1,5 +1,7 @@
 <template>
-    <n-h2>专辑详情页</n-h2>
+    <div class="page">
+        <n-h2>专辑详情页</n-h2>
+    </div>
 </template>
 <script lang='ts' setup>
 

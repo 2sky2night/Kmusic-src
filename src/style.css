@@ -15,6 +15,9 @@ button {
 
 /*亮色css变量*/
 :root {
+
+  --box-shadow:rgba(0, 0, 0, 0.318);
+
   --mask-text-color: #fff;
   --mask-bg-color: #00000030;
 

@@ -1,6 +1,6 @@
 <template>
     <div class="page">
-        歌单详情
+        <n-h1>用户详情页</n-h1>
     </div>
 </template>
 <script lang='ts' setup>
