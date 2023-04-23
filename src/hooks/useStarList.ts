@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router'
  * T为调用接口的返回值,D为数据的类型
  *  获取用户收藏数据钩子
  * @param cb - 获取的api函数 统一需要传入page来获取某一页的数据
+ * @param name -路由的名称
  * @returns 
  */
 const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>, name: string) => {
@@ -96,8 +97,6 @@ const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>, nam
         page,
         pages,
         list,
-        hasMore,
-        getData,
         isEmpty
     }
 }

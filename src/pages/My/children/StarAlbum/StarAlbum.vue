@@ -22,9 +22,6 @@
     </div>
 </template>
 <script lang='ts' setup>
-// 组件
-import SkeletonList from '@/components/SkeletonList/SkeletonList.vue';
-import AlbumCard from '@/components/AlbumCard/AlbumCard.vue';
 // 接口
 import type { Album } from '@/api/public/indexfaces';
 import type { StarAlbumRes } from '@/api/My/Album/inferfaces'
@@ -34,14 +31,3 @@ import { getStarAlbum } from '@/api/My/Album';
 import useStarList from '@/hooks/useStarList'
 const { page, pages, list, isEmpty, isLoading } = useStarList<StarAlbumRes, Album>(getStarAlbum, 'my-album')
 </script>
-<style scoped>
-.star-page {
-    user-select: none;
-    display: flex;
-    flex-direction: column;
-}
-
-.pagination {
-    align-self: center;
-}
-</style>

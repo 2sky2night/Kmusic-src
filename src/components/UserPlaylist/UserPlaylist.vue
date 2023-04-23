@@ -9,8 +9,6 @@
     </div>
 </template>
 <script lang='ts' setup>
-import SkeletonList from '../SkeletonList/SkeletonList.vue';
-import PlayListCard from '../PlayListCard/PlayListCard.vue';
 import message from '@/utils/message';
 import { Playlist } from '@/api/public/indexfaces';
 import { reactive, ref, onMounted } from 'vue'

@@ -1,8 +1,8 @@
 <template>
-    <li >
+    <li>
         <ImgLoad v-if="isLoading" />
-        <div  @click="toPlaylistInfor" class="play-list-img" @mouseenter="isHover = true" @mouseleave="isHover = false">
-            <n-image  :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" preview-disabled :src="coverImgUrl"
+        <div @click="toPlaylistInfor" class="play-list-img" @mouseenter="isHover = true" @mouseleave="isHover = false">
+            <n-image :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" preview-disabled :src="coverImgUrl"
                 :lazy="true"
                 :style="{ maskImage: isHover ? 'linear-gradient(to bottom,rgba(150,150,150,.618) 0,#fff 100%,transparent 100%)' : '' }" />
             <Transition name="play">
@@ -18,20 +18,21 @@
                     <n-icon>
                         <MdHeadsetIcon />
                     </n-icon>
-                    <span>{{ countFormat }}</span>
+                    <span>{{ countFormat(playCount) }}</span>
                 </div>
             </Transition>
 
         </div>
-        <div class="playlist-name" v-text="name" />
+        <div class="playlist-name" v-text="name" v-if="!isLoading" />
         <!--歌单作者的信息占位插槽-->
         <slot></slot>
     </li>
 </template>
 <script lang='ts' setup>
+import { countFormat } from '@/utils/computed'
 import { useRouter } from 'vue-router'
 import ImgLoad from '@/components/ImgLoad/ImgLoad.vue'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { MdHeadset as MdHeadsetIcon } from '@vicons/ionicons4'
 import { Play as PlayIcon } from '@vicons/ionicons5'
 
@@ -51,13 +52,6 @@ const isLoading = ref(true)
 
 // 自定义属性,歌单数据
 const props = defineProps<PlaylistProps>()
-
-// 格式化播放量数据
-const countFormat = computed(() => {
-    return props.playCount <= 10000 ?
-        props.playCount :
-        Math.round(props.playCount / 10000) + '万'
-})
 
 // 路由实例对象
 const $router = useRouter()

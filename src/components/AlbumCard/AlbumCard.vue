@@ -1,9 +1,8 @@
 <template>
     <li>
         <ImgLoad v-if="isLoading" />
-        <div @click="toAlbumInfor"  class="album-cover" @mouseenter="isHover = true" @mouseleave="isHover = false">
-            <n-image :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" preview-disabled
-                :src="picUrl" :lazy="true"
+        <div @click="toAlbumInfor" class="album-cover" @mouseenter="isHover = true" @mouseleave="isHover = false">
+            <n-image :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" preview-disabled :src="picUrl" :lazy="true"
                 :style="{ maskImage: isHover ? 'linear-gradient(to bottom,rgba(150,150,150,.618) 0,#fff 100%,transparent 100%)' : '' }" />
             <Transition name="play">
                 <div class="play-btn" v-if="!isLoading && isHover" @mouseenter="isHover = true">
@@ -20,9 +19,9 @@
             </Transition>
 
         </div>
-        <div class="album-name">
+        <div class="album-name" v-if="!isLoading">
             <n-ellipsis :line-clamp="2" style="word-break: break-all;" :tooltip="false">
-                {{ name }}
+                <span>{{ name }}</span>
             </n-ellipsis>
         </div>
         <!--专辑信息占位插槽-->
@@ -146,6 +145,13 @@ li {
 }
 
 .album-name {
+    span:hover {
+        color: var(--text-hover)
+    }
+
+    span {
+        transition: .2s;
+    }
     user-select: text;
     font-size: 13.5px;
     align-self: flex-start;

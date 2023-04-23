@@ -42,11 +42,13 @@ button {
   --main-bg-color: #fafafc;
 
   --box-border-color: #c8cbd0;
+
+  --text-dark: #a0a4a9;
+  --text-hover: #4098fc;
 }
 
 /*深色变量*/
 html.dark {
-  
   --scroll-bar-color: #404043;
   --scroll-bar-color--hover: #58585b;
 

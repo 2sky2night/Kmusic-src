@@ -1,7 +1,6 @@
 import { App } from "vue";
 import pinia from "./store";
 import router from "./router";
-import Button from "./components/Button/Button.vue";
 // 全局样式
 import './style.css'
 // 通用字体
@@ -10,7 +9,12 @@ import 'vfonts/Lato.css'
 import 'vfonts/FiraCode.css'
 // 引入进度条样式
 import 'nprogress/nprogress.css'
-
+// 全局组件
+import Button from "./components/Button/Button.vue";
+import SkeletonList from '@/components/SkeletonList/SkeletonList.vue';
+import PlayListCardVue from "./components/PlayListCard/PlayListCard.vue";
+import AlbumCard from '@/components/AlbumCard/AlbumCard.vue';
+import MvCard from '@/components/MvCard/MvCard.vue'
 export default {
     install(app: App) {
         // 安装pinia仓库
@@ -19,5 +23,9 @@ export default {
         app.use(router)
         // 安装全局组件
         app.component('Button', Button)
+        app.component('SkeletonList', SkeletonList)
+        app.component('PlayListCardVue', PlayListCardVue)
+        app.component('AlbumCard', AlbumCard)
+        app.component('MvCard', MvCard)
     }
 }

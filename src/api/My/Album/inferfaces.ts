@@ -1,4 +1,4 @@
-import { Album, Artist, MV } from '@/api/public/indexfaces'
+import { Album } from '@/api/public/indexfaces'
 /**
  * 收藏的专辑/album/sublist
  */
@@ -17,23 +17,4 @@ export interface StarAlbumRes {
      */
     hasMore: boolean;
     paidCount: number;
-}
-
-/**
- * 收藏的歌手 /artist/sublist
- */
-export interface StarArtistRes {
-    code: number;
-    count: number;
-    data: Artist[];
-    hasMore: boolean;
-}
-
-/**
- * 收藏的mv /mv/sublist
- */
-export interface StarMvRes {
-    code: number;
-    data: MV[];
-    hasMore: boolean;
 }
