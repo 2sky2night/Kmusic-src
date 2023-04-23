@@ -4,7 +4,7 @@
             <Header />
         </n-layout-header>
         <n-layout position="absolute" style="top: 60px; bottom: 60px;" has-sider>
-            <n-layout :native-scrollbar="false" style="background-color:var(--main-bg-color);">
+            <n-layout :native-scrollbar="true" style="background-color:var(--main-bg-color);">
                 <Main />
             </n-layout>
         </n-layout>
@@ -20,4 +20,18 @@ import Header from './Header/Header.vue';
 import { useMessage } from 'naive-ui';
 (window as any).$message = useMessage()
 </script>
-<style scoped lang="scss"></style>
+<style>
+/*修改滚动条赛道样式*/
+.n-layout-scroll-container::-webkit-scrollbar{
+    background-color: inherit;
+    width: 6px;
+}
+/*修改滚动条样式*/
+.n-layout-scroll-container::-webkit-scrollbar-thumb{
+    background-color: var(--scroll-bar-color);
+    border-radius: 5px;
+}
+.n-layout-scroll-container::-webkit-scrollbar-thumb:hover{
+    background-color: var(--scroll-bar-color--hover);
+}
+</style>

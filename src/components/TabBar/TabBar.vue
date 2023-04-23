@@ -5,7 +5,7 @@
 </template>
 <script lang='ts' setup>
 import TabBarList from './interfaces'
-import { ref } from 'vue'
+import { ref,watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 const props = defineProps<{ list: TabBarList }>()
 
@@ -22,5 +22,10 @@ function changeHandler(value: string) {
     // 设置当前选择的标签
     selectPanel.value = value
 }
+
+// 路由路径发生变化改变选择的标签页
+// watch(() => $route.path, () => {
+
+// })
 </script>
 

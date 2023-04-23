@@ -1,21 +1,23 @@
 import { onMounted, reactive, ref, watch } from 'vue'
 import useRouteInfor from './useRouteInfor'
 import message from '@/utils/message'
-import { useRouter,onBeforeRouteUpdate } from 'vue-router'
+import { useRouter } from 'vue-router'
 /**
  * T为调用接口的返回值,D为数据的类型
  *  获取用户收藏数据钩子
  * @param cb - 获取的api函数 统一需要传入page来获取某一页的数据
  * @returns 
  */
-const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>,name:string) => {
+const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>, name: string) => {
     const $router = useRouter()
     // 获取查询参数
-    const { query, $route,params } = useRouteInfor()
+    const { $route, params } = useRouteInfor()
     // 根据查询参数初始化页数
     const page = ref(params.page ? + params.page : 1)
     // 一页多少条数据
-    const limit = 20
+    const limit = 24
+    // 正在加载?
+    const isLoading = ref(false)
     /**
      * 总共页数
      */
@@ -30,33 +32,36 @@ const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>,name
      * 获取数据的函数
      */
     async function getData() {
+        // 设置正在加载
+        isLoading.value = true
         const res: any = await cb(page.value)
         hasMore.value = res.hasMore
+
         // 请求到了空的页数
         if (res.data.length === 0) {
             isEmpty.value = true
             message("请求的页数非法", "error")
+            isLoading.value = false
+            return
         }
+
         if (res.code === 200) {
             // 清空数据
             list.splice(0, list.length)
             res.data.forEach(((ele: any) => {
                 list.push(ele)
             }))
+            isLoading.value = false
             // 返回总条数
             return res.count
         }
 
-        // // 提示信息
-        // hasMore.value ? page.value++ : message("没有更多了 🥱", "info")
     }
 
     onMounted(async () => {
         // 获取到总条数
         const count: number = await getData()
         const page = count / limit
-        console.log(page, parseInt(page + ''));
-
         if (page === parseInt(page + '')) {
             // 若为整数,设置总页数
             pages.value = page
@@ -66,22 +71,28 @@ const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>,name
         }
     })
 
-    // 监听当前页的变化
+    // 监听页数发生变化就更新路由
     watch(page, (v) => {
-        $route.query.page = v + ''
         $router.push({
-            /**
-             * 要跳转的路由名称
-             */
             name,
             params: {
-                page:v
+                page: v
             }
         })
         getData()
     })
 
+    // 路由的动态参数发生变化就更新page的值
+    watch(() => $route.params.page, (v) => {
+        console.log(v);
+        if (v) {
+            page.value = +v
+        }
+
+    })
+
     return {
+        isLoading,
         page,
         pages,
         list,

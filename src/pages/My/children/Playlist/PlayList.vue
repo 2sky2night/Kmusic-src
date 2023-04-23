@@ -5,7 +5,7 @@
 </template>
 <script lang='ts' setup>
 import useUserStore from '@/store/user';
-import UserPlayList from '@/components/UserPlayList/UserPlayList.vue';
+import UserPlayList from '@/components/UserPlaylist/UserPlaylist.vue';
 import { inject } from 'vue';
 // 传入当前登陆用户的id
 const userStore = useUserStore() 

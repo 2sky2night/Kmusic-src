@@ -1,8 +1,9 @@
 <template>
-    <li @click="toPlaylistInfor">
+    <li >
         <ImgLoad v-if="isLoading" />
-        <div class="play-list-img" @mouseenter="isHover = true" @mouseleave="isHover = false">
-            <n-image @load="imgDoneHander" preview-disabled :src="coverImgUrl" :lazy="true"
+        <div  @click="toPlaylistInfor" class="play-list-img" @mouseenter="isHover = true" @mouseleave="isHover = false">
+            <n-image  :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" preview-disabled :src="coverImgUrl"
+                :lazy="true"
                 :style="{ maskImage: isHover ? 'linear-gradient(to bottom,rgba(150,150,150,.618) 0,#fff 100%,transparent 100%)' : '' }" />
             <Transition name="play">
                 <div class="play-list-btn" v-if="!isLoading && isHover" @mouseenter="isHover = true">
@@ -30,10 +31,9 @@
 <script lang='ts' setup>
 import { useRouter } from 'vue-router'
 import ImgLoad from '@/components/ImgLoad/ImgLoad.vue'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { MdHeadset as MdHeadsetIcon } from '@vicons/ionicons4'
 import { Play as PlayIcon } from '@vicons/ionicons5'
-import { ref } from 'vue'
 
 // 歌单的自定义属性
 interface PlaylistProps {
@@ -94,24 +94,22 @@ function toPlaylistInfor() {
 }
 
 .play-list-img {
+    width: 100%;
     margin-bottom: 10px;
     border-radius: 5px;
     position: relative;
     overflow: hidden;
 
     :deep(.n-image) {
+        transition: .5s;
+        width: 100%;
         height: 100%;
+        cursor: pointer;
     }
 
     :deep(.n-image)img {
         border-radius: 5px;
-        cursor: pointer;
-        transition: .4s;
         width: 100%;
-    }
-
-    :deep(.n-image)img:hover {
-        transform: scale(1.2);
     }
 }
 
@@ -146,6 +144,7 @@ li {
 }
 
 .playlist-name {
+    user-select: text;
     font-size: 13.5px;
     align-self: flex-start;
 }
@@ -188,5 +187,9 @@ li {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+:deep(.img-hover) {
+    transform: scale(1.2);
 }
 </style>

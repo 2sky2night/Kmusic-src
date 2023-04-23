@@ -2,7 +2,7 @@
     <main>
         <router-view v-slot="{ Component }">
             <transition name="page" apper>
-                <component :is="Component" />
+                  <component :is="Component" />
             </transition>
         </router-view>
     </main>
@@ -11,9 +11,14 @@
 
 </script>
 <style scoped>
-main{
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
     position: relative;
+    height: 100%;
 }
+
 .page-enter-active {
     animation: pageMove .5s 1 ease-in-out;
 }
@@ -34,15 +39,8 @@ main{
     }
 }
 
-main {
-    height: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    box-sizing: border-box;
-}
-
 @media screen and (max-width:585px) {
-    main{
+    main {
         padding: 0;
     }
 }

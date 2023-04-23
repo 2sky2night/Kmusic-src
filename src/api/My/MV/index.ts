@@ -8,6 +8,6 @@ import { StarMvRes } from "./interfaces"
  * @param limit - 获取多少条
  * @returns 
  */
-export const getStarMv = (page: number, limit: number = 20) => {
+export const getStarMv = (page: number, limit: number = 24) => {
     return request.get<StarMvRes>('/mv/sublist', { params: { offset: (page - 1) * limit, limit } })
 }

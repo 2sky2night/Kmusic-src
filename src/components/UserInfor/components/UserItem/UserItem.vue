@@ -11,6 +11,7 @@ const props = defineProps<{ title: string; value: number }>()
 </script>
 <style scoped lang="scss">
 li {
+    cursor: pointer;
     height: 50px;
     width: 100px;
     display: flex;
@@ -19,6 +20,16 @@ li {
 
     span:first-child {
         font-size: 20px;
+    }
+}
+
+@media screen and (max-width:585px) {
+    li {
+        height: 30px;
+        span:first-child {
+            font-size: 15px !important;
+        }
+        font-size: 12px;
     }
 }
 </style>

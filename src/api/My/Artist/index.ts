@@ -7,6 +7,6 @@ import { StarArtistRes } from "./interfaces"
  * @param limit - 获取多少条
  * @returns 
  */
-export const getStarArtist = (page: number, limit: number = 20) => {
+export const getStarArtist = (page: number, limit: number = 24) => {
     return request.get<StarArtistRes>('/artist/sublist', { params: { offset: (page - 1) * limit, limit } })
 }

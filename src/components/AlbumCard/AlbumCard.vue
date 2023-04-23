@@ -1,62 +1,64 @@
 <template>
     <li>
         <ImgLoad v-if="isLoading" />
-        <div class="play-list-img" @mouseenter="isHover = true" @mouseleave="isHover = false">
-            <n-image @load="imgDoneHander" preview-disabled :src="coverImgUrl" :lazy="true"
+        <div @click="toAlbumInfor"  class="album-cover" @mouseenter="isHover = true" @mouseleave="isHover = false">
+            <n-image :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" preview-disabled
+                :src="picUrl" :lazy="true"
                 :style="{ maskImage: isHover ? 'linear-gradient(to bottom,rgba(150,150,150,.618) 0,#fff 100%,transparent 100%)' : '' }" />
             <Transition name="play">
-                <div class="play-list-btn" v-if="!isLoading && isHover" @mouseenter="isHover = true">
+                <div class="play-btn" v-if="!isLoading && isHover" @mouseenter="isHover = true">
                     <n-icon size="40">
                         <PlayIcon />
                     </n-icon>
                 </div>
             </Transition>
 
-            <Transition name="count">
-                <div class="play-count" v-if="!isLoading && !isHover">
-                    <n-icon>
-                        <MdHeadsetIcon />
-                    </n-icon>
-                    <span>{{ countFormat }}</span>
+            <Transition name="time">
+                <div class="time-data" v-if="!isLoading && !isHover">
+                    <span>{{ timeFormat }}</span>
                 </div>
             </Transition>
 
         </div>
-        <div class="playlist-name" v-text="name" />
-        <!--歌单作者的信息占位插槽-->
+        <div class="album-name">
+            <n-ellipsis :line-clamp="2" style="word-break: break-all;" :tooltip="false">
+                {{ name }}
+            </n-ellipsis>
+        </div>
+        <!--专辑信息占位插槽-->
         <slot></slot>
     </li>
 </template>
 <script lang='ts' setup>
 import { useRouter } from 'vue-router'
 import ImgLoad from '@/components/ImgLoad/ImgLoad.vue'
-import { computed } from 'vue'
-import { MdHeadset as MdHeadsetIcon } from '@vicons/ionicons4'
+import { computed, ref } from 'vue'
 import { Play as PlayIcon } from '@vicons/ionicons5'
-import { ref } from 'vue'
 
 // 歌单的自定义属性
 interface PlaylistProps {
-    coverImgUrl: string;
+    picUrl: string;
     id: number;
     name: string;
-    playCount: number;
+    /**
+     * 发布时间
+     */
+    subTime: number;
 }
 
 // 是否鼠标悬浮在图片上?
 const isHover = ref(false)
 
-// 歌单图片是否正在加载?
+// 专辑图片是否正在加载?
 const isLoading = ref(true)
 
-// 自定义属性,歌单数据
+// 自定义属性,专辑数据
 const props = defineProps<PlaylistProps>()
 
-// 格式化播放量数据
-const countFormat = computed(() => {
-    return props.playCount <= 10000 ?
-        props.playCount :
-        Math.round(props.playCount / 10000) + '万'
+// 格式化时间的数据
+const timeFormat = computed(() => {
+    const data = new Date(props.subTime)
+    return data.toLocaleDateString().replaceAll('/', '-')
 })
 
 // 路由实例对象
@@ -67,11 +69,15 @@ function imgDoneHander() {
     isLoading.value = false
 }
 
+// 点击路由的回调
+function toAlbumInfor() {
+    $router.push(`/album/${props.id}`)
+}
 
 </script>
 <style scoped lang="scss">
 // 播放按钮
-.play-list-btn {
+.play-btn {
     cursor: pointer;
     position: absolute;
     top: 35%;
@@ -89,25 +95,23 @@ function imgDoneHander() {
     }
 }
 
-.play-list-img {
+.album-cover {
+    width: 100%;
     margin-bottom: 10px;
     border-radius: 5px;
     position: relative;
     overflow: hidden;
 
     :deep(.n-image) {
+        transition: .5s;
+        width: 100%;
         height: 100%;
+        cursor: pointer;
     }
 
     :deep(.n-image)img {
         border-radius: 5px;
-        cursor: pointer;
-        transition: .4s;
         width: 100%;
-    }
-
-    :deep(.n-image)img:hover {
-        transform: scale(1.2);
     }
 }
 
@@ -118,8 +122,8 @@ li {
     max-width: 180px;
 }
 
-// 播放量信息
-.play-count {
+// 时间数据
+.time-data {
     font-size: 12px;
     border-radius: 5px 0;
     color: var(--mask-text-color);
@@ -141,7 +145,8 @@ li {
     }
 }
 
-.playlist-name {
+.album-name {
+    user-select: text;
     font-size: 13.5px;
     align-self: flex-start;
 }
@@ -166,11 +171,11 @@ li {
     }
 }
 
-.count-enter-active {
+.time-enter-active {
     animation: count .5s 1 ease-in-out;
 }
 
-.count-leave-active {
+.time-leave-active {
     animation: count .5s reverse 1 ease-in-out;
 }
 
@@ -184,5 +189,9 @@ li {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+:deep(.img-hover) {
+    transform: scale(1.2);
 }
 </style>

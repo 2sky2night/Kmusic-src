@@ -35,6 +35,7 @@ const list: TabBarList = [
     { path: '/my/star-album/1', title: '收藏的专辑' },
     { path: '/my/star-mv/1', title: '收藏的mv' },
 ]
+
 // 用户仓库
 const userStore = useUserStore()
 // 用户的信息
@@ -79,7 +80,6 @@ onMounted(async () => {
         message("出错啦!😭", "error")
     }
 })
-
 </script>
 <style scoped >
 .page {

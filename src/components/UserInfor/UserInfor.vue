@@ -1,6 +1,6 @@
 <template>
     <div class="user-infor">
-        <n-image :src="avatar" />
+        <n-image :src="avatar" width="200" />
         <div class="information">
             <div class="top-infor">
                 <!--顶部用户信息-->
@@ -126,14 +126,12 @@ ul {
         border: none;
         justify-content: space-around;
         margin: 0;
-
-        :deep(li) {
-            transform: scale(.9);
-        }
+        margin-bottom: 10px;
     }
 
     .information {
         margin-top: 10px;
         padding-top: 10px;
     }
-}</style>
+}
+</style>

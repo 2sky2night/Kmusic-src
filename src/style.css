@@ -18,6 +18,9 @@ button {
   --mask-text-color: #fff;
   --mask-bg-color: #00000030;
 
+  --scroll-bar-color: #bbbbbd;
+  --scroll-bar-color--hover: #969697;
+
   --text-color: black;
   --bg-color: #fff;
 
@@ -43,6 +46,10 @@ button {
 
 /*深色变量*/
 html.dark {
+  
+  --scroll-bar-color: #404043;
+  --scroll-bar-color--hover: #58585b;
+
   --box-border-color: #626469;
 
   --text-color: #fff;

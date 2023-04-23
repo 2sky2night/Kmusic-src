@@ -1,13 +1,15 @@
 <template>
     <div class="music-list">
-        <ul>
+        <ul v-if="!isLoading">
             <PlayListCard v-for="item in playlist" :key="item.id" :cover-img-url="item.coverImgUrl" :id="item.id"
                 :name="item.name" :play-count="item.playCount" />
         </ul>
+        <SkeletonList :length="10" v-if="isLoading"/>
         <n-button v-if="isEnd" class="more-btn" @click="getUserPlayList">点击加载更多</n-button>
     </div>
 </template>
 <script lang='ts' setup>
+import SkeletonList from '../SkeletonList/SkeletonList.vue';
 import PlayListCard from '../PlayListCard/PlayListCard.vue';
 import message from '@/utils/message';
 import { Playlist } from '@/api/public/indexfaces';
@@ -25,12 +27,14 @@ const page = ref(1)
 
 // 加载完毕了吗?
 const isEnd = ref(false)
+// 正在加载?
+const isLoading = ref(false)
 
 /**
  * 获取歌单数据(默认加载二十条)
  */
 async function toGetUserPlayList() {
-
+    isLoading.value = true
     if (isEnd.value === false) {
         // 当前是否加载完成?
         if (page.value >= 1) {
@@ -45,7 +49,6 @@ async function toGetUserPlayList() {
                 })
                 if (!isEnd.value) {
                     message('没有更多了 😴', "warning")
-                    return
                 }
                 // 页数+1
                 page.value++
@@ -58,7 +61,7 @@ async function toGetUserPlayList() {
         // 若已经加载完成了
         message('没有更多了!', "warning")
     }
-
+    isLoading.value = false
 }
 
 onMounted(() => {
@@ -72,5 +75,4 @@ onMounted(() => {
     width: 80%;
     margin-bottom: 10px;
 }
-
 </style>
