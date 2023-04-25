@@ -1,6 +1,5 @@
 <template>
     <li>
-        <ImgLoad v-if="isLoading" />
         <div @click="toAlbumInfor" class="album-cover" @mouseenter="isHover = true" @mouseleave="isHover = false">
             <n-image :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" preview-disabled :src="picUrl" :lazy="true"
                 :style="{ maskImage: isHover ? 'linear-gradient(to bottom,rgba(150,150,150,.618) 0,#fff 100%,transparent 100%)' : '' }" />
@@ -28,9 +27,13 @@
             </div>
 
             <div class="album-artist">
-                <span v-for="(item, index) in artists" :key="item.id">
-                    <span style="word-break: break-all;" @click.stop="toArtistPage(item.id)">{{ item.name }}</span>
-                    <n-divider vertical v-if="artists.length > 1&&index!==artists.length-1" /></span>
+                <n-ellipsis :tooltip="false">
+                    <span v-for="(item, index) in artists" :key="item.id">
+                        <span style="word-break: break-all;" @click.stop="toArtistPage(item.id)">{{ item.name }}</span>
+                        <n-divider vertical v-if="artists.length > 1 && index !== artists.length - 1" />
+                    </span>
+                </n-ellipsis>
+
             </div>
 
         </div>
@@ -89,7 +92,7 @@ function toAlbumInfor() {
 }
 
 // 点击艺人名称的回调
-function toArtistPage(id:number) {
+function toArtistPage(id: number) {
     $router.push(`/artist/${id}`)
 }
 
@@ -171,6 +174,7 @@ li {
     span {
         transition: .2s;
     }
+
     cursor: pointer;
     user-select: text;
     font-size: 14px;
@@ -229,8 +233,9 @@ li {
             cursor: pointer;
             font-size: 12px;
         }
-        span:hover{
-            color:var(--text-hover)
+
+        span:hover {
+            color: var(--text-hover)
         }
     }
 }

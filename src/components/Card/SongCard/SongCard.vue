@@ -1,7 +1,7 @@
 <template>
     <li class="song-card" >
         <div class="song-cover" @click="goToSong">
-            <img :src="picUrl" @load="imgLoadFinish">
+            <img :src="picUrl">
             <div class="song-more">
 
                 <div class="item">
@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="item">
-                    <span class="title">发布时间:<br/>
+                    <span class="title">发布时间:
                         {{ timeFormat(song.album.publishTime as number) }}
                     </span>
                 </div>
@@ -48,9 +48,9 @@ interface SongProps {
 
 const props = defineProps<SongProps>()
 
-const emit = defineEmits<{
-    (e: "imgLoadFinish"): void
-}>()
+// const emit = defineEmits<{
+//     (e: "imgLoadFinish"): void
+// }>()
 
 const $router = useRouter()
 
@@ -76,9 +76,9 @@ function goToSong() {
     $router.push(`/song/${props.id}`)
 }
 
-function imgLoadFinish() {
-    emit("imgLoadFinish")
-}
+// function imgLoadFinish() {
+//     emit("imgLoadFinish")
+// }
 
 </script>
 <style scoped lang="scss">

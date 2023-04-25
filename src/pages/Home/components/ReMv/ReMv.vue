@@ -1,5 +1,5 @@
 <template>
-    <div class="music-list recommend-playlist">
+    <div class="music-list recommend-mv">
         <TitleHeader title="推荐的mv" />
         <SkeletonList v-if="isLoading" :cover-radius="10" :length="12" :text-center="false" />
         <ul v-else>

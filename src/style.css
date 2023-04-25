@@ -89,6 +89,10 @@ html.dark {
   color: var(--bg-color-primary);
 }
 
+.loading-box{
+  max-height: 0;
+  overflow: hidden;
+}
 
 /*element ui的css变量*/
 .element-ui {

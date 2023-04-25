@@ -26,9 +26,5 @@ import useStarList from '@/hooks/useStarList';
 // api
 import { getStarArtist } from '@/api/My/Artist';
 import SkeletonList from '@/components/SkeletonList/SkeletonList.vue';
-import ArtistCard from '@/components/ArtistCard/ArtistCard.vue';
 const { list, page, pages, isEmpty, isLoading } = useStarList<StarArtistRes, Artist>(getStarArtist, 'my-artist')
-
-
 </script>
-<style scoped></style>

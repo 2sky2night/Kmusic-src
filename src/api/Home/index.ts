@@ -43,7 +43,7 @@ export const getRecMv= (limit: number = 12) => {
  * @returns 
  */
 export const getRecArtist = (area: ArtistAreaType =-1,limit: number = 12) => {
-    return request.get<RecommendRes<RecommendArtist>>('/artist/list', {
+    return request.get<RecommendArtist>('/artist/list', {
         params: {
             limit,
             area

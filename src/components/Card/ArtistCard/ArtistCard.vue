@@ -2,15 +2,14 @@
     <li class="artist-infor" v-once>
 
         <div class="artist-cover" @click="toArtistInfor">
+            <img :src="picUrl">
             <div class="artist-icon-box">
                 <div class="artist-icon">
                     <n-icon color="#fff" size="50">
                         <UserSwitchOutlinedIcon />
                     </n-icon>
                 </div>
-
             </div>
-            <img :src="picUrl">
         </div>
 
         <n-ellipsis :tooltip="false">
@@ -47,7 +46,7 @@ li {
 }
 
 .artist-cover {
-    min-height: 23vh;
+    min-height: 25vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -74,8 +73,10 @@ li {
     transition: .5s;
     position: absolute;
     z-index: 1000;
-    width: 100%;
-    height: 100%;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     border-radius: 50%;
     display: flex;
     justify-content: center;

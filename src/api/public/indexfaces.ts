@@ -1,5 +1,3 @@
-
-
 /**
  * 歌单的简略信息
  */
@@ -134,7 +132,7 @@ export interface Artist {
      * 歌手图片
      */
     picUrl: string;
-    musicSize?: number
+    musicSize: number
 }
 
 

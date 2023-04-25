@@ -1,11 +1,9 @@
 <template>
     <li>
-        <ImgLoad v-if="isLoading" />
         <div @click="toPlaylistInfor" class="play-list-img" @mouseenter="isHover = true" @mouseleave="isHover = false">
 
-            <n-image :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" preview-disabled :src="coverImgUrl"
-                :lazy="true"
-                :style="{maskImage: isHover ? 'linear-gradient(to bottom,rgba(150,150,150,.618) 0,#fff 100%,transparent 100%)' : '' }" />
+            <img :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" :src="coverImgUrl"
+                :style="{ maskImage: isHover ? 'linear-gradient(to bottom,rgba(150,150,150,.618) 0,#fff 100%,transparent 100%)' : '' }" />
 
             <Transition name="play">
                 <div class="play-list-btn" v-if="!isLoading && isHover" @mouseenter="isHover = true">
@@ -27,7 +25,7 @@
         </div>
         <div v-if="!isLoading" style="width:100%">
             <div class="playlist-name" @click.stop="toPlaylistInfor">
-                <n-ellipsis :line-clamp="2" :tooltip="false" >
+                <n-ellipsis :line-clamp="2" :tooltip="false">
                     {{ name }}
                 </n-ellipsis>
 
@@ -106,16 +104,12 @@ function toPlaylistInfor() {
     position: relative;
     overflow: hidden;
 
-    :deep(.n-image) {
+    img {
         transition: .5s;
         width: 100%;
         height: 100%;
         cursor: pointer;
-    }
-
-    :deep(.n-image)img {
         border-radius: 5px;
-        width: 100%;
     }
 }
 
