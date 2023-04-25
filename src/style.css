@@ -4,6 +4,7 @@
   list-style: none;
   outline: none;
   -webkit-user-drag: none;
+  text-decoration: none;
 }
 
 html {
@@ -73,6 +74,21 @@ html.dark {
 
   --main-bg-color: #18181c;
 }
+
+/*首页推荐列表*/
+.recommend-playlist ul {
+  padding: 0;
+}
+
+/*文本*/
+.text {
+  transition: 0.3s;
+  font-size: 13px;
+}
+.text:hover {
+  color: var(--bg-color-primary);
+}
+
 
 /*element ui的css变量*/
 .element-ui {

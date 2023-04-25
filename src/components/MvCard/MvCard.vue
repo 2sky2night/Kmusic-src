@@ -1,5 +1,5 @@
 <template>
-    <li>
+    <li v-once>
         <div class="mv-cover" @click="toMvPage">
             <img :src="coverUrl">
             <div class="mv-data">
@@ -24,10 +24,13 @@
                 <span @click.stop="toMvPage" style="font-size: 18px;"> {{ title }}</span>
             </n-ellipsis>
             <div class="createor-list">
-                <span class="mv-creator-name" v-for="(item, index) in creators" :key="item.userId">
-                    <span @click.stop="toUserPage(item.userId)">{{ item.userName }}</span>
-                    <n-divider vertical v-if="creators.length > 1 && index !== creators.length - 1" />
-                </span>
+                <n-ellipsis :tooltip="false">
+                    <span class="mv-creator-name" v-for="(item, index) in creators" :key="item.userId">
+                        <span @click.stop="toUserPage(item.userId)">{{ item.userName }}</span>
+                        <n-divider vertical v-if="creators.length > 1 && index !== creators.length - 1" />
+                    </span>
+                </n-ellipsis>
+
             </div>
 
         </div>
@@ -57,7 +60,7 @@ interface MvCardProps {
      * mv作者们
      */
     creators: Createor[];
-    vid: string;
+    vid: number;
 }
 
 const props = defineProps<MvCardProps>()
@@ -76,6 +79,7 @@ function toMvPage() {
 <style scoped lang="scss">
 .createor-list {
     display: flex;
+    font-size: 12px;
 }
 
 li {
@@ -192,6 +196,7 @@ li {
         cursor: pointer;
         transition: .3s;
     }
+
     .mv-creator-name {
         cursor: pointer;
         font-size: 12px;

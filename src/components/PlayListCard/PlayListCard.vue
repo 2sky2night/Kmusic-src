@@ -2,9 +2,11 @@
     <li>
         <ImgLoad v-if="isLoading" />
         <div @click="toPlaylistInfor" class="play-list-img" @mouseenter="isHover = true" @mouseleave="isHover = false">
+
             <n-image :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" preview-disabled :src="coverImgUrl"
                 :lazy="true"
                 :style="{ maskImage: isHover ? 'linear-gradient(to bottom,rgba(150,150,150,.618) 0,#fff 100%,transparent 100%)' : '' }" />
+
             <Transition name="play">
                 <div class="play-list-btn" v-if="!isLoading && isHover" @mouseenter="isHover = true">
                     <n-icon size="40">
@@ -23,9 +25,19 @@
             </Transition>
 
         </div>
-        <div class="playlist-name" v-text="name" v-if="!isLoading" @click.stop="toPlaylistInfor" />
-        <!--歌单作者的信息占位插槽-->
-        <slot></slot>
+        <div v-if="!isLoading">
+            <div class="playlist-name" @click.stop="toPlaylistInfor">
+                <n-ellipsis :line-clamp="2" :tooltip="false">
+                    {{ name }}
+                </n-ellipsis>
+
+            </div>
+            <!--歌单作者的信息占位插槽-->
+            <div style="font-size: 12px;">
+                <slot></slot>
+            </div>
+        </div>
+
     </li>
 </template>
 <script lang='ts' setup>
@@ -144,8 +156,9 @@ li {
     align-self: flex-start;
     cursor: pointer;
 }
-.playlist-name:hover{
-    color:var(--text-hover)
+
+.playlist-name:hover {
+    color: var(--text-hover)
 }
 
 .play-enter-active {

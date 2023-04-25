@@ -2,7 +2,8 @@
     <div class="star-page">
         <div class="music-list">
             <ul v-if="!isEmpty && !isLoading" class="mv">
-                <MvCard :cover-url="item.coverUrl" :creators="item.creator" :durationms="item.durationms" :vid="item.vid"
+                <MvCard :cover-url="item.coverUrl" :creators="item.creator" 
+                 :durationms="item.durationms" :vid="item.vid"
                     :play-time="item.playTime" v-for="item in list" :key="item.vid" :title="item.title" />
             </ul>
             <SkeletonList :text-center="false" :cover-radius="8" v-if="isLoading" :length="12" />

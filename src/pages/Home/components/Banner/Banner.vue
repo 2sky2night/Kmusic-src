@@ -1,24 +1,19 @@
 <template>
-    <n-carousel :effect="isSmall ? 'slide' : 'card'" v-if="!isLoading"
-        loop draggable autoplay
-        :prev-slide-style="isSmall ? '' : 'transform: translateX(-93%) translateZ(-500px);'"
+    <n-carousel :effect="isSmall ? 'slide' : 'card'" loop draggable autoplay
+        :prev-slide-style="isSmall ? '' : 'transform: translateX(-92%) translateZ(-500px);'"
         :next-slide-style="isSmall ? '' : 'transform: translateX(-10%) translateZ(-500px);'"
-        :style="{ height: height + 'px', maxHeight: '300px', minHeight: '135px' }" show-dots>
-        <n-carousel-item 
-        v-once
-        :style="{ width: isSmall ? '100%' : '80%', borderRadius: '10px' }" 
-        v-for="item in banner"
-        :key="item.targetId"
-        @click="goToPage(item.targetId,item.targetType)"
-        >
-            <img class="carousel-img" :src="item.imageUrl">
+        :style="{ height: isLoading?'0':height + 'px', maxHeight: isLoading?'0':'300px', minHeight: isLoading? 0:'135px'}" show-dots>
+
+        <n-carousel-item :style="{ width: isSmall ? '100%' : '80%', borderRadius: '10px' }" v-for="item in banners"
+            :key="item.targetId" @click="goToPage(item.targetId, item.targetType)">
+            <img class="carousel-img"  :src="item.imageUrl" @load="countBanners++">
         </n-carousel-item>
     </n-carousel>
-    <n-skeleton v-else :style="{ height: height + 'px', borderRadius: '10px' }" width=" 100%" />
+    <n-skeleton v-if="isLoading" :style="{ height: height + 'px', borderRadius: '10px' }" width=" 100%" />
 </template>
 
 <script lang='ts' setup>
-import { onMounted, onUnmounted, reactive, ref } from 'vue';
+import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import type { Banner } from '@/api/Home/interfaces'
 import { getBanners } from '@/api/Home'
 import { useRouter } from 'vue-router';
@@ -27,12 +22,13 @@ const $router = useRouter()
 // 正在加载?
 const isLoading = ref(true)
 // 轮播图数据
-const banner: Banner[] = reactive([])
+const banners: Banner[] = reactive([])
 // 是否小屏幕?
 const isSmall = ref(false)
 // 轮播图高度
 const height = ref(0)
-
+// 轮播图加载完成的数量
+const countBanners = ref(0)
 /**
  * 设置轮播图样式
  */
@@ -55,9 +51,15 @@ onMounted(async () => {
     const res = await getBanners()
     if (res.code === 200) {
         res.banners.forEach(ele => {
-            banner.push(ele)
+            banners.push(ele)
         })
-        isLoading.value = false
+
+        //监听加载完成的数量,若加载完成的数量等于轮播图长度说明加载完成
+        watch(countBanners, (v) => {
+            if (v === banners.length) {
+                isLoading.value = false
+            }
+        })
 
     }
 
@@ -68,8 +70,12 @@ onUnmounted(() => {
     window.removeEventListener("resize", setBanner)
 })
 
-// 点击轮播图跳转到哪儿去?
-function goToPage(id:number,type:number) {
+/**
+ * 点击轮播图跳转到哪儿去?
+ * @param id 
+ * @param type 
+ */
+function goToPage(id: number, type: number) {
     if (type === 1) {
         // 跳转歌曲详情页
         $router.push(`/song/${id}`)
@@ -77,10 +83,9 @@ function goToPage(id:number,type:number) {
         // 跳转到歌单
         $router.push(`/playlist/${id}`)
     } else {
-        message("是不知道的路由跳转呢,给我说一声马上改bug~😁","info")
+        message("是不知道的路由跳转呢,给我说一声马上改bug~😁", "info")
     }
 }
-
 </script>
 
 

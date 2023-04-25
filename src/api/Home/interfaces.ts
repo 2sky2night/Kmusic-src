@@ -18,7 +18,7 @@ export interface RecommendRes<T> {
 
 
 /**
- * 推荐歌单的基本信息 /personalized
+ * 推荐歌单的基本信息(一个歌单的基本信息) /personalized
  */
 export interface RecommendPlaylist {
     id: number;
@@ -31,7 +31,7 @@ export interface RecommendPlaylist {
 }
 
 /**
- * 推荐的新音乐 /personalized/newsong
+ * 推荐的新音乐(一个song的基本信息) /personalized/newsong
  */
 export interface RecommendMusic {
     /**
@@ -57,7 +57,7 @@ export interface RecommendMusic {
 }
 
 /**
- * 推荐的mv /personalized/mv
+ * 推荐的mv(一个mv的基本信息) /personalized/mv
  */
 export interface RecommendMv {
     artistId: number;

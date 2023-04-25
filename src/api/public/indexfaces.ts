@@ -41,6 +41,7 @@ export interface Playlist {
      */
     tags: string[];
     userId: number;
+    picUrl: string;
 }
 
 /**
@@ -165,7 +166,7 @@ export interface MV {
     /**
      * mv的id
      */
-    vid: string;
+    vid: number;
 }
 
 /**

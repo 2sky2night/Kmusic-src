@@ -1,5 +1,5 @@
 <template>
-    <li class="artist-infor">
+    <li class="artist-infor" v-once>
 
         <div class="artist-cover" @click="toArtistInfor">
             <div class="artist-icon-box">
