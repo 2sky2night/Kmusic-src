@@ -18,7 +18,6 @@
 import TitleHeader from '@/pages/Home/components/TitleHeader/TitleHeader.vue';
 import { getRecMv } from '@/api/Home';
 import type  { RecommendMv } from '@/api/Home/interfaces';
-import MvCard from '@/components/MvCard/MvCard.vue';
 // 钩子
 import useRecommend from '@/hooks/useRecommend'
 const { list, isLoading } = useRecommend<RecommendMv>(getRecMv)

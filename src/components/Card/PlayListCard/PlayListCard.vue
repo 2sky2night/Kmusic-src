@@ -5,7 +5,7 @@
 
             <n-image :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" preview-disabled :src="coverImgUrl"
                 :lazy="true"
-                :style="{ maskImage: isHover ? 'linear-gradient(to bottom,rgba(150,150,150,.618) 0,#fff 100%,transparent 100%)' : '' }" />
+                :style="{maskImage: isHover ? 'linear-gradient(to bottom,rgba(150,150,150,.618) 0,#fff 100%,transparent 100%)' : '' }" />
 
             <Transition name="play">
                 <div class="play-list-btn" v-if="!isLoading && isHover" @mouseenter="isHover = true">
@@ -25,9 +25,9 @@
             </Transition>
 
         </div>
-        <div v-if="!isLoading">
+        <div v-if="!isLoading" style="width:100%">
             <div class="playlist-name" @click.stop="toPlaylistInfor">
-                <n-ellipsis :line-clamp="2" :tooltip="false">
+                <n-ellipsis :line-clamp="2" :tooltip="false" >
                     {{ name }}
                 </n-ellipsis>
 
@@ -153,7 +153,6 @@ li {
     transition: .3s;
     user-select: text;
     font-size: 13.5px;
-    align-self: flex-start;
     cursor: pointer;
 }
 

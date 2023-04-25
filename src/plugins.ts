@@ -10,12 +10,13 @@ import 'vfonts/FiraCode.css'
 // 引入进度条样式
 import 'nprogress/nprogress.css'
 // 全局组件
+import SongCard from "./components/Card/SongCard/SongCard.vue";
 import Button from "./components/Button/Button.vue";
 import SkeletonList from '@/components/SkeletonList/SkeletonList.vue';
-import PlayListCard from "./components/PlayListCard/PlayListCard.vue";
-import AlbumCard from '@/components/AlbumCard/AlbumCard.vue';
-import MvCard from '@/components/MvCard/MvCard.vue'
-import ArtistCard from '@/components/ArtistCard/ArtistCard.vue'
+import PlayListCard from "./components/Card/PlayListCard/PlayListCard.vue";
+import AlbumCard from '@/components/Card/AlbumCard/AlbumCard.vue';
+import MvCard from '@/components/Card/MvCard/MvCard.vue'
+import ArtistCard from '@/components/Card/ArtistCard/ArtistCard.vue'
 import EmptyPage from '@/components/EmptyPage/EmptyPage.vue'
 export default {
     install(app: App) {
@@ -31,5 +32,6 @@ export default {
         app.component('MvCard', MvCard)
         app.component('ArtistCard', ArtistCard)
         app.component('EmptyPage', EmptyPage)
+        app.component('SongCard', SongCard)
     }
 }

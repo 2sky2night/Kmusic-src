@@ -28,7 +28,7 @@ export const durationFormat = (value: number) => {
  * @param limit - 每页多少条
  * @param count - 一共多少条
  */
-export const countPage = (limit:number,count:number) => {
+export const countPage = (limit: number, count: number) => {
     const pagesNum = count / limit
     if (pagesNum === parseInt(pagesNum + '')) {
         // 若为整数,设置总页数
@@ -37,4 +37,14 @@ export const countPage = (limit:number,count:number) => {
         // 若不为整数
         return Math.floor(pagesNum) + 1
     }
+}
+
+/**
+ * 时间戳转换 成 YYYY-MM-DD
+ * @param time 
+ * @returns 
+ */
+export const timeFormat = (time: number) => {
+    const date = new Date(time)
+    return date.toLocaleDateString().replaceAll('/', '-')
 }
