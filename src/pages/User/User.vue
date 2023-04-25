@@ -2,20 +2,23 @@
     <div class="page">
         <div v-if="userData">
             <UserInfor :avatar="userData.avatar" :create-days="userData.createDays" :event-count="userData.eventCount"
-                :followeds="userData.followeds" :gender="userData.gender?true:false" :follows="userData.follows"
+                :followeds="userData.followeds" :gender="userData.gender ? true : false" :follows="userData.follows"
                 :level="userData.level" :nickname="userData.nickname" :signature="userData.signature">
-                <n-button size="small" style="margin-left: 10px;">关注</n-button>
+                <n-button size="small" @click="toFollowUser" style="margin-left: 10px;"
+                    :type="userData.followed ? 'primary' : ''">{{ followFormat
+                    }}</n-button>
             </UserInfor>
             <UserPlaylist :uid="userData.uid" />
         </div>
     </div>
 </template>
 <script lang='ts' setup>
-import { getUserDetial } from '@/api/public/user';
+import { getUserDetial, followUser } from '@/api/public/user';
 import UserInfor from '@/components/UserInfor/UserInfor.vue';
 import UserPlaylist from '@/components/UserPlaylist/UserPlaylist.vue';
-import { useRoute } from 'vue-router';
-import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router';
+import { computed, onMounted, ref } from 'vue'
+import message from '@/utils/message';
 
 interface UserData {
     avatar: string;
@@ -52,6 +55,8 @@ interface UserData {
 const $route = useRoute()
 // 用户数据
 const userData = ref<UserData | null>(null)
+// 路由实例对象
+const $router = useRouter()
 
 onMounted(async () => {
     try {
@@ -75,10 +80,43 @@ onMounted(async () => {
             }
         }
     } catch (error) {
-        
+        message("此id似乎不是用户呢~", "warning", () => $router.back())
     }
 
 })
+
+const followFormat = computed(() => {
+    const user = (userData.value as UserData)
+    if (user.avatar) {
+        if (user.followMe && user.followed) {
+            return '已互关'
+        } else if (!user.followMe && user.followed) {
+            return '已关注'
+        } else {
+            return '关注'
+        }
+    } else {
+        // 当前用户数据还未加载时返回false
+        return false
+    }
+})
+
+async function toFollowUser() {
+    const user = (userData.value as UserData)
+    if (user.followed) {
+        // 当前为已关注,则再次点击为取消关注用户
+        const res = await followUser(user.uid, 0)
+        if (res.code === 200) {
+            user.followed = false
+        }
+    } else {
+        // 当前为未关注,再次点击为关注用户
+        const res = await followUser(user.uid, 1)
+        if (res.code === 200) {
+            user.followed = true
+        }
+    }
+}
 
 </script>
 <style scoped>

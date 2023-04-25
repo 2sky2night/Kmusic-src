@@ -1,4 +1,4 @@
-import type { UserDetailRes, PlaylistRes } from '@/api/public/user/interfaces'
+import type { UserDetailRes, PlaylistRes,FollowRes } from '@/api/public/user/interfaces'
 import request from '@/utils/request'
 
 /**
@@ -19,3 +19,12 @@ export const getUserPlayList = (uid: number, page: number, limit: number = 20) =
     return request.get<PlaylistRes>('/user/playlist', { params: { uid, offset: (page-1) * limit, limit } })
 }
 
+/**
+ * 
+ * @param uid - 要关注或取消关注的目标用户id
+ * @param t - 关注类型 1为关注其他为取消关注
+ * @returns 
+ */
+export const followUser = (uid: number, t: number) => {
+    return request.get<FollowRes>('/follow',{params:{uid,t}})
+}

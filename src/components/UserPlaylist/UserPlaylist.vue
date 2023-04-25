@@ -5,7 +5,7 @@
                 :name="item.name" :play-count="item.playCount" />
         </ul>
         <SkeletonList  :text-center="false" :cover-radius="8"  :length="10" v-if="isLoading"/>
-        <n-button v-if="isEnd" class="more-btn" @click="getUserPlayList">点击加载更多</n-button>
+        <n-button v-if="!isEnd&&!isLoading" class="more-btn" @click="toGetUserPlayList">点击加载更多</n-button>
     </div>
 </template>
 <script lang='ts' setup>
@@ -40,12 +40,12 @@ async function toGetUserPlayList() {
             const res = await getUserPlayList(props.uid, page.value)
             if (res.code === 200) {
                 // 设置是否还有更多数据
-                isEnd.value = res.more
+                isEnd.value = !res.more
                 // 保存数据
                 res.playlist.forEach(ele => {
                     playlist.push(ele)
                 })
-                if (!isEnd.value) {
+                if (isEnd.value) {
                     message('没有更多了 😴', "warning")
                 }
                 // 页数+1

@@ -1,6 +1,6 @@
 <template>
     <div class="page">
-        歌单详情
+        歌曲详情
         {{ $route.params }}
     </div>
 </template>

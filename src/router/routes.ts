@@ -177,12 +177,18 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/song/:id',
+        component: () => import('@/pages/Song/Song.vue'),
+        meta: {
+            title: '歌曲详情页'
+        }
+    },
+    {
         path: "/404",
         name: "404",
         component: () => import("@/pages/404/404.vue"),
         meta: {
-            title: "404",
-            noAuthorization: true,
+            title: "404"
         },
     },
     {

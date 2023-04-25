@@ -1,6 +1,6 @@
 <template>
     <div class="user-infor">
-        <n-image :src="avatar" width="200" />
+        <n-image :src="avatar" width="200" style="margin-left: 10px;" />
         <div class="information">
             <div class="top-infor">
                 <!--顶部用户信息-->

@@ -84,13 +84,14 @@ onMounted(async () => {
 <style scoped >
 .page {
     box-sizing: border-box;
+    padding: 0 10px;
     padding-top: 50px;
 }
 
 @media screen and (max-width:585px) {
     .page {
         padding: 0;
-        padding-top: 20px;
+        padding-top: 10px;
     }
 }
 </style>

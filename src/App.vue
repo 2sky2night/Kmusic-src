@@ -18,7 +18,7 @@ const themeStore = useThemeStore()
   width: 100%;
   min-height: 100%;
   position: absolute;
-  padding: 0 10px;
+  // padding: 0 10px;
 }
 
 /**列表相关**/

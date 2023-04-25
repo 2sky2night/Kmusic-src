@@ -1,0 +1,95 @@
+<template>
+    <n-carousel :effect="isSmall ? 'slide' : 'card'" v-if="!isLoading"
+        loop draggable autoplay
+        :prev-slide-style="isSmall ? '' : 'transform: translateX(-93%) translateZ(-500px);'"
+        :next-slide-style="isSmall ? '' : 'transform: translateX(-10%) translateZ(-500px);'"
+        :style="{ height: height + 'px', maxHeight: '300px', minHeight: '135px' }" show-dots>
+        <n-carousel-item 
+        v-once
+        :style="{ width: isSmall ? '100%' : '80%', borderRadius: '10px' }" 
+        v-for="item in banner"
+        :key="item.targetId"
+        @click="goToPage(item.targetId,item.targetType)"
+        >
+            <img class="carousel-img" :src="item.imageUrl">
+        </n-carousel-item>
+    </n-carousel>
+    <n-skeleton v-else :style="{ height: height + 'px', borderRadius: '10px' }" width=" 100%" />
+</template>
+
+<script lang='ts' setup>
+import { onMounted, onUnmounted, reactive, ref } from 'vue';
+import type { Banner } from '@/api/Home/interfaces'
+import { getBanners } from '@/api/Home'
+import { useRouter } from 'vue-router';
+import message from '@/utils/message';
+const $router = useRouter()
+// 正在加载?
+const isLoading = ref(true)
+// 轮播图数据
+const banner: Banner[] = reactive([])
+// 是否小屏幕?
+const isSmall = ref(false)
+// 轮播图高度
+const height = ref(0)
+
+/**
+ * 设置轮播图样式
+ */
+function setBanner() {
+    const rootWidth = document.documentElement.clientWidth
+    height.value = rootWidth * 0.3
+    if (rootWidth < 600) {
+        isSmall.value = true
+    } else {
+        isSmall.value = false
+    }
+}
+
+// 获取轮播图数据
+onMounted(async () => {
+    // 渲染完成时设置轮播图样式
+    setBanner()
+    // 开启事件监听,窗口变化动态的设置轮播图的高度
+    window.addEventListener("resize", setBanner)
+    const res = await getBanners()
+    if (res.code === 200) {
+        res.banners.forEach(ele => {
+            banner.push(ele)
+        })
+        isLoading.value = false
+
+    }
+
+})
+
+// 移除事件监听
+onUnmounted(() => {
+    window.removeEventListener("resize", setBanner)
+})
+
+// 点击轮播图跳转到哪儿去?
+function goToPage(id:number,type:number) {
+    if (type === 1) {
+        // 跳转歌曲详情页
+        $router.push(`/song/${id}`)
+    } else if (type === 1000) {
+        // 跳转到歌单
+        $router.push(`/playlist/${id}`)
+    } else {
+        message("是不知道的路由跳转呢,给我说一声马上改bug~😁","info")
+    }
+}
+
+</script>
+
+
+<style scoped>
+.carousel-img {
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+</style>

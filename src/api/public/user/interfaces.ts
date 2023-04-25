@@ -1,4 +1,4 @@
-import { Playlist } from "../indexfaces";
+import { Playlist,User } from "../indexfaces";
 /**
  * 用户详情信息的响应/user/detail
  */
@@ -48,6 +48,9 @@ export interface Profile {
    */
   description: null | string;
   detailDescription: null | string;
+  /**
+   * 我关注了吗?
+   */
   followed: boolean;
   gender: number;
   lastLoginIP: string;
@@ -103,4 +106,27 @@ export interface PlaylistRes {
   more: boolean;
   playlist: Playlist[];
   version: string;
+}
+
+/**
+ * 关注/取消关注用户的响应体/follow
+ */
+export interface FollowRes {
+  code: number;
+  /**
+   * 关注欢迎词
+   */
+  followContent: string;
+  /**
+   * 关注时间
+   */
+  followTimeContent: string;
+  /**
+   * 用户名称
+   */
+  py: string;
+  /**
+   * 用户的基本信息
+   */
+  user: User;
 }

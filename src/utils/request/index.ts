@@ -47,6 +47,8 @@ request.interceptors.response.use((response: AxiosResponse) => {
     //  返回服务器响应的真实内容
     return response.data
 }, (error: AxiosError) => {
+    // 停止进度条
+    nProgress.done()
     message('严重错误 😱', "error")
     return Promise.reject(error)
 })
