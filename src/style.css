@@ -84,6 +84,7 @@ html.dark {
 .text {
   transition: 0.3s;
   font-size: 13px;
+  cursor: pointer;
 }
 .text:hover {
   color: var(--bg-color-primary);

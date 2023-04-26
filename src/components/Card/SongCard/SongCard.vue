@@ -37,13 +37,13 @@
 import { useRouter } from 'vue-router';
 
 import { timeFormat, durationFormat } from '@/utils/computed'
-import { Song } from '@/api/public/indexfaces';
+import { SongSort } from '@/api/public/indexfaces';
 
 interface SongProps {
     id: number;
     name: string;
     picUrl: string;
-    song: Song
+    song: SongSort
 }
 
 const props = defineProps<SongProps>()

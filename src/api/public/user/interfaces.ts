@@ -1,4 +1,4 @@
-import { Playlist, User } from "../indexfaces";
+import { Playlist, User, Song } from "../indexfaces";
 /**
  * 用户详情信息的响应/user/detail
  */
@@ -137,57 +137,17 @@ export interface FollowRes {
 export interface ReSongsRes {
   code: number;
   data: {
-    dailySongs: DailySong[];
-    mvResourceInfos: null;
-    orderSongs: string[];
-    recommendReasons: RecommendReason[];
+    dailySongs: Song[];
+    recommendReasons: ReReason[];
   }
 }
 
 /**
- * 
+ * 每日推荐的原因
  */
-export interface DailySong {
-  cp: number;
-  dt: number;
-  /**
-   * 歌曲id
-   */
-  id: number;
-  /**
-   * 标记次数
-   */
-  mark: number;
-  mst: number;
-  mv: number;
-  /**
-   * 歌曲名称
-   */
-  name: string;
-  pop: number;
-  /**
-   * 发布时间
-   */
-  publishTime: number;
-  /**
-   * 收藏原因
-   */
-  reason: null | string;
-  /**
-  * 收藏原因
- */
-  recommendReason: null | string;
-  resourceState: boolean;
-}
-
-
-
-/**
- * 推荐歌曲的原因
- */
-export interface RecommendReason {
+export interface ReReason {
   reason: string;
-  reasonId: string;
+  reasonId: number;
   /**
    * 推荐歌曲的对应的歌曲id
    */

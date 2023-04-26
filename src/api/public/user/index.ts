@@ -1,4 +1,4 @@
-import type { UserDetailRes, PlaylistRes,FollowRes } from '@/api/public/user/interfaces'
+import type { UserDetailRes, PlaylistRes,FollowRes,ReSongsRes } from '@/api/public/user/interfaces'
 import request from '@/utils/request'
 
 /**
@@ -28,3 +28,9 @@ export const getUserPlayList = (uid: number, page: number, limit: number = 20) =
 export const followUser = (uid: number, t: number) => {
     return request.get<FollowRes>('/follow',{params:{uid,t}})
 }
+
+/**
+ * 获取每日推荐 (需要登陆)
+ * @returns 
+ */
+export const getReSongs = () => request.get<ReSongsRes>('/recommend/songs')

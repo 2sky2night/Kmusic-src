@@ -15,6 +15,7 @@ declare module '@vue/runtime-core' {
     Button: typeof import('./src/components/Button/Button.vue')['default']
     Card: typeof import('./src/components/PlayListCard/Card.vue')['default']
     CodeLogin: typeof import('./src/components/CodeLogin/CodeLogin.vue')['default']
+    DailSong: typeof import('./src/components/Card/DailSong/DailSong.vue')['default']
     EmptyPage: typeof import('./src/components/EmptyPage/EmptyPage.vue')['default']
     ImgLoad: typeof import('./src/components/ImgLoad/ImgLoad.vue')['default']
     Input: typeof import('./src/components/Input/Input.vue')['default']

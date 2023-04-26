@@ -1,10 +1,11 @@
 <template>
     <div class="page">
         <Banner />
+        <DailSong v-if="userStore.isLogin&&userStore.cookie" />
         <RePlaylist />
         <ReSong />
         <ReArtist />
-        <NewAlbum/>
+        <NewAlbum />
         <ReMv />
     </div>
 </template>
@@ -15,6 +16,9 @@ import ReMv from './components/ReMv/ReMv.vue';
 import ReSong from './components/ReSong/ReSong.vue';
 import ReArtist from './components/ReArtist/ReArtist.vue';
 import NewAlbum from './components/NewAlbums/NewAlbum.vue'
+import DailSong from './components/DailSong/DailSong.vue';
+import useUserStore from '@/store/user';
+const userStore = useUserStore()
 
 </script>
 <style scoped>

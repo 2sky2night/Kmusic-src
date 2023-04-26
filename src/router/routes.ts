@@ -184,6 +184,14 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/daily-song',
+        component: () => import('@/pages/DailySong/DailySong.vue'),
+        meta: {
+            title: "每日推荐",
+            auth:true
+        }
+    },
+    {
         path: "/404",
         name: "404",
         component: () => import("@/pages/404/404.vue"),

@@ -1,4 +1,4 @@
-import { Song, Artist, Album } from "../public/indexfaces";
+import { SongSort, Artist, Album } from "../public/indexfaces";
 /**
  * 轮播图的响应体 /banners
  */
@@ -49,7 +49,7 @@ export interface RecommendMusic {
     /**
      * 歌曲信息
      */
-    song: Song;
+    song: SongSort;
     /**
      * 歌曲类型
      */

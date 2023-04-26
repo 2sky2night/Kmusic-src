@@ -215,7 +215,7 @@ export interface User {
 /**
  * 歌曲信息简略信息
  */
-export interface Song {
+export interface SongSort {
     album: Album;
     alias: string[];
     artists: Artist[];
@@ -273,3 +273,68 @@ export type ArtistType = -1 | 1 | 2 | 3
 0:其他
  */
 export type ArtistAreaType = -1 | 7 | 96 | 8 | 16 | 0
+
+
+/**
+ * 歌曲信息
+ */
+export interface Song {
+    /**
+     * 歌曲专辑信息
+     */
+    al: AlbumSort;
+    /**
+     * 歌曲创作者
+     */
+    ar: ArtistSort[];
+    dt: number;
+    /**
+     * 歌曲id
+     */
+    id: number;
+    /**
+     * 标记次数
+     */
+    mark: number;
+    mst: number;
+    mv: number;
+    /**
+     * 歌曲名称
+     */
+    name: string;
+    /**
+     * 发布时间
+     */
+    publishTime: number;
+    /**
+     * 收藏原因
+     */
+    reason: null | string;
+    /**
+    * 收藏原因
+   */
+    recommendReason: null | string;
+    resourceState: boolean;
+}
+
+/**
+ * 专辑简略信息
+ */
+export interface AlbumSort {
+    id: number;
+    name: string;
+    pic: number;
+    pic_str: string;
+    picUrl: string;
+    tns: string[];
+}
+
+/**
+ * 作曲人简略信息
+ */
+export interface ArtistSort {
+    alias: string[];
+    id: number;
+    name: string;
+    tns: string[];
+}
