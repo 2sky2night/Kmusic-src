@@ -116,6 +116,10 @@ export interface MvArtist {
  * 轮播图的数据结构
  */
 export interface Banner {
+    /**
+     * 跳转的链接
+     */
+    url: string;
     bannerBizType: string;
     encodeId: string;
     exclusive: boolean;
@@ -129,7 +133,7 @@ export interface Banner {
      */
     targetId: number;
     /**
-     * 跳转类型,1是跳转到歌曲,1000是跳转到歌单里面去
+     * 跳转类型,1是跳转到歌曲,1000是跳转到歌单里面去 3000是跳转到外站 10是跳转到专辑页 1004mv页面
      */
     targetType: number;
     /**

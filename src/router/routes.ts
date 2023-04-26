@@ -8,6 +8,10 @@ const routes: RouteRecordRaw[] = [
         component: () => import("@/pages/Home/Home.vue"),
         meta: {
             title: "首页",
+            /**
+             * 缓存首页
+             */
+            keepAlive:true
         },
     },
     {

@@ -2,7 +2,9 @@
     <main>
         <router-view v-slot="{ Component }">
             <transition name="page" apper>
-                  <component :is="Component" />
+                <keep-alive :include="['Home']">
+                    <component :is="Component" />
+                </keep-alive>
             </transition>
         </router-view>
     </main>

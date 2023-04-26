@@ -16,7 +16,6 @@
     </div>
 </template>
 <script lang='ts' setup>
-import MvCard from '@/components/MvCard/MvCard.vue';
 // 钩子
 import useStarList from '@/hooks/useStarList';
 // api

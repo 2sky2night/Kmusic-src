@@ -287,6 +287,9 @@ export interface Song {
      * 歌曲创作者
      */
     ar: ArtistSort[];
+    /**
+     * 时长
+     */
     dt: number;
     /**
      * 歌曲id

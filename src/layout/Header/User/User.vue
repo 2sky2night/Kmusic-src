@@ -25,6 +25,7 @@ function handleSelect(v: string) {
     switch (v) {
         case 'login': $router.push('/login'); break;
         case 'logout': logout(); break;
+        case 'remmon':$router.push('/daily-song')
         default: console.log('点击了某一项');
     }
 }

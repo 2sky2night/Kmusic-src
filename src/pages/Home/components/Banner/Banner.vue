@@ -18,6 +18,7 @@ import type { Banner } from '@/api/Home/interfaces'
 import { getBanners } from '@/api/Home'
 import { useRouter } from 'vue-router';
 import message from '@/utils/message';
+import messagebox from '@/render/MessageBox';
 const $router = useRouter()
 // 正在加载?
 const isLoading = ref(true)
@@ -82,7 +83,16 @@ function goToPage(id: number, type: number) {
     } else if (type === 1000) {
         // 跳转到歌单
         $router.push(`/playlist/${id}`)
-    } else {
+    } else if (type === 3000) {
+        messagebox("是否要跳转到站外链接?😢").then(() => {
+            location.href=banners[banners.findIndex(ele=>ele.targetId===id)].url
+        })
+    } else if (type === 10) {
+        $router.push(`/album/${id}`)
+    } else if (type === 1004) {
+        $router.push(`/mv/${id}`)
+    }
+    else {
         message("是不知道的路由跳转呢,给我说一声马上改bug~😁", "info")
     }
 }
