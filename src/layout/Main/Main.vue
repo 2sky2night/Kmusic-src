@@ -1,7 +1,7 @@
 <template>
     <main>
         <router-view v-slot="{ Component }">
-            <transition name="page" apper>
+            <transition name="page" appear>
                 <keep-alive :include="['Home']">
                     <component :is="Component" />
                 </keep-alive>

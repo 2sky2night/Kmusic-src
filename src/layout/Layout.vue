@@ -6,6 +6,7 @@
         <n-layout position="absolute" style="top: 60px; bottom: 60px;" has-sider>
             <n-layout-content :native-scrollbar="true" style="background-color:var(--main-bg-color);" ref="contentRef">
                 <Main />
+                <SongDropDown/>
             </n-layout-content>
         </n-layout>
         <n-layout-footer position="absolute" style="height: 60px;" bordered>
@@ -14,6 +15,7 @@
     </n-layout>
 </template>
 <script lang='ts' setup>
+import SongDropDown from '@/components/SongItem/SongDropDown/SongDropDown.vue';
 import Main from './Main/Main.vue';
 import Header from './Header/Header.vue';
 import { useMessage, LayoutInst } from 'naive-ui';

@@ -2,7 +2,9 @@
 import themeOverrides from '@/utils/theme'
 import Layout from '@/layout/Layout.vue'
 import useThemeStore from '@/store/theme';
-const themeStore = useThemeStore()
+import { useRouter } from 'vue-router';
+const themeStore = useThemeStore();
+(window as any).$push = useRouter().push
 </script>
 
 <template>

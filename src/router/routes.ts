@@ -11,7 +11,7 @@ const routes: RouteRecordRaw[] = [
             /**
              * 缓存首页
              */
-            keepAlive:true
+            keepAlive: true
         },
     },
     {
@@ -192,7 +192,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/DailySong/DailySong.vue'),
         meta: {
             title: "每日推荐",
-            auth:true
+            auth: true
+        }
+    },
+    {
+        path: '/playlist-comment/:id',
+        component: () => import('@/pages/PlaylistCmt/PlaylistCmt.vue'),
+        meta: {
+            title: "歌单评论页"
         }
     },
     {

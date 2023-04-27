@@ -1,5 +1,5 @@
 <template>
-    <li class="song-item">
+    <li class="song-item" @contextmenu="openDropDown">
         <div class="song-infor" v-once>
             <img :src="song.al.picUrl">
 
@@ -30,7 +30,7 @@
         </div>
         <div class="song-more">
             <span v-once class="duration" >{{ durationFormat(song.dt) }}</span>
-            <span class="more">
+            <span class="more" @click.stop="toLookMore">
                 <n-icon class="text" size="18">
                     <IosMoreIcon />
                 </n-icon>
@@ -39,10 +39,12 @@
     </li>
 </template>
 <script lang='ts' setup>
+import songInfor from '@/render/SongInfor'
 import { IosMore as IosMoreIcon } from '@vicons/ionicons4'
 import { durationFormat } from '@/utils/computed'
 import { Song } from '@/api/public/indexfaces'
 import { useRouter } from 'vue-router'
+import PubSub from 'pubsub-js'
 
 const $router = useRouter()
 
@@ -63,6 +65,16 @@ function goToArtist(id:number) {
 /**去mv页面 */
 function goToMv() {
     $router.push(`/mv/${props.song.mv}`)
+}
+/**查看更多 */
+function toLookMore() {
+    songInfor(props.song)
+}
+
+/**打开下拉菜单 */
+function openDropDown(e: MouseEvent) {
+    e.preventDefault()
+    PubSub.publish('open', {data:Object.assign({},props.song),x:e.clientX,y:e.clientY})
 }
 </script>
 

@@ -5,6 +5,7 @@
   outline: none;
   -webkit-user-drag: none;
   text-decoration: none;
+  -webkit-font-smoothing: antialiased;
 }
 
 html {
@@ -49,6 +50,7 @@ button {
 
   --text-dark: #a0a4a9;
   --text-hover: #4098fc;
+  --drawer-bg-color: #fff;
 }
 
 /*深色变量*/
@@ -62,7 +64,7 @@ html.dark {
 
   --hover-bg-color: #59595e;
 
-  --bg-box-color: #59595e;
+  --bg-box-color: #3a3a3d;
 
   --bg-color: black;
 
@@ -73,6 +75,8 @@ html.dark {
   --bg-btn-color: #18181c;
 
   --main-bg-color: #18181c;
+
+  --drawer-bg-color: rgb(50, 50, 50);
 }
 
 /*首页推荐列表*/
@@ -90,7 +94,7 @@ html.dark {
   color: var(--bg-color-primary);
 }
 
-.loading-box{
+.loading-box {
   max-height: 0;
   overflow: hidden;
 }
