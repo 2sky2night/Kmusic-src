@@ -16,6 +16,9 @@ import { ref, nextTick, h, reactive } from 'vue'
 import PubSub from 'pubsub-js'
 import { Song } from '@/api/public/indexfaces'
 import { useRouter } from "vue-router";
+import useMusicStore from "@/store/music";
+
+const musicStore = useMusicStore()
 
 const $router = useRouter()
 
@@ -52,6 +55,7 @@ const mvOption = {
     key: 'mv',
     icon: () => h(NIcon, { size: 20 }, () => h(IosVideocamIcon))
 }
+
 const showDropdown = ref(false)
 const x = ref(0)
 const y = ref(0)
@@ -69,14 +73,14 @@ function handleSelect(key: string | number) {
     switch (key) {
         case 'mv': $router.push(`/mv/${data.mv}`); break;
         case 'song-infor': $router.push(`/song/${data.id}`); break;
-        case 'play-now': console.log('play-now'); break;
         case 'play-next': console.log('play-next'); break;
         case 'add-playlist': console.log('add-playlist'); break;
+        case 'play-now': toSetPlayingSong(); break;
     }
 }
 
 /**
- * 歌曲组件右键时发送消息,传递给下拉菜单组件
+ * 歌曲组件右键时发送消息,将歌曲数据传递给下拉菜单组件
  */
 PubSub.subscribe('open', (_, res: { data: Song, x: number, y: number }) => {
     console.log(res);
@@ -101,6 +105,20 @@ PubSub.subscribe('open', (_, res: { data: Song, x: number, y: number }) => {
         y.value = res.y
     })
 })
+
+/**
+ * 播放歌曲
+ */
+function toSetPlayingSong() {
+    const data = song as Song
+    // 将当前歌曲的数据发送给仓库中去,修改当前播放的歌曲信息
+    musicStore.setPlayingSong({
+        id: data.id,
+        name: data.name,
+        album: { name: data.al.name, id: data.al.id, picUrl: data.al.picUrl },
+        artists: data.ar
+    })
+}
 
 
 

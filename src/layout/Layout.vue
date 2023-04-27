@@ -6,15 +6,16 @@
         <n-layout position="absolute" style="top: 60px; bottom: 60px;" has-sider>
             <n-layout-content :native-scrollbar="true" style="background-color:var(--main-bg-color);" ref="contentRef">
                 <Main />
-                <SongDropDown/>
+                <SongDropDown />
             </n-layout-content>
         </n-layout>
         <n-layout-footer position="absolute" style="height: 60px;" bordered>
-            音乐播放器
+            <Footer />
         </n-layout-footer>
     </n-layout>
 </template>
 <script lang='ts' setup>
+import Footer from './Footer/Footer.vue';
 import SongDropDown from '@/components/SongItem/SongDropDown/SongDropDown.vue';
 import Main from './Main/Main.vue';
 import Header from './Header/Header.vue';

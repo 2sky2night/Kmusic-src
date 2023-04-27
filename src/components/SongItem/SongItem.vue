@@ -1,16 +1,22 @@
 <template>
-    <li class="song-item" @contextmenu="openDropDown">
+    <li :class="`song-item ${playingSong.id === song.id ? 'song-item-active' : ''}`" @contextmenu="openDropDown">
         <div class="song-infor" v-once>
             <img :src="song.al.picUrl">
 
             <div>
 
-                <n-ellipsis style="max-width: 200px" >
-                    <span  class="text"  style="font-size: 16px;font-weight: 700;" @click.stop="goToSong">{{ song.name }}</span>
-                    <n-tag size="small" @click.stop="goToMv" style="margin-left: 10px;position: relative;top:-2px;transform: scale(.9);cursor: pointer;" round  type="warning" v-if="song.mv">MV</n-tag>
+                <n-ellipsis style="max-width: 200px">
+                    <span class="text" style="font-size: 16px;font-weight: 700;" @click.stop="goToSong">{{ song.name
+                    }}</span>
+                    <n-tag size="small"
+                        style="margin-left: 10px;position: relative;top:-2px;transform: scale(.9);cursor: pointer;" round
+                        type="error" v-if="song.privilege.freeTrialPrivilege.resConsumable">VIP</n-tag>
+                    <n-tag size="small" @click.stop="goToMv"
+                        style="margin-left: 10px;position: relative;top:-2px;transform: scale(.9);cursor: pointer;" round
+                        type="warning" v-if="song.mv">MV</n-tag>
                 </n-ellipsis>
 
-                <div class="artists-name" >
+                <div class="artists-name">
                     <n-ellipsis style="max-width: 240px">
                         <span v-for="(item, index) in song.ar" :key="item.id">
                             <span class="text" @click.stop="goToArtist(item.id)">{{ item.name }}</span>
@@ -29,7 +35,7 @@
 
         </div>
         <div class="song-more">
-            <span v-once class="duration" >{{ durationFormat(song.dt) }}</span>
+            <span v-once class="duration">{{ durationFormat(song.dt) }}</span>
             <span class="more" @click.stop="toLookMore">
                 <n-icon class="text" size="18">
                     <IosMoreIcon />
@@ -39,12 +45,21 @@
     </li>
 </template>
 <script lang='ts' setup>
+// 渲染函数
 import songInfor from '@/render/SongInfor'
+// 图标
 import { IosMore as IosMoreIcon } from '@vicons/ionicons4'
+// 工具函数
 import { durationFormat } from '@/utils/computed'
+// 接口
 import { Song } from '@/api/public/indexfaces'
 import { useRouter } from 'vue-router'
+// 插件
 import PubSub from 'pubsub-js'
+// 仓库
+import useMusicStore from '@/store/music'
+import { storeToRefs } from 'pinia'
+const { playingSong } = storeToRefs(useMusicStore())
 
 const $router = useRouter()
 
@@ -59,7 +74,7 @@ function goToAlbum() {
     $router.push(`/album/${props.song.al.id}`)
 }
 /**去某个作者的页面 */
-function goToArtist(id:number) {
+function goToArtist(id: number) {
     $router.push(`/artist/${id}`)
 }
 /**去mv页面 */
@@ -74,7 +89,7 @@ function toLookMore() {
 /**打开下拉菜单 */
 function openDropDown(e: MouseEvent) {
     e.preventDefault()
-    PubSub.publish('open', {data:Object.assign({},props.song),x:e.clientX,y:e.clientY})
+    PubSub.publish('open', { data: Object.assign({}, props.song), x: e.clientX, y: e.clientY })
 }
 </script>
 
@@ -93,8 +108,17 @@ function openDropDown(e: MouseEvent) {
     border: 1px solid var(--box-border-color);
     transition: .3s;
 }
-.song-item:hover{
-    border-color: var(--color-primary) ;
+
+/**歌曲播放时的样式 */
+.song-item-active {
+    background-color: var(--color-primary-light);
+    span{
+        color:var(--color-primary)
+    }
+}
+
+.song-item:hover {
+    border-color: var(--color-primary);
     box-shadow: 0 0 3px var(--box-shadow);
 }
 
@@ -106,6 +130,7 @@ function openDropDown(e: MouseEvent) {
 .song-infor {
     display: flex;
     width: 250px;
+
     img {
         width: 50px;
         height: 50px;
@@ -114,7 +139,7 @@ function openDropDown(e: MouseEvent) {
     }
 }
 
-.duration{
+.duration {
     font-size: 12px;
 }
 
@@ -134,7 +159,4 @@ function openDropDown(e: MouseEvent) {
     .more {
         display: inline-block;
     }
-}
-
-
-</style>
+}</style>

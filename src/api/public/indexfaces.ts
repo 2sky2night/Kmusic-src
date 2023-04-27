@@ -318,6 +318,10 @@ export interface Song {
    */
     recommendReason: null | string;
     resourceState: boolean;
+    /**
+     * 歌曲的其他信息
+     */
+    privilege: Privilege;
 }
 
 /**
@@ -340,4 +344,49 @@ export interface ArtistSort {
     id: number;
     name: string;
     tns: string[];
+}
+
+/**
+ * 歌曲的其他信息
+ */
+export interface Privilege {
+    chargeInfoList: ChargeInfoList[];
+    cp: number;
+    cs: boolean;
+    dl: number;
+    dlLevel: string;
+    downloadMaxbr: number;
+    downloadMaxBrLevel: string;
+    fee: number;
+    fl: number;
+    flag: number;
+    flLevel: string;
+    freeTrialPrivilege: FreeTrialPrivilege;
+    id: number;
+    maxbr: number;
+    maxBrLevel: string;
+    payed: number;
+    pl: number;
+    playMaxbr: number;
+    playMaxBrLevel: string;
+    plLevel: string;
+    preSell: boolean;
+    rscl: null;
+    sp: number;
+    st: number;
+    subp: number;
+    toast: boolean;
+}
+
+export interface ChargeInfoList {
+    chargeMessage: null;
+    chargeType: number;
+    chargeUrl: null;
+    rate: number;
+}
+
+export interface FreeTrialPrivilege {
+    listenType: null;
+    resConsumable: boolean;
+    userConsumable: boolean;
 }

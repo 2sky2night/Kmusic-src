@@ -97,6 +97,8 @@ import {
 } from "@vicons/ionicons4";
 import { Song } from "@/api/public/indexfaces";
 import { ref } from "vue";
+import useMusicStore from "@/store/music";
+const musicStore = useMusicStore()
 
 // 控制抽屉的显示
 const isShow = ref(true);
@@ -117,7 +119,7 @@ defineExpose({ toCloseDrawer });
 function toDone(e: MouseEvent) {
     const value = (e.target as HTMLElement).className
     switch (value) {
-        case 'play-now': console.log('立即播放'); break;
+        case 'play-now': toSetPlayingSong(); break;
         case 'play-next': console.log('下一首播放'); break;
         case 'add-playlist': console.log('添加到歌单'); break;
         case 'mv': (window as any).$push(`/mv/${props.song.mv}`); break;
@@ -141,6 +143,19 @@ function goToAlbum() {
 function goToArtist(id: number) {
     (window as any).$push(`/artist/${id}`)
     toCloseDrawer()
+}
+
+/**
+ * 播放歌曲
+ */
+function toSetPlayingSong() {
+    // 将当前歌曲的数据发送给仓库中去,修改当前播放的歌曲信息
+    musicStore.setPlayingSong({
+        id: props.song.id,
+        name: props.song.name,
+        album: { name: props.song.al.name, id: props.song.al.id, picUrl: props.song.al.picUrl },
+        artists: props.song.ar
+    })
 }
 
 </script>
