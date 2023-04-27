@@ -41,7 +41,7 @@ export interface SongData {
     type: string;
     uf: null;
     /**
-     * 歌曲的地址
+     * 歌曲的资源地址
      */
     url: string;
     urlSource: number;

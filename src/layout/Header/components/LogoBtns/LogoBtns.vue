@@ -1,7 +1,7 @@
 <template>
     <div class="logo-btns">
         <n-space align="center">
-            <img src="../../../assets/vue.svg">
+            <img src="../../../../assets/vue.svg">
             <button @click="navigate(false)">
                 <n-icon size="20">
                     <IosArrowBack />

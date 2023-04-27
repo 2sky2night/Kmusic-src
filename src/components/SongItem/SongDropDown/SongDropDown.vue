@@ -83,7 +83,6 @@ function handleSelect(key: string | number) {
  * 歌曲组件右键时发送消息,将歌曲数据传递给下拉菜单组件
  */
 PubSub.subscribe('open', (_, res: { data: Song, x: number, y: number }) => {
-    console.log(res);
     song = res.data
     // 获得数据后,检查是否有mv
     if (res.data.mv) {

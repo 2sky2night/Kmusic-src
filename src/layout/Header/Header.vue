@@ -9,10 +9,10 @@
     </header>
 </template>
 <script lang='ts' setup>
-import SearchBar from './SearchBar/SearchBar.vue';
-import Navigation from './Navigation/Navigation.vue';
-import LogoBtns from './LogoBtns/LogoBtns.vue';
-import User from './User/User.vue';
+import SearchBar from './components/SearchBar/SearchBar.vue';
+import Navigation from './components/Navigation/Navigation.vue';
+import LogoBtns from './components/LogoBtns/LogoBtns.vue';
+import User from './components/User/User.vue';
 </script>
 <style scoped>
 .header-item{
