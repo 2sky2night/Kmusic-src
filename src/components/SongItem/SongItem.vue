@@ -10,7 +10,7 @@
                     }}</span>
                     <n-tag size="small"
                         style="margin-left: 10px;position: relative;top:-2px;transform: scale(.9);cursor: pointer;" round
-                        type="error" v-if="song.privilege.freeTrialPrivilege.resConsumable">VIP</n-tag>
+                        type="error" v-if="song.privilege&& song.privilege.freeTrialPrivilege.resConsumable">VIP</n-tag>
                     <n-tag size="small" @click.stop="goToMv"
                         style="margin-left: 10px;position: relative;top:-2px;transform: scale(.9);cursor: pointer;" round
                         type="warning" v-if="song.mv">MV</n-tag>

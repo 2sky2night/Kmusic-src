@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
 import store from '@/store'
 import { PlayingSongData } from "./interfaces";
+import message from "@/utils/message";
 
 const data: { playingSong: PlayingSongData } = {
-    playingSong: { id: null, isPlaying: false, name: '', src: '',isLike:false,artists:[],album:{id:0,name:'',picUrl:''} }
+    playingSong: { id: null, isPlaying: false, name: '', src: '',isLike:false,artists:[],album:{id:0,name:'',picUrl:''},isVip:false }
 }
 
 const useMusicStore = defineStore('music', {
@@ -20,6 +21,9 @@ const useMusicStore = defineStore('music', {
             this.playingSong.artists = data.artists;
             this.playingSong.id = data.id;
             this.playingSong.name = data.name;
+            this.playingSong.isVip = data.isVip
+            this.playingSong.isPlaying = true
+            this.playingSong.isVip ?message("您正在播放vip歌曲~😎","info"):''
         }
     }
 })

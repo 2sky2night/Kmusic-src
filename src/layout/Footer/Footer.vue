@@ -4,6 +4,7 @@
         <audio v-if="!isLoading" controls autoplay name="media">
             <source :src="(songData as SongData).url" type="audio/mpeg">
         </audio>
+        <span v-else>暂无歌曲</span>
     </div>
 </template>
 <script lang='ts' setup>
@@ -50,11 +51,11 @@ async function musicSetAfter() {
                 isLoading.value = false
             } else {
                 // 若歌曲无法正常播放
-                message("获取歌曲失败 😪", "warning")
+                Promise.reject()
             }
         } else {
             // 若歌曲无法正常播放
-            message("无法播放该歌曲 😩", "warning")
+            message(resCheck.message, "warning")
         }
     } catch (error) {
         message("播放歌曲出错啦 😱", "error")

@@ -154,7 +154,8 @@ function toSetPlayingSong() {
         id: props.song.id,
         name: props.song.name,
         album: { name: props.song.al.name, id: props.song.al.id, picUrl: props.song.al.picUrl },
-        artists: props.song.ar
+        artists: props.song.ar,
+        isVip: props.song.privilege.freeTrialPrivilege.resConsumable
     })
 }
 

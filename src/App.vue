@@ -98,4 +98,17 @@ const themeStore = useThemeStore();
     min-height: 130px;
    }
 }
+.page-layout{
+  display: flex;
+  .music-infor{
+    img{
+      width: 100px;
+    }
+  }
+  .list{
+    box-sizing: border-box;
+    padding:0 10px;
+    flex-grow: 1;
+  }
+}
 </style>

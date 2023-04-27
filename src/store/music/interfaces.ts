@@ -6,4 +6,5 @@ export interface PlayingSongData {
     artists: { id: number; name:string}[]
     album: { id: number; name: string, picUrl: string };
     isLike: boolean;
+    isVip: boolean;
 }
