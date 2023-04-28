@@ -74,6 +74,8 @@ const themeStore = useThemeStore();
 .pagination {
   align-self: center;
   margin: 15px 0;
+  display: flex;
+  align-items: center;
 }
 
 /*收藏页相关的样式结束*/
@@ -109,8 +111,9 @@ const themeStore = useThemeStore();
   .list-data{
     margin-top: 10px;
   }
+  //  音乐的信息
   .music-infor {
-    width: 250px;
+    width: 240px;
     padding: 0 10px;
 
     .cover {

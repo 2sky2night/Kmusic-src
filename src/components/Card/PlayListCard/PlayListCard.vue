@@ -143,6 +143,7 @@ li {
 }
 
 .playlist-name {
+    word-break: break-all;
     transition: .3s;
     user-select: text;
     font-size: 13.5px;

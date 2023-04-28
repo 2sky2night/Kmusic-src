@@ -6,5 +6,9 @@ export default interface UserStoreState {
         level: number;
         nickname: string | null;
         avatar: string;
+        /**
+        * 喜欢的歌曲id
+        */
+        ids: number[]
     }
 }

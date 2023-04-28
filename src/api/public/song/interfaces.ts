@@ -135,3 +135,21 @@ export interface SongLyricRes {
     sgc: boolean;
     tlyric: Tlyric;
 }
+
+/**
+ * 喜欢音乐 /like
+ */
+export interface SongLikeRes {
+    code: number;
+    playlistId: number;
+    songs: string[];
+}
+
+/**
+ * 获取喜欢的音乐列表只有id /likelist
+ */
+export interface LikeSongsRes {
+    checkPoint: number;
+    code: number;
+    ids: number[];
+}

@@ -80,6 +80,26 @@ export interface PlaylistInfor {
      * 一共多少首歌曲
      */
     trackCount: number,
+    /**
+     * 歌单所以歌曲的基本数据
+     */
+    trackIds: TrackId[];
+}
+
+/**
+ * 歌曲的基本数据
+ */
+export interface TrackId {
+    alg: null;
+    at: number;
+    f: null;
+    id: number;
+    rcmdReason: string;
+    sc: null;
+    sr: null;
+    t: number;
+    uid: number;
+    v: number;
 }
 
 /**

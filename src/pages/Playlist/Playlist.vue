@@ -15,9 +15,9 @@
                     <span style="width: 250px;visibility: hidden;position: absolute;" ref="text">
                         {{ playlistInfor?.description || '无' }}
                     </span>
-                    <n-button @click="messageboxWithout((playlistInfor as PlaylistInfor).description,'歌单简介')"
-                     style="width: 100%;margin-bottom: 10px;" strong secondary v-if="checkDescShow">
-                     全部简介
+                    <n-button @click="messageboxWithout((playlistInfor as PlaylistInfor).description, '歌单简介')"
+                        style="width: 100%;margin-bottom: 10px;" strong secondary v-if="checkDescShow">
+                        全部简介
                     </n-button>
                 </div>
 
@@ -40,6 +40,16 @@
                         <span>{{ countFormat((playlistDynamic as PlaylistDynamicRes).shareCount) }}</span>
                     </div>
                 </div>
+
+                <div class="playlist-subscribers">
+                    <span>最近收藏该歌单的用户</span>
+                    <ul>
+                        <li v-for="item in playlistInfor?.subscribers" :key="item.userId">
+                            <UserCard :img="item.avatarUrl" :id="item.userId" :name="item.nickname" :height="30"
+                                :width="30" />
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="list" v-if="!firstLoading">
@@ -51,24 +61,29 @@
                     <span class="text" style="margin-left: 5px;">{{ playlistInfor?.creator.nickname }}</span>
                 </div>
                 <div class="list-time">
-                    <div  v-once>
+                    <div v-once>
                         创建时间 <span v-text="timeFormat((playlistInfor as PlaylistInfor).createTime)"></span>
                     </div>
-                    <div  v-once>
+                    <div v-once>
                         更新时间 <span v-text="timeFormat((playlistInfor as PlaylistInfor).updateTime)"></span>
                     </div>
                     <n-button strong secondary v-if="userStore.userData.id !== playlistInfor?.creator.userId"
                         @click.stop="toSubscribe" size="small" :type="isSub ? 'primary' : 'default'">
                         {{ isSub ? '已收藏' : '收藏' }}
                     </n-button>
-                    <n-button  strong secondary  size="small" class="check-desc" @click="messageboxWithout((playlistInfor as PlaylistInfor).description, '歌单简介')" style="margin-left: 5px;">查看简介</n-button>
+                    <n-button strong secondary size="small" class="check-desc"
+                    v-if="playlistInfor?.description"
+                        @click="messageboxWithout((playlistInfor as PlaylistInfor).description, '歌单简介')"
+                        style="margin-left: 5px;">查看简介</n-button>
                 </div>
             </div>
-            <ul v-if="!isLoading">
+            <ul v-if="!isLoading&&songs.length">
                 <SongItem v-for="item in songs" :key="item.id" :song="item" />
             </ul>
+            <EmptyPage v-if="songs.length===0&&!isLoading" />
             <SongItemSkeletonList :length="20" v-if="isLoading" />
-            <div class="pagination">
+            <div class="pagination" v-if="songs.length" >
+                <span style="margin-right: 10px;">总共 {{ (playlistInfor as PlaylistInfor).trackIds.length }} 项</span>
                 <n-pagination :page-slot="7" v-model:page="page" :page-count="pages" />
             </div>
         </div>
@@ -131,7 +146,7 @@ onMounted(async () => {
         const resInfor = await getPlaylistInfor(+$route.params.id)
         resInfor.code !== 200 ? Promise.reject() : '';
         playlistInfor.value = resInfor.playlist;
-        pages = countPage(20, playlistInfor.value.trackCount)
+        pages = countPage(20, playlistInfor.value.trackIds.length)
         // 加载歌单动态数据
         const resDynamic = await getPlaylistDynamic(+$route.params.id)
         resDynamic.code !== 200 ? Promise.reject() : ''
@@ -162,6 +177,9 @@ async function getSong() {
         res.songs.forEach((ele, index) => {
             songs.push({ ...ele, privilege: { ...res.privileges[index] } })
         })
+        if (songs.length === 0) {
+            message("这一页没有数据呢 😁","info")
+        }
         isLoading.value = false
     } catch (error) {
         message("加载歌单的歌曲失败 😓", "error")
@@ -236,8 +254,28 @@ onUnmounted(() => {
 })
 
 </script>
-<style scoped>
+<style scoped lang="scss">
 .page {
     padding-top: 20px
+}
+
+.playlist-subscribers {
+    span{
+        font-size: 13px;
+        font-weight: 600;
+    }
+    ul{
+        display: grid;
+        box-sizing: border-box;
+        padding: 0 10px;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        row-gap: 10px;
+    }
+
+}
+@media screen and (max-width:800px){
+    .playlist-subscribers{
+        display: none;
+    }
 }
 </style>

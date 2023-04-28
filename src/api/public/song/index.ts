@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import { SongLevel, SongDataRes, SongLyricKeyFrameRes, SongCheckRes, SongLyricRes } from './interfaces'
+import { LikeSongsRes, SongLikeRes, SongLevel, SongDataRes, SongLyricKeyFrameRes, SongCheckRes, SongLyricRes } from './interfaces'
 
 
 /**
@@ -27,7 +27,7 @@ export const getSongData = (id: number, level: SongLevel) => {
  * @returns 
  */
 export const getSongKeyFrameLyric = (id: number) => {
-    return request.get<SongLyricKeyFrameRes>('/lyric/new',{params:{id}})
+    return request.get<SongLyricKeyFrameRes>('/lyric/new', { params: { id } })
 }
 
 /**
@@ -36,5 +36,19 @@ export const getSongKeyFrameLyric = (id: number) => {
  * @returns 
  */
 export const getSongLyric = (id: number) => {
-    return request.get<SongLyricRes>('/lyric',{ params: { id } })
+    return request.get<SongLyricRes>('/lyric', { params: { id } })
 }
+
+/**
+ * 喜欢/取消喜欢音乐
+ * @param id 
+ * @param like - 真为喜欢,假为取消喜欢
+ */
+export const toggleLikeSong = (id: number, like: boolean) => {
+    return request.get<SongLikeRes>('/like', { params: { id, like } })
+}
+
+/**
+ * 获取当前用户喜欢的音乐列表 (需要登陆)
+ */
+export const getLikeSongList = () => request.get<LikeSongsRes>('/likelist')

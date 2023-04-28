@@ -41,6 +41,11 @@
 
         </div>
         <div class="song-more">
+            <n-icon @click="toToggleLike" :color="isLike ? 'red' : ''" size="20"
+                style="position: relative;top:3px;margin-right: 10px;">
+                <IosHeartEmpty v-if="!isLike" />
+                <IosHeart v-else />
+            </n-icon>
             <span v-once class="duration">{{ durationFormat(song.dt) }}</span>
             <span class="more" @click.stop="toLookMore">
                 <n-icon class="text" size="18">
@@ -54,7 +59,7 @@
 // 渲染函数
 import songInfor from '@/render/SongInfor'
 // 图标
-import { IosMore as IosMoreIcon } from '@vicons/ionicons4'
+import { IosMore as IosMoreIcon, IosHeartEmpty, IosHeart } from '@vicons/ionicons4'
 // 工具函数
 import { durationFormat } from '@/utils/computed'
 // 接口
@@ -64,10 +69,20 @@ import { useRouter } from 'vue-router'
 import PubSub from 'pubsub-js'
 // 仓库
 import useMusicStore from '@/store/music'
+import useUserStore from '@/store/user'
+// 钩子 
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
+// api
+import { toggleLikeSong } from '@/api/public/song'
+import message from '@/utils/message'
+
 const { playingSong } = storeToRefs(useMusicStore())
+const userStore = useUserStore()
 
 const $router = useRouter()
+// 是否喜欢当前音乐
+const isLike = ref(userStore.userData.ids.some(ele => ele === props.song.id))
 
 const props = defineProps<{ song: Song }>()
 
@@ -97,6 +112,32 @@ function openDropDown(e: MouseEvent) {
     e.preventDefault()
     PubSub.publish('open', { data: Object.assign({}, props.song), x: e.clientX, y: e.clientY })
 }
+
+/**
+ * 喜欢/取消喜欢歌曲
+ */
+async function toToggleLike() {
+    const id = props.song.id
+    try {
+        if (isLike.value) {
+            const res = await toggleLikeSong(id, false)
+            res.code !== 200 ? Promise.reject() : ''
+            isLike.value = false
+            message("取消喜欢音乐成功 😃", "success")
+            userStore.removeSongLike(id)
+        } else {
+            const res = await toggleLikeSong(id, true)
+            res.code !== 200 ? Promise.reject() : ''
+            isLike.value = true
+            message("喜欢音乐成功 😃", "success")
+            userStore.setSongLikeList(id)
+        }
+    } catch (error) {
+        message("喜欢/取消喜欢音乐失败 🙄", "warning")
+    }
+
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -181,5 +222,16 @@ function openDropDown(e: MouseEvent) {
     .song-tags {
         display: none;
     }
+}
+
+.song-more>i:nth-child(1) {
+    transition: .2s;
+    opacity: 0;
+    transform: scale(.8);
+}
+
+.song-item:hover .song-more>i:nth-child(1) {
+    opacity: 1;
+    transform: scale(1);
 }
 </style>

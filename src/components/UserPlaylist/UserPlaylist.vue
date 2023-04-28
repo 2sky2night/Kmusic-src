@@ -1,6 +1,8 @@
 <template>
-    <div class="music-list">
-        <ul v-if="!isLoading" style="padding:0 5px">
+    <div class="music-list" style="margin: 0;">
+        <TitleHeader title="收藏的歌单"/>
+        <EmptyPage  v-if="playlist.length===0&&!isLoading" />
+        <ul v-if="!isLoading" style="padding:0 5px;">
             <PlayListCard v-for="item in playlist" :key="item.id" :cover-img-url="item.coverImgUrl" :id="item.id"
                 :name="item.name" :play-count="item.playCount" />
         </ul>
@@ -9,6 +11,7 @@
     </div>
 </template>
 <script lang='ts' setup>
+import TitleHeader from '@/pages/Home/components/TitleHeader/TitleHeader.vue'
 import message from '@/utils/message';
 import { Playlist } from '@/api/public/indexfaces';
 import { reactive, ref, onMounted } from 'vue'
