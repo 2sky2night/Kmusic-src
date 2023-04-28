@@ -1,4 +1,5 @@
 import { h, render } from 'vue'
+import MessageBoxWithout from '@/components/MessageBox/MessageBoxWithout.vue'
 import MessageBox from '@/components/MessageBox/MessageBox.vue'
 import './messagebox.css'
 
@@ -32,7 +33,7 @@ function messagebox(content: string, title: string = '消息') {
     // 关闭弹窗
     function closeWindow(flag: boolean) {
       // 执行动画效果
-      (vnode.component as any).exposed.isShow.value=false
+      (vnode.component as any).exposed.isShow.value = false
       // 动画执行完成再关闭模态框
       setTimeout(() => {
         flag ? resolve('ok') : reject("cancel")
@@ -46,3 +47,31 @@ function messagebox(content: string, title: string = '消息') {
 }
 
 export default messagebox
+
+
+/**
+ * 没有状态的弹窗
+ * @param content 
+ * @param title 
+ */
+export const messageboxWithout = (content: string, title: string = '消息') => {
+  const container = document.createElement("div")
+
+  container.classList.add("kg-msg-box-container")
+
+  const vnode = h(MessageBoxWithout, { title, content, closeBox: remove })
+
+  render(vnode, container)
+
+  function remove() {
+    // 执行消息盒子消失的动画
+    (vnode.component!.exposed as any).isShow.value = false;
+    setTimeout(() => {
+      container.remove()
+    },500)
+  }
+
+  container.addEventListener("click", remove)
+
+  document.body.insertAdjacentElement("beforeend",container)
+}

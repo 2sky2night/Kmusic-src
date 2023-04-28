@@ -1,6 +1,6 @@
 <template>
     <ul>
-        <n-skeleton height="80px" style="margin: 10px 0;" width="100%" v-for="(item, index) in Array.from({ length })" :key="index" />
+        <n-skeleton height="80px" style="margin: 10px 0;border-radius: 10px;" width="100%" v-for="(item, index) in Array.from({ length })" :key="index" />
     </ul>
 </template>
 <script lang='ts' setup>

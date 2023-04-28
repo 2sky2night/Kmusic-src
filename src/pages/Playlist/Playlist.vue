@@ -1,6 +1,6 @@
 <template>
-    <div class="page page-layout" v-if="!firstLoading">
-        <div class="music-infor">
+    <div class="page page-layout">
+        <div class="music-infor" v-if="!firstLoading">
             <div class="cover">
                 <Cover :img="playlistInfor?.coverImgUrl" />
             </div>
@@ -9,18 +9,23 @@
 
                 <n-h2>歌单简介</n-h2>
                 <div class="desc">
-                    <n-ellipsis :line-clamp="4" :tooltip="false" ref="textClip">
+                    <n-ellipsis style="width:250px;" :line-clamp="4" :tooltip="false" ref="textClip">
                         {{ playlistInfor?.description || '无' }}
                     </n-ellipsis>
-                    <span style="visibility: hidden;position: absolute;" ref="text">
+                    <span style="width: 250px;visibility: hidden;position: absolute;" ref="text">
                         {{ playlistInfor?.description || '无' }}
                     </span>
-                    <n-button v-if="checkDescShow">全部简介</n-button>
+                    <n-button @click="messageboxWithout((playlistInfor as PlaylistInfor).description,'歌单简介')"
+                     style="width: 100%;margin-bottom: 10px;" strong secondary v-if="checkDescShow">
+                     全部简介
+                    </n-button>
                 </div>
 
                 <div class="tags" v-once>
-                    <Tag v-for="item in playlistInfor?.tags" :key="item" :title="item" :round="true" size="medium" />
+                    <Tag style="margin-right: 5px;" v-for="item in playlistInfor?.tags" :key="item" :title="item"
+                        :round="true" size="small" />
                 </div>
+
                 <div class="list-data" v-once>
                     <div>
                         <span>评论数量 </span>
@@ -35,12 +40,9 @@
                         <span>{{ countFormat((playlistDynamic as PlaylistDynamicRes).shareCount) }}</span>
                     </div>
                 </div>
-                <n-button strong secondary v-if="userStore.userData.id!==playlistInfor?.creator.userId" @click.stop="toSubscribe" size="small" :type="isSub ? 'primary' : 'default'">
-                    {{ isSub ? '已收藏' : '收藏' }}
-                </n-button>
             </div>
         </div>
-        <div class="list">
+        <div class="list" v-if="!firstLoading">
             <div class="list-title">
                 <n-h1> {{ playlistInfor?.name }}</n-h1>
                 <div class="user">
@@ -49,26 +51,33 @@
                     <span class="text" style="margin-left: 5px;">{{ playlistInfor?.creator.nickname }}</span>
                 </div>
                 <div class="list-time">
-                    <div>
+                    <div  v-once>
                         创建时间 <span v-text="timeFormat((playlistInfor as PlaylistInfor).createTime)"></span>
                     </div>
-                    <div>
+                    <div  v-once>
                         更新时间 <span v-text="timeFormat((playlistInfor as PlaylistInfor).updateTime)"></span>
                     </div>
+                    <n-button strong secondary v-if="userStore.userData.id !== playlistInfor?.creator.userId"
+                        @click.stop="toSubscribe" size="small" :type="isSub ? 'primary' : 'default'">
+                        {{ isSub ? '已收藏' : '收藏' }}
+                    </n-button>
+                    <n-button  strong secondary  size="small" class="check-desc" @click="messageboxWithout((playlistInfor as PlaylistInfor).description, '歌单简介')" style="margin-left: 5px;">查看简介</n-button>
                 </div>
             </div>
-            <ul>
+            <ul v-if="!isLoading">
                 <SongItem v-for="item in songs" :key="item.id" :song="item" />
             </ul>
+            <SongItemSkeletonList :length="20" v-if="isLoading" />
             <div class="pagination">
                 <n-pagination :page-slot="7" v-model:page="page" :page-count="pages" />
             </div>
-
         </div>
+        <PlaylistSkeleton v-if="firstLoading" />
     </div>
 </template>
 <script lang='ts' setup>
 // 组件
+import PlaylistSkeleton from '@/components/PageSkeleton/PlaylistSkeleton/PlaylistSkeleton.vue';
 import Tag from '@/components/Tag/Tag.vue';
 // 接口
 import { Song } from '@/api/public/indexfaces';
@@ -77,12 +86,13 @@ import type { PlaylistInfor, PlaylistDynamicRes } from '@/api/Playlist/interface
 import { getPlaylistInfor, getPlaylistDynamic, getPlaylistSong, toggleSubPlaylist } from '@/api/Playlist';
 // 钩子
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
-import { onMounted, ref, reactive, watch, nextTick } from 'vue';
+import { onMounted, ref, reactive, watch, nextTick, onUnmounted } from 'vue';
 import useUserStore from '@/store/user';
 // 工具函数
 import { checkPage } from '@/utils/tools'
 import { timeFormat, countFormat, countPage } from '@/utils/computed'
 import message from '@/utils/message';
+import { messageboxWithout } from '@/render/MessageBox';
 // 用户仓库
 const userStore = useUserStore()
 // 歌曲简介真实容器
@@ -129,15 +139,10 @@ onMounted(async () => {
         isSub.value = playlistDynamic.value.subscribed
         isLoading.value = false
         firstLoading.value = false
-        nextTick(() => {
-            // 判断当前简介和裁剪后的简介高度是否一样,一样就不显示查看更多按钮
-            if ((text.value as HTMLElement).clientHeight > textClip.value.$el.clientHeight) {
-                checkDescShow.value = true
-                console.log('裁剪后的简介和未裁剪的高度不一致,需要显示查看全部简介的按钮');
-            }
-        })
-
-
+        // 检测当前简介是否超过一定高度,来设置查看全部简介的按钮的显示
+        nextTick(checkDes)
+        // 开启窗口监听
+        window.addEventListener("resize", checkDes)
     } catch (error) {
         message("加载歌单失败 😰", "error")
     }
@@ -213,11 +218,26 @@ onBeforeRouteLeave(() => {
     isLeave.value = true
 })
 
+/**
+ * 检测当前简介是否超过一定高度
+ */
+function checkDes() {
+    if ((text.value as HTMLElement).clientHeight > textClip.value.$el.clientHeight) {
+        checkDescShow.value = true
+        console.log('裁剪后的简介和未裁剪的高度不一致,需要显示查看全部简介的按钮');
+    }
+}
 
+/**
+ * 移除事件监听
+ */
+onUnmounted(() => {
+    window.removeEventListener("click", checkDes)
+})
 
 </script>
 <style scoped>
 .page {
-    padding: 20px 0;
+    padding-top: 20px
 }
 </style>

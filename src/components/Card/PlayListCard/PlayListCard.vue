@@ -41,7 +41,6 @@
 <script lang='ts' setup>
 import { countFormat } from '@/utils/computed'
 import { useRouter } from 'vue-router'
-import ImgLoad from '@/components/ImgLoad/ImgLoad.vue'
 import { ref } from 'vue'
 import { MdHeadset as MdHeadsetIcon } from '@vicons/ionicons4'
 import { Play as PlayIcon } from '@vicons/ionicons5'
@@ -71,9 +70,9 @@ function imgDoneHander() {
     isLoading.value = false
 }
 
-// 点击路由的回调
+// 点击歌单封面的回调
 function toPlaylistInfor() {
-    $router.push(`/playlist/${props.id}`)
+    $router.push(`/playlist/${props.id}?page=1`)
 }
 
 </script>

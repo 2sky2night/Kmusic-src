@@ -44,7 +44,7 @@ async function musicSetAfter() {
         const resCheck = await checkSong(id)
         if (resCheck.success) {
             // 若歌曲能够正常播放 就获取歌曲数据
-            const resSongData = await getSongData(id, "standard");
+            const resSongData = await getSongData(id, "hires");
             if (resSongData.code === 200) {
                 // 若歌曲数据正常
                 (songData.value as SongData) = resSongData.data[0]

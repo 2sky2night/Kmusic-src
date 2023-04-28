@@ -1,6 +1,6 @@
 <template>
     <div class="music-list">
-        <ul v-if="!isLoading">
+        <ul v-if="!isLoading" style="padding:0 5px">
             <PlayListCard v-for="item in playlist" :key="item.id" :cover-img-url="item.coverImgUrl" :id="item.id"
                 :name="item.name" :play-count="item.playCount" />
         </ul>
