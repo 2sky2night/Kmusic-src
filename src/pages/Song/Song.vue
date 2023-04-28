@@ -15,9 +15,9 @@
                         <span @click.stop="$router.push(`/artist/${item.id}`)" class="artist" v-for="item in song?.ar"
                             :key="item.id">{{ item.name }}</span>
                     </div>
-                    <div>
-                        <span>专辑: </span>
-                        <n-ellipsis style="max-width: 300px" @click.stop="$router.push(`/album/${song?.al.id}`)"
+                    <div @click="goToAlbum">
+                        <span style="font-size: 13px;">专辑: </span>
+                        <n-ellipsis style="max-width: 300px;position: relative;top:-.5px"
                             class="text" v-text="song?.al.name" />
                     </div>
                     <!--相似歌曲推荐-->
@@ -152,6 +152,10 @@ function playMusic() {
     })
 }
 
+// 点击跳转专辑页面
+function goToAlbum() {
+    $router.push(`/album/${song.value?.al.id}`)
+}
 /**
  * 去歌曲评论区
  */
