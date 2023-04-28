@@ -5,16 +5,22 @@
 
             <div>
 
-                <n-ellipsis style="max-width: 200px">
-                    <span class="text" style="font-size: 16px;font-weight: 700;" @click.stop="goToSong">{{ song.name
-                    }}</span>
-                    <n-tag size="small"
-                        style="margin-left: 10px;position: relative;top:-2px;transform: scale(.9);cursor: pointer;" round
-                        type="error" v-if="song.privilege&& song.privilege.freeTrialPrivilege.resConsumable">VIP</n-tag>
-                    <n-tag size="small" @click.stop="goToMv"
-                        style="margin-left: 10px;position: relative;top:-2px;transform: scale(.9);cursor: pointer;" round
-                        type="warning" v-if="song.mv">MV</n-tag>
-                </n-ellipsis>
+                <div class="song-name">
+                    <n-ellipsis style="max-width: 230px" :tooltip="false">
+                        <span class="text" style="font-size: 16px;font-weight: 700;" @click.stop="goToSong">{{ song.name
+                        }}</span>
+                    </n-ellipsis>
+                    <div class="song-tags">
+                        <n-tag size="small"
+                            style="margin-left: 3px;position: relative;top:-2px;transform: scale(.9);cursor: pointer;" round
+                            type="error"
+                            v-if="song.privilege && song.privilege.freeTrialPrivilege.resConsumable">VIP</n-tag>
+                        <n-tag size="small" @click.stop="goToMv"
+                            style="margin-left: 3px;position: relative;top:-2px;transform: scale(.9);cursor: pointer;" round
+                            type="warning" v-if="song.mv">MV</n-tag>
+                    </div>
+
+                </div>
 
                 <div class="artists-name">
                     <n-ellipsis style="max-width: 240px">
@@ -112,8 +118,9 @@ function openDropDown(e: MouseEvent) {
 /**歌曲播放时的样式 */
 .song-item-active {
     background-color: var(--color-primary-light);
-    span{
-        color:var(--color-primary)
+
+    span {
+        color: var(--color-primary)
     }
 }
 
@@ -139,6 +146,15 @@ function openDropDown(e: MouseEvent) {
     }
 }
 
+.song-name {
+    align-items: center;
+    display: flex;
+}
+
+.song-tags {
+    display: flex;
+}
+
 .duration {
     font-size: 12px;
 }
@@ -147,7 +163,7 @@ function openDropDown(e: MouseEvent) {
     display: none;
 }
 
-@media screen and (max-width:650px) {
+@media screen and (max-width:700px) {
     .album-name {
         display: none;
     }
@@ -159,4 +175,11 @@ function openDropDown(e: MouseEvent) {
     .more {
         display: inline-block;
     }
-}</style>
+}
+
+@media screen and (max-width:400px) {
+    .song-tags {
+        display: none;
+    }
+}
+</style>

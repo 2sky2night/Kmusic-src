@@ -20,6 +20,8 @@ import ArtistCard from '@/components/Card/ArtistCard/ArtistCard.vue'
 import EmptyPage from '@/components/EmptyPage/EmptyPage.vue'
 import SongItem from '@/components/SongItem/SongItem.vue'
 import SongItemSkeleton from '@/components/SkeletonList/SongItemSkeletonList/SongItemSkeletonList.vue'
+import Cover from '@/components/Cover/Cover.vue'
+import UserCard from '@/components/Card/UserCard/UserCard.vue'
 export default {
     install(app: App) {
         // 安装pinia仓库
@@ -37,5 +39,7 @@ export default {
         app.component('SongCard', SongCard)
         app.component('SongItem', SongItem)
         app.component('SongItemSkeleton', SongItemSkeleton)
+        app.component('Cover', Cover)
+        app.component('UserCard', UserCard)
     }
 }

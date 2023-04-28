@@ -74,7 +74,7 @@ const themeStore = useThemeStore();
 
 .pagination {
   align-self: center;
-  margin-bottom: 30px;
+  margin: 15px 0;
 }
 
 /*收藏页相关的样式结束*/
@@ -94,21 +94,127 @@ const themeStore = useThemeStore();
   .music-list ul.mv {
     grid-template-columns: repeat(2, minmax(0px, 1fr));
   }
-   .music-list ul.mv .mv-cover{
+
+  .music-list ul.mv .mv-cover {
     min-height: 130px;
-   }
+  }
 }
-.page-layout{
+
+// 歌单 专辑的布局
+.page-layout {
   display: flex;
-  .music-infor{
-    img{
-      width: 100px;
+
+  .music-infor {
+    width: 250px;
+    padding: 0 10px;
+
+    .cover {
+      width: 190px;
+      height: 190px;
+    }
+
+    h1 {
+      // 歌单 专辑的标题
+      word-break: break-all;
+      display: none;
+    }
+
+    h2 {
+      // 歌单 专辑的简介标题
+      margin: 10px 0;
+    }
+
+    .desc span {
+      // 简介
+      word-break: break-all;
+    }
+    .list-data{
+      
     }
   }
-  .list{
+
+  .list-time {
+    display: flex;
+
+    div {
+      margin-right: 10px;
+    }
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
-    padding:0 10px;
     flex-grow: 1;
+    .user{
+      display: flex;
+      align-items: center;
+    }
   }
 }
+
+//  小屏幕下的歌单 专辑的布局
+@media screen and (max-width:800px) {
+  .page-layout {
+    flex-direction: column;
+
+    .music-infor {
+      box-sizing: border-box;
+      width: 100% !important;
+      display: flex;
+      align-items: center;
+
+      .list-data {
+        display: flex;
+        div{
+          font-size: 13px;
+          margin-right: 5px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+
+      .infor {
+        margin-left: 35px;
+        .tags{
+          display: none;
+        }
+        h1 {
+          // 歌曲 专辑的标题
+          font-size: 20px;
+          font-weight: 600;
+          display: block;
+          margin: 0;
+        }
+
+        .desc,
+        h2 {
+          display: none;
+        }
+      }
+
+      .cover {
+        width: 120px !important;
+        height: 120px !important;
+      }
+    }
+
+    .list {
+      margin: 0;
+      padding: 0 10px;
+      margin-top: 10px;
+      h1 {
+        // 歌曲 专辑的大标题
+        margin: 0;
+        display: none;
+      }
+    }
+  }
+}
+@media screen and (max-width:370px){
+  .page-layout .list-data{
+      display: none !important;
+  }
+} 
 </style>
