@@ -60,8 +60,8 @@ import type { SongMore } from '@/api/Song/interfaces';
 import { getSongInfor, getSimiPlaylist, getSimiSongs } from '@/api/Song';
 import { toggleLikeSong } from '@/api/public/song';
 // 钩子
-import { onMounted, reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { onMounted, reactive, ref, watch } from 'vue';
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 // 工具函数
 import message from '@/utils/message';
 // 组件
@@ -88,9 +88,13 @@ const simiPlaylist = reactive<Playlist[]>([])
 // 是否喜欢歌曲
 const isLike = ref(false)
 // 正在加载
-const isLoading=ref(true)
+const isLoading = ref(false)
+// 是否离开了当前页面
+let isLeave=false
 
-onMounted(async () => {
+// 获取歌曲信息
+async function getSongData() {
+    isLoading.value=true
     try {
         // 获取歌曲信息
         const resSong = await getSongInfor(+$route.params.id)
@@ -111,13 +115,31 @@ onMounted(async () => {
         })
         // 查看当前是否喜欢该歌曲
         isLike.value = userStore.userData.ids.some(ele => ele === (song.value as Song).id)
-        isLoading.value=false
+        isLoading.value = false
     } catch (error) {
         message("获取歌曲数据失败 🤔", "error", () => $router.back())
     }
+}
 
-
+// 初始化加载页面时获取数据
+onMounted(getSongData)
+// 路由更新时获取更新当前页面
+onBeforeRouteUpdate(() => {
+    // 路由更新前先清空数据
+    simiPlaylist.splice(0, simiPlaylist.length)
+    simiSongs.splice(0, simiSongs.length)
 })
+// 路由离开时,设置离开状态,防止意外的加载数据
+onBeforeRouteLeave(() => {
+    isLeave=true
+})
+
+watch(() => $route.params.id, () => {
+    if (isLeave) return
+    getSongData()
+})
+
+
 
 // 点击播放歌曲
 function playMusic() {
@@ -271,15 +293,16 @@ async function toToggleLike() {
 
 
 @media screen and (max-width:468px) {
-       .song-infor {
-        h2{
-          padding: 15px 0;
+    .song-infor {
+        h2 {
+            padding: 15px 0;
         }
-       }
+    }
 
     .song-cover {
         position: absolute;
         width: 50px !important;
+
         :deep(img) {
             border-radius: 10px;
             width: 60px !important;

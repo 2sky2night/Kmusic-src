@@ -18,7 +18,7 @@
         <div class="song-list">
             <n-skeleton style="height: 20px;margin:10px;width: 30%;" />
             <div class="music-list">
-                <SkeletonList :length="3" />
+                <SkeletonList :coverRadius="10" :text-center="false" :length="3" />
             </div>
         </div>
     </div>
