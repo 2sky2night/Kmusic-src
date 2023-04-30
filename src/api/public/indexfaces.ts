@@ -322,6 +322,7 @@ export interface Song {
      * 歌曲的其他信息
      */
     privilege: Privilege;
+    tns: string[];
 }
 
 /**

@@ -301,4 +301,43 @@ userStore.$onAction(({ after }) => {
     flex-direction: column;
   }
 }
+
+// 评论的介绍信息盒子
+.comment-infor {
+  margin-right: 20px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--box-border-color);
+  background-color: var(--bg-box-color);
+
+  .cover {
+    width: 80px;
+    height: 80px;
+    margin-right: 10px;
+
+    img {
+      max-width: 80px;
+      max-height: 80px;
+    }
+  }
+
+  .infor-data {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 80px;
+  }
+}
+@media screen  and (max-width:500px){
+  .comment-infor{
+    .cover{
+      display: none;
+    }
+  }
+}
+// 评论的介绍信息盒子 结束
 </style>

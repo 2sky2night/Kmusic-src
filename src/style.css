@@ -45,7 +45,7 @@ button {
   --mask-hover-bg: #ffffff9a;
 
   --bg-btn-color: #fff;
-
+  --bg-dark-color:#efeff5;
   --main-bg-color: #fafafc;
 
   --box-border-color: #efeff5;
@@ -62,7 +62,7 @@ html.dark {
   --scroll-bar-color--hover: #58585b;
 
   --box-border-color: #626469;
-
+  --bg-dark-color:#2d2d30;
   --text-color: #fff;
 
   --hover-bg-color: #59595e;

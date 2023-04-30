@@ -75,6 +75,7 @@
                     v-if="playlistInfor?.description"
                         @click="messageboxWithout((playlistInfor as PlaylistInfor).description, '歌单简介')"
                         style="margin-left: 5px;">查看简介</n-button>
+                    <n-button @click="goToPlaylistCmt" size="small" strong secondary type="info" style="margin-left: 5px;">评论 {{ playlistDynamic?.commentCount }}</n-button>
                 </div>
             </div>
             <ul v-if="!isLoading&&songs.length">
@@ -244,6 +245,10 @@ function checkDes() {
         checkDescShow.value = true
         console.log('裁剪后的简介和未裁剪的高度不一致,需要显示查看全部简介的按钮');
     }
+}
+
+function goToPlaylistCmt() {
+    $router.push(`/playlist-comment/${playlistInfor.value?.id}`)
 }
 
 /**

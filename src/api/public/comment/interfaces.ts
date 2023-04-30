@@ -146,3 +146,12 @@ export interface MusicPackage {
     rights: boolean;
     vipCode: number;
 }
+
+/**
+ * 评论的类型
+ * 0: 歌曲
+1: mv
+2: 歌单
+3: 专辑
+ */
+export type CommentType = 0 | 1 | 2 | 3

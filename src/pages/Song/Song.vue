@@ -9,7 +9,9 @@
                 </div>
                 <!--歌曲名称 作者等信息-->
                 <div class="song-data">
-                    <h2>{{ song?.name }}</h2>
+                    <h2>
+                        <span>{{ song?.name }}</span>
+                    </h2>
                     <div>
                         <span>歌手: </span>
                         <span @click.stop="$router.push(`/artist/${item.id}`)" class="artist" v-for="item in song?.ar"
@@ -17,8 +19,8 @@
                     </div>
                     <div @click="goToAlbum">
                         <span style="font-size: 13px;">专辑: </span>
-                        <n-ellipsis style="max-width: 300px;position: relative;top:-.5px"
-                            class="text" v-text="song?.al.name" />
+                        <n-ellipsis style="max-width: 300px;position: relative;top:-.5px" class="text"
+                            v-text="song?.al.name" />
                     </div>
                     <!--相似歌曲推荐-->
                     <div class="simi-songs">
@@ -34,7 +36,8 @@
                             </n-icon>
                         </n-button>
                         <n-button size="small" strong secondary>添加到</n-button>
-                        <n-button @click="goToComment" size="small" strong secondary>评论</n-button>
+                        <n-button @click="goToComment" size="small" strong secondary type="info">评论</n-button>
+                        <n-button @click="goToMv" v-if="song?.mv" size="small" strong secondary type="warning">MV</n-button>
                     </div>
                 </div>
 
@@ -90,11 +93,11 @@ const isLike = ref(false)
 // 正在加载
 const isLoading = ref(false)
 // 是否离开了当前页面
-let isLeave=false
+let isLeave = false
 
 // 获取歌曲信息
 async function getSongData() {
-    isLoading.value=true
+    isLoading.value = true
     try {
         // 获取歌曲信息
         const resSong = await getSongInfor(+$route.params.id)
@@ -131,7 +134,7 @@ onBeforeRouteUpdate(() => {
 })
 // 路由离开时,设置离开状态,防止意外的加载数据
 onBeforeRouteLeave(() => {
-    isLeave=true
+    isLeave = true
 })
 
 watch(() => $route.params.id, () => {
@@ -186,6 +189,13 @@ async function toToggleLike() {
         message("喜欢/取消喜欢音乐失败 🙄", "warning")
     }
 
+}
+
+/**
+ * 去歌曲的mv页面
+ */
+function goToMv() {
+    $router.push(`/mv/${song.value?.id}`)
 }
 
 </script>
