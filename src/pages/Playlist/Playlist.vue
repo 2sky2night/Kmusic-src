@@ -250,7 +250,7 @@ function checkDes() {
  * 移除事件监听
  */
 onUnmounted(() => {
-    window.removeEventListener("click", checkDes)
+    window.removeEventListener("resize", checkDes)
 })
 
 </script>

@@ -5,7 +5,7 @@
         :style="{ height: isLoading?'0':height + 'px', maxHeight: isLoading?'0':'300px', minHeight: isLoading? 0:'135px'}" show-dots>
 
         <n-carousel-item :style="{ width: isSmall ? '100%' : '80%', borderRadius: '10px' }" v-for="item in banners"
-            :key="item.targetId" @click="goToPage(item.targetId, item.targetType)">
+            :key="item.imageUrl" @click="goToPage(item.targetId, item.targetType)">
             <img class="carousel-img"  :src="item.imageUrl" @load="countBanners++">
         </n-carousel-item>
     </n-carousel>

@@ -210,6 +210,13 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/album-comment/:id',
+        component: () => import('@/pages/AlbumCmt/AlbumCmt.vue'),
+        meta: {
+            title: "专辑评论页"
+        }
+    },
+    {
         path: "/404",
         name: "404",
         component: () => import("@/pages/404/404.vue"),

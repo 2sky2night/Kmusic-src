@@ -9,6 +9,10 @@ export default interface UserStoreState {
         /**
         * 喜欢的歌曲id
         */
-        ids: number[]
+        ids: number[],
+        /**
+         * 收藏的专辑id
+         */
+        idAlbums:number[]
     }
 }

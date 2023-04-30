@@ -2,9 +2,30 @@
 import themeOverrides from '@/utils/theme'
 import Layout from '@/layout/Layout.vue'
 import useThemeStore from '@/store/theme';
+import useUserStore from '@/store/user'
 import { useRouter } from 'vue-router';
+import { setLocal } from './utils/localStorage';
+// 主题仓库
 const themeStore = useThemeStore();
-(window as any).$push = useRouter().push
+//  用户仓库
+const userStore = useUserStore();
+
+(window as any).$push = useRouter().push;
+
+// 根据用户仓库当前的登录状态决定是否获取用户喜欢的歌曲列表
+if (userStore.isLogin && userStore.cookie) {
+  //  若当前用户登录了,就获取最新的用户喜欢的歌曲列表 以及 用户收藏的专辑列表
+  userStore.toGetSongLikeList()
+  userStore.toGetStarAlbum()
+}
+
+// 检测到用户仓库的方法执行,将最新的数据保存在仓库中
+userStore.$onAction(({ after }) => {
+  after(() => {
+    setLocal('userData', userStore.userData)
+  })
+})
+
 </script>
 
 <template>
@@ -108,9 +129,11 @@ const themeStore = useThemeStore();
 // 歌单 专辑的布局
 .page-layout {
   display: flex;
-  .list-data{
+
+  .list-data {
     margin-top: 10px;
   }
+
   //  音乐的信息
   .music-infor {
     width: 240px;

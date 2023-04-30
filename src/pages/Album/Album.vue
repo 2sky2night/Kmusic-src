@@ -19,7 +19,7 @@
                         style="width: 100%;margin-bottom: 10px;" strong secondary v-if="checkDescShow">
                         全部简介
                     </n-button>
-                
+
                 </div>
                 <div class="list-title">
 
@@ -28,7 +28,11 @@
                             @click="messageboxWithout((album as AlbumMore).description, '歌单简介')">
                             查看简介
                         </n-button>
-                        <n-button strong secondary size="small">已收藏</n-button>
+                        <n-button @click="toSubAlbum" strong secondary size="small" :type="isSub ? 'warning' : 'default'"
+                            v-text="isSub ? '已收藏' : '收藏'" />
+                        <n-button @click="goToComment" strong secondary size="small" type="info">
+                            评论 {{ (album as AlbumMore).info.commentCount }}
+                        </n-button>
                     </div>
                 </div>
             </div>
@@ -56,7 +60,7 @@
 <script lang='ts' setup>
 // 钩子
 import { useRoute, useRouter } from 'vue-router'
-import { reactive, ref, onMounted, nextTick } from 'vue'
+import { reactive, ref, onMounted, nextTick, onUnmounted } from 'vue'
 // 组件
 import PlaylistSkeleton from '@/components/PageSkeleton/PlaylistSkeleton/PlaylistSkeleton.vue';
 import Cover from '@/components/Cover/Cover.vue';
@@ -70,6 +74,8 @@ import message from '@/utils/message';
 import { messageboxWithout } from '@/render/MessageBox'
 // 工具函数
 import { timeFormat } from '@/utils/computed';
+// 仓库
+import useUserStore from '@/store/user';
 
 // 简介真实容器
 const text = ref<HTMLElement | null>(null)
@@ -88,6 +94,8 @@ const isSub = ref(false)
 // 路由
 const $route = useRoute()
 const $router = useRouter()
+// 用户仓库
+const userStore = useUserStore()
 
 // 获取数据
 onMounted(async () => {
@@ -100,8 +108,8 @@ onMounted(async () => {
         })
         // 获取专辑信息
         album.value = res.album
-        // 获取收藏状态
-        isSub.value = res.album.info.liked
+        // 获取收藏状态 (根据仓库中是否收藏此专辑的id即可知道当前是否收藏过该专辑)
+        isSub.value = userStore.userData.idAlbums.some(ele => ele === res.album.id)
         isLoading.value = false
         // 检测当前简介是否超过一定高度,来设置查看全部简介的按钮的显示
         nextTick(checkDes)
@@ -122,11 +130,63 @@ function checkDes() {
     }
 }
 
+/**
+ * 收藏或取消收藏专辑
+ */
+async function toSubAlbum() {
+    try {
+        if (isSub.value) {
+            // 取消收藏
+            const res = await toggleSubAlbum((album.value as AlbumMore).id, 0)
+            if (res.code === 200) {
+                userStore.removeStarAlbum((album.value as AlbumMore).id)
+                message("取消收藏专辑成功! 🤑", "success")
+                isSub.value = false
+            } else {
+                Promise.reject()
+            }
+        } else {
+            //  收藏专辑
+            const res = await toggleSubAlbum((album.value as AlbumMore).id, 1)
+            if (res.code === 200) {
+                userStore.addStarAlbum((album.value as AlbumMore).id)
+                message("收藏专辑成功! 的😁", "success")
+                isSub.value = true
+            } else {
+                Promise.reject()
+            }
+        }
+    } catch (error) {
+        message("收藏/取消收藏专辑失败! 😪", "error")
+    }
+}
+
+/**
+ * 专辑评论区
+ */
+function goToComment() {
+    $router.push(`/album-comment/${(album.value as AlbumMore).id}`)
+}
+
+// 页面被销毁时,移除事件监听器
+onUnmounted(() => {
+    window.removeEventListener("resize", checkDes)
+})
+
 </script>
 <style scoped lang="scss">
 .page {
     padding-top: 20px;
     box-sizing: border-box;
+
+    .list-time {
+        display: flex;
+        flex-direction: column;
+        button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
 
     .artist {
         position: relative;
@@ -151,7 +211,8 @@ function checkDes() {
     .artist:hover::after {
         color: var(--text-dark);
     }
-    button{
+
+    button {
         height: 30px;
         font-size: 14px;
     }
@@ -167,6 +228,14 @@ function checkDes() {
     @media screen and (max-width:800px) {
         .album-pub {
             flex-direction: column;
+        }
+
+        .list-time {
+            flex-direction: row;
+            button {
+                margin-right: 10px;
+                width: auto;
+            }
         }
     }
 }
