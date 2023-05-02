@@ -41,7 +41,7 @@
                     </div>
                 </div>
 
-                <div class="playlist-subscribers">
+                <div class="playlist-subscribers" v-if="playlistInfor?.subscribers.length">
                     <span>最近收藏该歌单的用户</span>
                     <ul>
                         <li v-for="item in playlistInfor?.subscribers" :key="item.userId">
@@ -71,19 +71,19 @@
                         @click.stop="toSubscribe" size="small" :type="isSub ? 'primary' : 'default'">
                         {{ isSub ? '已收藏' : '收藏' }}
                     </n-button>
-                    <n-button strong secondary size="small" class="check-desc"
-                    v-if="playlistInfor?.description"
+                    <n-button strong secondary size="small" class="check-desc" v-if="playlistInfor?.description"
                         @click="messageboxWithout((playlistInfor as PlaylistInfor).description, '歌单简介')"
                         style="margin-left: 5px;">查看简介</n-button>
-                    <n-button @click="goToPlaylistCmt" size="small" strong secondary type="info" style="margin-left: 5px;">评论 {{ playlistDynamic?.commentCount }}</n-button>
+                    <n-button @click="goToPlaylistCmt" size="small" strong secondary type="info"
+                        style="margin-left: 5px;">评论 {{ playlistDynamic?.commentCount }}</n-button>
                 </div>
             </div>
-            <ul v-if="!isLoading&&songs.length">
+            <ul v-if="!isLoading && songs.length">
                 <SongItem v-for="item in songs" :key="item.id" :song="item" />
             </ul>
-            <EmptyPage v-if="songs.length===0&&!isLoading" />
+            <EmptyPage description="当前页没有任何一首歌曲 😉" :show-btn="false" v-if="songs.length === 0 && !isLoading" />
             <SongItemSkeletonList :length="20" v-if="isLoading" />
-            <div class="pagination" v-if="songs.length" >
+            <div class="pagination" v-if="songs.length">
                 <span style="margin-right: 10px;">总共 {{ (playlistInfor as PlaylistInfor).trackIds.length }} 项</span>
                 <n-pagination :page-slot="7" v-model:page="page" :page-count="pages" />
             </div>
@@ -141,6 +141,8 @@ const $route = useRoute()
 
 // 初始化时,加载歌单基本数据
 onMounted(async () => {
+    // 获取当前访问的第几页歌单
+    page.value= checkPage($route.query.page as any);
     isLoading.value = true
     try {
         // 加载歌单详情数据
@@ -159,6 +161,8 @@ onMounted(async () => {
         nextTick(checkDes)
         // 开启窗口监听
         window.addEventListener("resize", checkDes)
+        // 获取当前页的数据
+        getSong()
     } catch (error) {
         message("加载歌单失败 😰", "error")
     }
@@ -179,7 +183,7 @@ async function getSong() {
             songs.push({ ...ele, privilege: { ...res.privileges[index] } })
         })
         if (songs.length === 0) {
-            message("这一页没有数据呢 😁","info")
+            message("这一页没有数据呢 😁", "info")
         }
         isLoading.value = false
     } catch (error) {
@@ -208,10 +212,7 @@ async function toSubscribe() {
 }
 
 // 监听页数的变化,发送请求获取数据
-watch(page, (v, o) => {
-    if (v === o) {
-        return
-    }
+watch(page, (v) => {
     $router.push({
         path: $route.path,
         query: {
@@ -222,15 +223,14 @@ watch(page, (v, o) => {
 
 // 路由变化就发送请求获取数据
 watch(() => $route.fullPath, () => {
-    console.log('路由变化了');
     // 若当前离开当前页了,就不执行获取数据了
     if (isLeave.value) {
         return
     }
-    // 更新页码,获取歌单当前页的歌曲
+    //更新页码,获取歌单当前页的歌曲
     page.value = checkPage($route.query.page as any);
     getSong()
-}, { immediate: true })
+})
 
 onBeforeRouteLeave(() => {
     console.log('离开路由了');
@@ -248,7 +248,7 @@ function checkDes() {
 }
 
 function goToPlaylistCmt() {
-    $router.push(`/playlist-comment/${playlistInfor.value?.id}`)
+    $router.push(`/playlist-comment/${playlistInfor.value?.id}?page=1`)
 }
 
 /**
@@ -265,11 +265,12 @@ onUnmounted(() => {
 }
 
 .playlist-subscribers {
-    span{
+    span {
         font-size: 13px;
         font-weight: 600;
     }
-    ul{
+
+    ul {
         display: grid;
         box-sizing: border-box;
         padding: 0 10px;
@@ -278,8 +279,9 @@ onUnmounted(() => {
     }
 
 }
-@media screen and (max-width:800px){
-    .playlist-subscribers{
+
+@media screen and (max-width:800px) {
+    .playlist-subscribers {
         display: none;
     }
 }

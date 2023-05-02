@@ -163,7 +163,7 @@ function goToAlbum() {
  * 去歌曲评论区
  */
 function goToComment() {
-    $router.push(`/song-comment/${song.value?.id}`)
+    $router.push(`/song-comment/${song.value?.id}?page=1`)
 }
 
 /**

@@ -2,8 +2,7 @@
     <div class="star-page">
         <div class="music-list">
             <ul v-if="!isEmpty && !isLoading" class="mv">
-                <MvCard :cover-url="item.coverUrl" :creators="item.creator" 
-                 :durationms="item.durationms" :vid="item.vid"
+                <MvCard :cover-url="item.coverUrl" :creators="item.creator" :durationms="item.durationms" :vid="item.vid"
                     :play-time="item.playTime" v-for="item in list" :key="item.vid" :title="item.title" />
             </ul>
             <SkeletonList :text-center="false" :cover-radius="8" v-if="isLoading" :length="12" />
@@ -12,7 +11,7 @@
             <n-pagination v-model:page="page" :page-count="pages" />
         </div>
         <!--空内容-->
-        <EmptyPage v-if="isEmpty" />
+        <EmptyPage description="没有收藏的mv哟 😁" :show-btn="false" v-if="isEmpty" />
     </div>
 </template>
 <script lang='ts' setup>

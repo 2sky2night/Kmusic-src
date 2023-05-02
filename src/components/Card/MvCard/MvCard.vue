@@ -42,6 +42,7 @@ import { Createor } from '@/api/public/indexfaces'
 import { countFormat, durationFormat } from '@/utils/computed'
 import { PlaySquareOutlined as PlaySquareOutlinedIcon } from '@vicons/antd'
 import { Play as PlayIcon } from '@vicons/ionicons5'
+import message from '@/utils/message'
 interface MvCardProps {
     title: string;
     /**
@@ -60,7 +61,7 @@ interface MvCardProps {
      * mv作者们
      */
     creators: Createor[];
-    vid: string;
+    vid: string | number;
 }
 
 const props = defineProps<MvCardProps>()
@@ -72,7 +73,14 @@ function toUserPage(id: number) {
 }
 
 function toMvPage() {
-    $router.push(`/mv/${props.vid}`)
+    const id = props.vid
+    console.log(id);
+    if (isNaN(+id)) {
+        message("该mv由用户上传,由于安全问题暂时不能访问  😀", "info")
+    } else {
+        $router.push(`/mv/${id}`)
+    }
+
 }
 
 </script>

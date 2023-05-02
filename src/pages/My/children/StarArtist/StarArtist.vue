@@ -14,7 +14,7 @@
             <n-pagination v-model:page="page" :page-count="pages" />
         </div>
         <!--空内容-->
-        <EmptyPage v-if="isEmpty"/>
+        <EmptyPage description="没有收藏的歌手哟 😐" :show-btn="false" v-if="isEmpty" />
     </div>
 </template>
 <script lang='ts' setup>

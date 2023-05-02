@@ -1,7 +1,9 @@
 <template>
     <div class="music-list" style="margin: 0;">
         <TitleHeader title="收藏的歌单"/>
-        <EmptyPage  v-if="playlist.length===0&&!isLoading" />
+        <EmptyPage  v-if="playlist.length===0&&!isLoading" 
+            description="没有歌单哟 😍" :show-btn="false"
+        />
         <ul v-if="!isLoading" style="padding:0 5px;">
             <PlayListCard v-for="item in playlist" :key="item.id" :cover-img-url="item.coverImgUrl" :id="item.id"
                 :name="item.name" :play-count="item.playCount" />

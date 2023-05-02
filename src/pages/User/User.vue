@@ -19,6 +19,7 @@ import UserPlaylist from '@/components/UserPlaylist/UserPlaylist.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { computed, onMounted, ref } from 'vue'
 import message from '@/utils/message';
+import messagebox from '@/render/MessageBox';
 
 interface UserData {
     avatar: string;
@@ -80,7 +81,11 @@ onMounted(async () => {
             }
         }
     } catch (error) {
-        message("此id似乎不是用户呢~", "warning", () => $router.back())
+        messagebox("此用户id不存在，是否依据此id前往歌手页面? 🧐").then(() => {
+            $router.push(`/artist/${$route.params.id}`)
+        }).catch(() => {
+            $router.back()
+        })
     }
 
 })

@@ -168,7 +168,7 @@ async function toSubAlbum() {
  * 专辑评论区
  */
 function goToComment() {
-    $router.push(`/album-comment/${(album.value as AlbumMore).id}`)
+    $router.push(`/album-comment/${(album.value as AlbumMore).id}?page=1`)
 }
 
 // 页面被销毁时,移除事件监听器
