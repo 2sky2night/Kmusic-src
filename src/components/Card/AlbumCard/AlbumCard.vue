@@ -48,7 +48,6 @@ import { Artist } from '@/api/public/indexfaces'
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
 // 组件
-import ImgLoad from '@/components/ImgLoad/ImgLoad.vue'
 import { Play as PlayIcon } from '@vicons/ionicons5'
 
 // 专辑的自定义属性

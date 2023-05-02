@@ -68,7 +68,7 @@
                         更新时间 <span v-text="timeFormat((playlistInfor as PlaylistInfor).updateTime)"></span>
                     </div>
                     <n-button strong secondary v-if="userStore.userData.id !== playlistInfor?.creator.userId"
-                        @click.stop="toSubscribe" size="small" :type="isSub ? 'primary' : 'default'">
+                        @click.stop="toSubscribe" size="small" :type="isSub ? 'warning' : 'default'">
                         {{ isSub ? '已收藏' : '收藏' }}
                     </n-button>
                     <n-button strong secondary size="small" class="check-desc" v-if="playlistInfor?.description"

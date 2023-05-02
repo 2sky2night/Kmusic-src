@@ -82,7 +82,7 @@ onMounted(async () => {
         }
     } catch (error) {
         messagebox("此用户id不存在，是否依据此id前往歌手页面? 🧐").then(() => {
-            $router.push(`/artist/${$route.params.id}`)
+            $router.push(`/artist?id=${$route.params.id}`)
         }).catch(() => {
             $router.back()
         })

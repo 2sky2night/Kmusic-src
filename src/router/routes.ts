@@ -156,35 +156,35 @@ const routes: RouteRecordRaw[] = [
         path: '/album/:id',
         component: () => import('@/pages/Album/Album.vue'),
         meta: {
-            title: '专辑详情页'
+            title: '专辑详情'
         }
     },
     {
         path: '/mv/:id',
         component: () => import('@/pages/MV/MV.vue'),
         meta: {
-            title: 'mv 详情页'
+            title: 'mv 详情'
         }
     },
     {
         path: '/user/:id',
         component: () => import('@/pages/User/User.vue'),
         meta: {
-            title: '用户详情页'
+            title: '用户详情'
         }
     },
     {
         path: '/artist/:id',
         component: () => import('@/pages/Artist/Artist.vue'),
         meta: {
-            title: '歌手详情页'
+            title: '歌手详情'
         }
     },
     {
         path: '/song/:id',
         component: () => import('@/pages/Song/Song.vue'),
         meta: {
-            title: '歌曲详情页'
+            title: '歌曲详情'
         }
     },
     {
@@ -199,21 +199,28 @@ const routes: RouteRecordRaw[] = [
         path: '/playlist-comment/:id',
         component: () => import('@/pages/PlaylistCmt/PlaylistCmt.vue'),
         meta: {
-            title: "歌单评论页"
+            title: "歌单评论"
         }
     },
     {
         path: '/song-comment/:id',
         component: () => import('@/pages/SongCmt/SongCmt.vue'),
         meta: {
-            title: "歌曲评论页"
+            title: "歌曲评论"
         }
     },
     {
         path: '/album-comment/:id',
         component: () => import('@/pages/AlbumCmt/AlbumCmt.vue'),
         meta: {
-            title: "专辑评论页"
+            title: "专辑评论"
+        }
+    },
+    {
+        path: '/artist-songs/:id',
+        component: () => import('@/pages/ArtistSongs/ArtistSongs.vue'),
+        meta: {
+            title: "歌手的全部歌曲"
         }
     },
     {
