@@ -22,6 +22,7 @@ import Header from './Header/Header.vue';
 import { useMessage, LayoutInst } from 'naive-ui';
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import PubSub from 'pubsub-js';
 
 // 获取路由元数据
 const $route = useRoute();
@@ -30,9 +31,15 @@ const $route = useRoute();
 (window as any).$message = useMessage();
 const contentRef = ref<LayoutInst | null>(null)
 
+// 监听路由变化,将容器滚动到顶部
 watch($route, () => {
     contentRef.value?.scrollTo({ top: 0, behavior: 'smooth' })
 })
+// 监听消息,将容器滚动到顶部
+PubSub.subscribe('to-top', () => {
+    contentRef.value?.scrollTo({ top: 0, behavior: 'smooth' })
+})
+
 </script>
 <style>
 /*修改滚动条赛道样式*/

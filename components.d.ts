@@ -12,6 +12,7 @@ declare module '@vue/runtime-core' {
     AlbumCard: typeof import('./src/components/Card/AlbumCard/AlbumCard.vue')['default']
     Artist: typeof import('./src/components/ArtistCard/Artist.vue')['default']
     ArtistCard: typeof import('./src/components/Card/ArtistCard/ArtistCard.vue')['default']
+    ArtistItem: typeof import('./src/components/Card/ArtistItem/ArtistItem.vue')['default']
     Button: typeof import('./src/components/Button/Button.vue')['default']
     Card: typeof import('./src/components/PlayListCard/Card.vue')['default']
     CmtInfor: typeof import('./src/components/CmtInfor/CmtInfor.vue')['default']
@@ -94,5 +95,6 @@ declare module '@vue/runtime-core' {
     UserItem: typeof import('./src/components/UserInfor/components/UserItem/UserItem.vue')['default']
     UserPlaylist: typeof import('./src/components/UserPlaylist/UserPlaylist.vue')['default']
     UserPlayList: typeof import('./src/components/UserPlayList/UserPlayList.vue')['default']
+    Video: typeof import('./src/components/Video/Video.vue')['default']
   }
 }

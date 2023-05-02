@@ -60,7 +60,7 @@ interface MvCardProps {
      * mv作者们
      */
     creators: Createor[];
-    vid: number;
+    vid: string;
 }
 
 const props = defineProps<MvCardProps>()
