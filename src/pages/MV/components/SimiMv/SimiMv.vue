@@ -4,7 +4,7 @@
             相似的mv
         </n-h4>
         <ul>
-            <MvCard v-for="item in list " :key="item.id" :cover-url="item.cover" :durationms="item.duration"
+            <MvCard  style="margin-bottom: 10px;" v-for="item in list " :key="item.id" :cover-url="item.cover" :durationms="item.duration"
                 :play-time="item.playCount" :vid="item.id + ''" :title="item.name"
                 :creators="item.artists.map(ele => ({ userId: ele.id, userName: ele.name }))" />
         </ul>

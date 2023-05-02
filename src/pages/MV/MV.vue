@@ -1,7 +1,7 @@
 <template>
     <div class="page">
 
-        <div v-show="countLoadDone === 3" >
+        <div class="mv-box" v-show="countLoadDone === 3" >
             <div class="mv-container">
                 <MvInfor :id="+$route.params.id" @load-done="countDone" />
                 <Comment :id="+$route.params.id" @load-done="countDone" />
@@ -9,9 +9,11 @@
             <SimiMv :id="+$route.params.id" @load-done="countDone" />
         </div>
 
+        <MvSkeleton v-show="countLoadDone !== 3" />
     </div>
 </template>
 <script lang='ts' setup>
+import MvSkeleton from '@/components/PageSkeleton/MvSkeleton/MvSkeleton.vue';
 import MvInfor from './components/MvInfor/MvInfor.vue';
 import SimiMv from './components/SimiMv/SimiMv.vue';
 import Comment from './components/Comment/Comment.vue'
@@ -51,7 +53,7 @@ watch(() => $route.params, () => {
     display: flex;
 }
 @media screen and (max-width:1000px) {
-    .page>div{
+    .page>div.mv-box{
     flex-direction: column;
 }
 }

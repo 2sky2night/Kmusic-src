@@ -198,7 +198,7 @@ async function toToggleLike() {
  * 去歌曲的mv页面
  */
 function goToMv() {
-    $router.push(`/mv/${song.value?.id}`)
+    $router.push(`/mv/${song.value?.mv}`)
 }
 
 </script>

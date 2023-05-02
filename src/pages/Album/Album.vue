@@ -101,7 +101,7 @@ const userStore = useUserStore()
 onMounted(async () => {
     try {
         const res = await getAlbumInfor(+$route.params.id)
-        res.code !== 200 ? Promise.reject() : ''
+        res.code !== 200 ? await Promise.reject() : ''
         // 获取专辑歌曲数据
         res.songs.forEach(ele => {
             songs.push(ele)
@@ -146,7 +146,7 @@ async function toSubAlbum() {
                 message("取消收藏专辑成功! 🤑", "success")
                 isSub.value = false
             } else {
-                Promise.reject()
+               await Promise.reject()
             }
         } else {
             //  收藏专辑
@@ -156,7 +156,7 @@ async function toSubAlbum() {
                 message("收藏专辑成功! 的😁", "success")
                 isSub.value = true
             } else {
-                Promise.reject()
+                await Promise.reject()
             }
         }
     } catch (error) {

@@ -57,7 +57,7 @@ onMounted(async () => {
     try {
         // 获取歌曲信息
         const resSong = await getSongInfor(+$route.params.id)
-        if (resSong.code !== 200) Promise.reject()
+        if (resSong.code !== 200) await Promise.reject()
         song.value = resSong.songs[0]
 
         isLoading.value = false

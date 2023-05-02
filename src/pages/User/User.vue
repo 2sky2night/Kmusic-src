@@ -107,6 +107,7 @@ const followFormat = computed(() => {
 })
 
 async function toFollowUser() {
+    return message("接口异常，禁止使用! 😎","info")
     const user = (userData.value as UserData)
     if (user.followed) {
         // 当前为已关注,则再次点击为取消关注用户

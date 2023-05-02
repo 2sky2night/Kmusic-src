@@ -13,7 +13,7 @@
                 </div>
             </h2>
         </div>
-        <SongItemSkeleton v-if="isLoading" :length="10"/>
+        <SongItemSkeleton v-if="isLoading" :length="10" />
         <ul v-else>
             <SongItem v-for="item in songs" :key="item.id" :song="item" />
         </ul>
@@ -25,20 +25,28 @@ import { IosCalendar as IosCalendarIcon } from '@vicons/ionicons4'
 import type { Song } from '@/api/public/indexfaces';
 import { getReSongs } from '@/api/public/user';
 import { onMounted, reactive, ref } from 'vue'
+import message from '@/utils/message';
 
 const isLoading = ref(false)
 
 const songs = reactive<Song[]>([])
 onMounted(async () => {
-    isLoading.value = true
-    const res = await getReSongs()
+    try {
+        isLoading.value = true
+        const res = await getReSongs()
 
-    if (res.code === 200) {
-        res.data.dailySongs.forEach(ele => [
-            songs.push(ele)
-        ])
-        isLoading.value = false
+        if (res.code === 200) {
+            res.data.dailySongs.forEach(ele => [
+                songs.push(ele)
+            ])
+            isLoading.value = false
+        } else {
+            await Promise.reject()
+        }
+    } catch (error) {
+        message("获取每日推荐的歌曲失败 😫", "warning")
     }
+
 })
 </script>
 <style scoped lang="scss">
@@ -74,4 +82,5 @@ h2 {
             font-size: 14px;
         }
     }
-}</style>
+}
+</style>

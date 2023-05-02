@@ -57,7 +57,7 @@ onMounted(async () => {
     try {
         // 获取专辑信息
         const res = await getPlaylistInfor(+$route.params.id)
-        if (res.code !== 200) Promise.reject()
+        if (res.code !== 200) await Promise.reject()
         playlist.value = res.playlist
 
         isLoading.value = false

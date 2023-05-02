@@ -58,7 +58,7 @@ onMounted(async () => {
     try {
         // 获取专辑信息
         const res = await getAlbumInfor(+$route.params.id)
-        if (res.code !== 200) Promise.reject()
+        if (res.code !== 200) await Promise.reject()
         album.value = res.album
 
         isLoading.value = false

@@ -30,7 +30,7 @@
 
         </div>
 
-        <div class="comments">
+        <div class="comments" v-if="!isLoading">
             <TitleHeader title="全部评论">
                 <template #titleMore>
                     <span style="position: relative;top:2px">{{ sumComments }}条</span>
@@ -40,16 +40,19 @@
                 <CommentCell :type="type" :userId="userStore.userData.id" :id="id" v-for="item in comments"
                     :key="item.commentId" :comment="item" />
             </ul>
-            <div class="pagination">
+            <div class="pagination" v-if="pages > 1">
                 <n-pagination size="small" v-model:page="page" :page-slot="5" :page-count="pages" />
             </div>
-            <EmptyPage v-if="!isLoading && !comments.length" />
+            <EmptyPage description="没有评论哟，快来抢沙发吧~" :show-btn="false" v-if="!isLoading && !comments.length" />
         </div>
+
+    <CommentsSkeleton v-if="isLoading"/>
 
     </div>
 </template>
 <script lang='ts' setup>
 // 组件
+import CommentsSkeleton from '../SkeletonList/CommentsSkeleton/CommentsSkeleton.vue';
 import TitleHeader from '@/pages/Home/components/TitleHeader/TitleHeader.vue';
 import CommentCell from './CommentCell/CommentCell.vue';
 import EmptyPage from '../EmptyPage/EmptyPage.vue';
