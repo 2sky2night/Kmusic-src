@@ -44,6 +44,9 @@ request.interceptors.response.use((response: AxiosResponse) => {
     if (response.status !== 200) {
         message('加载数据错误 😅', "error")
     }
+    if (response.data.code === 302) {
+        message("请登录后再进行操作 😂", "warning")
+    }
     //  返回服务器响应的真实内容
     return response.data
 }, (error: AxiosError) => {

@@ -170,6 +170,9 @@ function goToComment() {
  * 喜欢/取消喜欢歌曲
  */
 async function toToggleLike() {
+    if (!userStore.isLogin && !userStore.cookie) {
+        return message("请登录后再进行操作 😂", "warning")
+    }
     const id = (song.value as Song).id
     try {
         if (isLike.value) {

@@ -134,6 +134,9 @@ function checkDes() {
  * 收藏或取消收藏专辑
  */
 async function toSubAlbum() {
+    if (!userStore.isLogin && !userStore.cookie) {
+        return message("请登录后再进行操作 😂", "warning")
+    }
     try {
         if (isSub.value) {
             // 取消收藏
@@ -182,6 +185,7 @@ onUnmounted(() => {
     .list-time {
         display: flex;
         flex-direction: column;
+
         button {
             width: 100%;
             margin-bottom: 10px;
@@ -232,6 +236,7 @@ onUnmounted(() => {
 
         .list-time {
             flex-direction: row;
+
             button {
                 margin-right: 10px;
                 width: auto;

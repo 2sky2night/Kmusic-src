@@ -1,5 +1,6 @@
 <template>
     <div class="comment-area">
+
         <div class="hot-comments" v-if="!isLoading && hotComments.length">
             <TitleHeader title="热门评论">
                 <template #titleMore>
@@ -9,28 +10,42 @@
             </TitleHeader>
             <transition name="hot">
                 <ul v-show="showHot">
-                    <CommentCell  :type="type" :userId="userStore.userData.id" :id="id" v-for="item in hotComments" :key="item.commentId"
-                        :comment="item" />
+                    <CommentCell :type="type" :userId="userStore.userData.id" :id="id" v-for="item in hotComments"
+                        :key="item.commentId" :comment="item" />
                 </ul>
             </transition>
+        </div>
+
+        <div class="my-comment-area" v-if="!isLoading">
+            <TitleHeader title="发送评论" />
+            <div>
+                <n-input clearable v-model:value.trim="content" type="textarea" placeholder="输入评论吧~">
+                    <template #suffix>
+                        <n-button strong secondary type="info" @click="toSendComment">发送</n-button>
+                    </template>
+                </n-input>
+
+            </div>
+
 
         </div>
-        <div class="comments" v-if="!isLoading && comments.length">
+
+        <div class="comments">
             <TitleHeader title="全部评论">
                 <template #titleMore>
                     <span style="position: relative;top:2px">{{ sumComments }}条</span>
                 </template>
             </TitleHeader>
-            <ul>
-                <CommentCell :type="type" :userId="userStore.userData.id" :id="id" v-for="item in comments" :key="item.commentId"
-                    :comment="item" />
+            <ul v-if="!isLoading && comments.length">
+                <CommentCell :type="type" :userId="userStore.userData.id" :id="id" v-for="item in comments"
+                    :key="item.commentId" :comment="item" />
             </ul>
             <div class="pagination">
-                <n-pagination v-model:page="page" :page-count="pages" />
+                <n-pagination size="small" v-model:page="page" :page-slot="5" :page-count="pages" />
             </div>
-
+            <EmptyPage v-if="!isLoading && !comments.length" />
         </div>
-        <EmptyPage v-else />
+
     </div>
 </template>
 <script lang='ts' setup>
@@ -46,6 +61,8 @@ import { ref, reactive, onMounted, watch } from 'vue'
 // 工具函数
 import { countPage } from '@/utils/computed'
 import { checkPage } from '@/utils/tools';
+// api
+import { sendComment } from '@/api/public/comment'
 // 工具函数
 import message from '@/utils/message';
 // 仓库
@@ -81,11 +98,13 @@ const hotComments = reactive<Comment[]>([])
 // 当前页的评论
 const comments = reactive<Comment[]>([])
 // 一共有多少条评论
-let sumComments = 0
+let sumComments = ref(0)
 // 是否离开当前页面
 let isLeave = false;
 // 是否展示热门评论
 const showHot = ref(true)
+// 用户输入的内容
+const content = ref('')
 
 /**
  * 获取(对应页数的评论)评论数据
@@ -112,6 +131,43 @@ async function getCommentData() {
     }
 }
 
+/**
+ * 发送评论
+ */
+async function toSendComment() {
+    if (!userStore.isLogin && !userStore.cookie) {
+        return message("登录后再进行该操作吧~ 😉", "info")
+    }
+    if (!content.value) {
+        return message("输入内容不能为空 😉", "warning")
+    }
+    try {
+        const res = await sendComment(props.id, 1, props.type, content.value)
+        res.code !== 200 ? Promise.reject(res.message) : message("评论成功 😋", "success")
+        // 发送评论成功就插入一条评论
+        comments.unshift({
+            beReplied: [],
+            commentId: res.comment.commentId,
+            content: res.comment.content,
+            ipLocation: { ip: null, location: '未知', userId: res.comment.user.userId },
+            user: res.comment.user,
+            timeStr: '刚刚',
+            time: res.comment.time,
+            status: 0,
+            parentCommentId: 0,
+            owner: true,
+            likedCount: 0,
+            liked: false
+        })
+        // 清空输入的内容
+        content.value = ''
+    } catch (error) {
+        message((error as any).response.data.msg, "error")
+    }
+
+
+}
+
 onMounted(async () => {
     console.log(checkPage($route.query.page as any));
     // 初始化当前加载的页面
@@ -122,7 +178,7 @@ onMounted(async () => {
         // 获取总共多少页
         pages = countPage(20, res.total)
         // 获取总共有多少条评论
-        sumComments = res.total
+        sumComments.value = res.total
         // 获取热门评论
         res.hotComments.forEach(ele => {
             hotComments.push(ele)
@@ -168,6 +224,8 @@ onBeforeRouteLeave(() => {
     isLeave = true
 })
 
+
+
 </script>
 <style scoped>
 .comment-area {
@@ -200,5 +258,10 @@ onBeforeRouteLeave(() => {
         transform: scale(1);
         transform-origin: top center;
     }
+}
+
+.my-comment-area {
+    margin-right: 15px;
+
 }
 </style>

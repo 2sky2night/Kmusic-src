@@ -117,6 +117,9 @@ function openDropDown(e: MouseEvent) {
  * 喜欢/取消喜欢歌曲
  */
 async function toToggleLike() {
+    if (!userStore.cookie && !userStore.isLogin) {
+        return message("请登录后再进行操作 😂", "warning")
+    }
     const id = props.song.id
     try {
         if (isLike.value) {

@@ -155,3 +155,25 @@ export interface MusicPackage {
 3: 专辑
  */
 export type CommentType = 0 | 1 | 2 | 3
+
+/**
+ * 发送评论的响应体 /comment
+ */
+export interface SendCommentRes {
+    code: number;
+    comment: {
+        beRepliedUser: null;
+        commentId: number;
+        commentLocationType: number;
+        content: string;
+        expressionUrl: null;
+        needDisplayTime: boolean;
+        owner: boolean;
+        richContent: null;
+        time: number;
+        user: CommentUser;
+    };
+    msg: string;
+    message: string;
+    star: boolean;
+}

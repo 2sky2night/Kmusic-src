@@ -1,7 +1,13 @@
 <template>
     <li class="comment-cell">
-        <div>
-            <img @click="goToUser(comment.user.userId)" :src="comment.user.avatarUrl" v-once>
+        <div class="user-avatar-infor">
+            <img class="user-avatar" @click="goToUser(comment.user.userId)" :src="comment.user.avatarUrl" v-once>
+            <div title="云音乐会员包" class="music-package" v-if="comment.user.vipRights && comment.user.vipRights.musicPackage">
+                <img :src="comment.user.vipRights.musicPackage.iconUrl">
+            </div>
+            <div title="云黑椒会员" class="music-associator" v-if="comment.user.vipRights && comment.user.vipRights.associator">
+                <img :src="comment.user.vipRights.associator.iconUrl">
+            </div>
         </div>
 
         <div>
@@ -50,7 +56,7 @@
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 // 接口
-import { Comment,CommentType } from '@/api/public/comment/interfaces';
+import { Comment, CommentType } from '@/api/public/comment/interfaces';
 // api
 import { toLikeComment } from '@/api/public/comment';
 // 图标
@@ -81,7 +87,7 @@ const $router = useRouter()
 // 是否喜欢了当前评论
 const isLike = ref(props.comment.liked)
 // 点赞的数量
-const likeCount=ref(props.comment.likedCount)
+const likeCount = ref(props.comment.likedCount)
 
 /**
  * 去用户/我的页面
@@ -116,7 +122,7 @@ async function toggleLike() {
             res.code !== 200 ? Promise.reject() : ''
             isLike.value = true
             message("点赞成功", "success")
-                likeCount.value++
+            likeCount.value++
         }
     } catch (error) {
         message("点赞/取消点赞失败 🙄", "error")
@@ -133,13 +139,44 @@ async function toggleLike() {
     background-color: var(--bg-box-color);
     border: 1px solid var(--box-border-color);
     margin-right: 20px;
+    position: relative;
     border-radius: 10px;
 
-    img {
+    .user-avatar-infor {
+        display: flex ;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    img.user-avatar {
         width: 60px;
         height: 60px;
         cursor: pointer;
         border-radius: 50%;
+    }
+
+    .music-package {
+        top: 60px;
+        left: 50px;
+        height: 15px;
+        width: 15px;
+        position: absolute;
+        background-color: #fff;
+        border-radius: 50%;
+        img {
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+    .music-associator {
+        height: 20px;
+        width: 50px;
+        margin-top: 10px;
+        img {
+            height: 100%;
+            width: 100%;
+        }
     }
 }
 
@@ -148,7 +185,7 @@ async function toggleLike() {
 }
 
 .comment-cell>div:last-child {
-    
+
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -173,5 +210,4 @@ async function toggleLike() {
         }
 
     }
-}
-</style>
+}</style>
