@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
     Artist: typeof import('./src/components/ArtistCard/Artist.vue')['default']
     ArtistCard: typeof import('./src/components/Card/ArtistCard/ArtistCard.vue')['default']
     ArtistItem: typeof import('./src/components/Card/ArtistItem/ArtistItem.vue')['default']
+    ArtistSkeleton: typeof import('./src/components/PageSkeleton/ArtistSkeleton/ArtistSkeleton.vue')['default']
     Button: typeof import('./src/components/Button/Button.vue')['default']
     Card: typeof import('./src/components/PlayListCard/Card.vue')['default']
     CmtInfor: typeof import('./src/components/CmtInfor/CmtInfor.vue')['default']

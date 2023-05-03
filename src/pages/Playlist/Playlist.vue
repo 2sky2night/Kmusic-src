@@ -83,7 +83,7 @@
             </ul>
             <EmptyPage description="当前页没有任何一首歌曲 😉" :show-btn="false" v-if="songs.length === 0 && !isLoading" />
             <SongItemSkeletonList :length="20" v-if="isLoading" />
-            <div class="pagination" v-if="songs.length">
+            <div class="pagination" v-if="pages>1">
                 <span style="margin-right: 10px;">总共 {{ (playlistInfor as PlaylistInfor).trackIds.length }} 项</span>
                 <n-pagination :page-slot="7" v-model:page="page" :page-count="pages" />
             </div>
@@ -101,7 +101,7 @@ import type { PlaylistInfor, PlaylistDynamicRes } from '@/api/Playlist/interface
 // api
 import { getPlaylistInfor, getPlaylistDynamic, getPlaylistSong, toggleSubPlaylist } from '@/api/Playlist';
 // 钩子
-import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
+import {  onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import { onMounted, ref, reactive, watch, nextTick, onUnmounted } from 'vue';
 import useUserStore from '@/store/user';
 // 工具函数
@@ -131,8 +131,6 @@ const firstLoading = ref(true)
 const page = ref(0)
 // 一共多少页
 let pages = 0
-// 是否离开当前页了
-const isLeave = ref(false)
 // 是否关注
 const isSub = ref(false)
 // 路由
@@ -147,12 +145,12 @@ onMounted(async () => {
     try {
         // 加载歌单详情数据
         const resInfor = await getPlaylistInfor(+$route.params.id)
-        resInfor.code !== 200 ? Promise.reject() : '';
+        resInfor.code !== 200 ?await Promise.reject() : '';
         playlistInfor.value = resInfor.playlist;
         pages = countPage(20, playlistInfor.value.trackIds.length)
         // 加载歌单动态数据
         const resDynamic = await getPlaylistDynamic(+$route.params.id)
-        resDynamic.code !== 200 ? Promise.reject() : ''
+        resDynamic.code !== 200 ? await Promise.reject() : ''
         playlistDynamic.value = resDynamic
         isSub.value = playlistDynamic.value.subscribed
         isLoading.value = false
@@ -178,7 +176,7 @@ async function getSong() {
     songs.splice(0, songs.length)
     try {
         const res = await getPlaylistSong(+$route.params.id, page.value)
-        res.code !== 200 ? Promise.reject() : ''
+        res.code !== 200 ? await Promise.reject() : ''
         res.songs.forEach((ele, index) => {
             songs.push({ ...ele, privilege: { ...res.privileges[index] } })
         })
@@ -219,23 +217,30 @@ watch(page, (v) => {
             page: v
         }
     })
-})
-
-// 路由变化就发送请求获取数据
-watch(() => $route.fullPath, () => {
-    // 若当前离开当前页了,就不执行获取数据了
-    if (isLeave.value) {
-        return
-    }
-    //更新页码,获取歌单当前页的歌曲
-    page.value = checkPage($route.query.page as any);
     getSong()
 })
 
-onBeforeRouteLeave(() => {
-    console.log('离开路由了');
-    isLeave.value = true
+onBeforeRouteUpdate((to,from) => {
+    if(to.fullPath===from.fullPath)return
+    page.value = checkPage(to.query.page as any);
+    
 })
+
+// // 路由变化就发送请求获取数据
+// watch(() => $route.fullPath, () => {
+//     // 若当前离开当前页了,就不执行获取数据了
+//     if (isLeave.value) {
+//         return
+//     }
+//     //更新页码,获取歌单当前页的歌曲
+//     page.value = checkPage($route.query.page as any);
+//     getSong()
+// })
+
+// onBeforeRouteLeave(() => {
+//     console.log('离开路由了');
+//     isLeave.value = true
+// })
 
 /**
  * 检测当前简介是否超过一定高度

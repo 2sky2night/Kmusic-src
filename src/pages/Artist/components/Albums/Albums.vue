@@ -16,7 +16,7 @@ import { getArtistAlbum } from '@/api/Artist';
 // 接口
 import { Album } from '@/api/public/indexfaces';
 // 钩子
-import { useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { onMounted, reactive, ref } from 'vue';
 import message from '@/utils/message';
 import EmptyPage from '@/components/EmptyPage/EmptyPage.vue';
@@ -28,13 +28,15 @@ const hasMore = ref(false)
 // 正在加载
 const isLoading = ref(false)
 
-onMounted(getData)
+onMounted(() => {
+    getData(+$route.params.id)
+})
 
 // 获取歌手专辑列表
-async function getData() {
+async function getData(id:number) {
     isLoading.value = true
     try {
-        const res = await getArtistAlbum(+$route.params.id, list.length)
+        const res = await getArtistAlbum(id, list.length)
         if (res.code !== 200) await Promise.reject()
         res.hotAlbums.forEach(ele => {
             list.push(ele)
@@ -45,6 +47,11 @@ async function getData() {
         message("获取歌手专辑失败 😲", "warning")
     }
 }
+
+onBeforeRouteUpdate(to => {
+    list.splice(0,list.length)
+    getData(+to.params.id)
+})
 
 </script>
 <style scoped>

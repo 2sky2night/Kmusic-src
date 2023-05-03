@@ -14,7 +14,7 @@ import { Song } from '@/api/public/indexfaces';
 import { getArtistHotSong } from '@/api/Artist';
 // 钩子
 import { onMounted, reactive, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter,onBeforeRouteUpdate } from 'vue-router';
 // 工具函数
 import message from '@/utils/message';
 // 组件
@@ -31,24 +31,45 @@ const emit = defineEmits<{
     (e:"subState",value:boolean):void
 }>()
 
-onMounted(async () => {
-    try {
-        const res = await getArtistHotSong(+$route.params.id)
+onMounted(() => {
+    getHotSong(+$route.params.id)
+})
+
+/**
+ * 获取歌手热门歌曲
+ * @param id - 歌手id
+ */
+async function getHotSong(id: number) {
+    isLoading.value=true
+    // 清空当前歌手歌曲数据
+    songs.splice(0,songs.length)
+      try {
+        const res = await getArtistHotSong(id)
         if (res.code !== 200) await Promise.reject()
         res.hotSongs.forEach(ele => {
             songs.push(ele)
         })
         // 将是否关注了歌手的信息发送出去
-        emit("subState",res.artist.followed)
+        emit("subState", res.artist.followed)
         isLoading.value = false
     } catch (error) {
         message("获取歌手热门单曲失败 😐", "warning")
     }
-})
+}
 
+/**
+ * 前往歌手全部歌曲
+ */
 function goToArtistSongs() {
     $router.push(`/artist-songs/${$route.params.id}?page=1`)
 }
+
+/**
+ * 路由动态参数更新时获取最新的歌曲信息
+ */
+onBeforeRouteUpdate((to) => {
+    getHotSong(+to.params.id)
+})
 
 </script>
 

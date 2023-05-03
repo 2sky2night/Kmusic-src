@@ -15,7 +15,7 @@
 <script lang='ts' setup>
 // 钩子
 import { onMounted, reactive, ref } from 'vue'
-import { useRoute } from 'vue-router';
+import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 // 接口
 import { MvData } from '@/api/Artist/interfaces';
 // api
@@ -31,12 +31,14 @@ const isLoading = ref(false)
 // 还有更多吗
 const hasMore = ref(false)
 
-onMounted(getData)
+onMounted(() => {
+    getData(+$route.params.id)
+})
 
-async function getData() {
+async function getData(id: number) {
     isLoading.value = true
     try {
-        const res = await getArtistMv(+$route.params.id, list.length)
+        const res = await getArtistMv(id, list.length)
         if (res.code !== 200) await Promise.reject()
         res.mvs.forEach(ele => {
             list.push(ele)
@@ -49,5 +51,13 @@ async function getData() {
     }
 }
 
+/**
+ * 路由更新时获取最新歌手的mv数据
+ */
+onBeforeRouteUpdate((to) => {
+    // 清除当前歌手的mv
+     list.splice(0, list.length)
+   getData(+to.params.id)
+})
+
 </script>
-<style scoped></style>

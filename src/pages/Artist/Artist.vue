@@ -45,7 +45,8 @@
 
             </div>
         </div>
-        <!--面吧信息-->
+        <ArtistSkeleton v-else />
+        <!--面板信息-->
         <n-tabs type="segment" animated>
             <n-tab-pane name="chap1" tab="热门单曲">
                 <Songs @sub-state="getSubState" />
@@ -65,13 +66,15 @@
 import MVs from './components/MVs/MVs.vue'
 import Songs from './components/Songs/Songs.vue'
 import Albums from './components/Albums/Albums.vue'
+import ArtistSkeleton from '@/components/PageSkeleton/ArtistSkeleton/ArtistSkeleton.vue';
 // 接口
 import type { ArtistData } from '@/api/Artist/interfaces';
 // api
 import { getArtistInfor, subArtist } from '@/api/Artist';
 // 钩子
-import { useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue';
+import useUserStore from '@/store/user';
 // 工具函数
 import message from '@/utils/message';
 //  图标
@@ -86,17 +89,11 @@ const artistData = ref<ArtistData>()
 const isLoading = ref(true)
 // 收藏该歌手没
 const isSub = ref(false)
+// 用户仓库
+const userStore = useUserStore()
 
-onMounted(async () => {
-    const id = +$route.params.id
-    try {
-        const res = await getArtistInfor(id)
-        if (res.code !== 200) await Promise.reject()
-        artistData.value = res.data
-        isLoading.value = false
-    } catch (error) {
-        message("获取歌手详情信息失败 😪", "error")
-    }
+onMounted(() => {
+    getArtistData(+$route.params.id)
 })
 
 /**
@@ -114,10 +111,28 @@ function getSubState(value: boolean) {
 }
 
 /**
+ * 获取歌手信息
+ */
+async function getArtistData(id: number) {
+    isLoading.value = true
+    try {
+        const res = await getArtistInfor(id)
+        if (res.code !== 200) await Promise.reject()
+        artistData.value = res.data
+        isLoading.value = false
+    } catch (error) {
+        message("获取歌手详情信息失败 😪", "error")
+    }
+}
+
+/**
  * 收藏歌手 接口问题只能取消收藏歌手
  */
 async function toSubArtist() {
-
+    if (!userStore.cookie && !userStore.isLogin) {
+        message("登录后再来操作吧~", "info")
+        return
+    }
     try {
         if (isSub.value) {
             const res = await subArtist(+$route.params.id, 0)
@@ -130,7 +145,7 @@ async function toSubArtist() {
         } else {
             message("接口安全问题 暂时不能收藏歌手 😉", "info")
             return
-             const res = await subArtist(+$route.params.id, 1)
+            const res = await subArtist(+$route.params.id, 1)
             if (res.code === 200) {
                 message("收藏歌手成功 !🤗", "success")
                 isSub.value = true
@@ -143,6 +158,13 @@ async function toSubArtist() {
         message("收藏/取消收藏歌手失败 🙄", "error")
     }
 }
+
+/**
+ * 路由动态参数更新时获取最新的歌曲信息
+ */
+onBeforeRouteUpdate((to) => {
+    getArtistData(+to.params.id)
+})
 
 </script>
 <style scoped lang="scss">
