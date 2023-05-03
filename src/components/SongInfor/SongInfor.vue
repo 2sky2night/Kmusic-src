@@ -3,7 +3,7 @@
         <div v-if="isShow" class="song-infor-drawer" @click.stop="">
             <div v-once class="drawer-header">
                 <div>
-                    <img :src="song.al.picUrl" />
+                    <img :src="song.al.picUrl||'../../../../public/cover.jpg'"  />
                     <div>
                         <n-text>{{ song.name }}</n-text>
                         <div class="song-artists">
