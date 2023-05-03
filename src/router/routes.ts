@@ -238,6 +238,13 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/history',
+        component: () => import('@/pages/History/History.vue'),
+        meta: {
+            title: "播放历史"
+        }
+    },
+    {
         path: "/404",
         name: "404",
         component: () => import("@/pages/404/404.vue"),

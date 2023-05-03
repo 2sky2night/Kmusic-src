@@ -3,12 +3,15 @@ import themeOverrides from '@/utils/theme'
 import Layout from '@/layout/Layout.vue'
 import useThemeStore from '@/store/theme';
 import useUserStore from '@/store/user'
+import useMusicStore from './store/music';
 import { useRouter } from 'vue-router';
 import { setLocal } from './utils/localStorage';
 // 主题仓库
 const themeStore = useThemeStore();
 //  用户仓库
 const userStore = useUserStore();
+// 音乐仓库
+const musicStore = useMusicStore();
 
 (window as any).$push = useRouter().push;
 
@@ -23,6 +26,13 @@ if (userStore.isLogin && userStore.cookie) {
 userStore.$onAction(({ after }) => {
   after(() => {
     setLocal('userData', userStore.userData)
+  })
+})
+
+// 检测到音乐仓库的方法执行,就将最新数据保存在仓库中
+musicStore.$onAction(({ after }) => {
+  after(() => {
+    setLocal('musicData', musicStore.$state)
   })
 })
 

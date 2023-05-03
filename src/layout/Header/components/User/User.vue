@@ -25,7 +25,8 @@ function handleSelect(v: string) {
     switch (v) {
         case 'login': $router.push('/login'); break;
         case 'logout': logout(); break;
-        case 'remmon':$router.push('/daily-song')
+        case 'remmon': $router.push('/daily-song'); break;
+        case 'history': $router.push('/history'); break;
         default: console.log('点击了某一项');
     }
 }

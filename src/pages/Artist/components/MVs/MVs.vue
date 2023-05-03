@@ -7,7 +7,7 @@
                     :creators="[{ userId: item.artist.id, userName: item.artistName }]" />
             </ul>
             <n-button style="align-self: center;padding: 0 80px;" strong secondary v-if="hasMore && !isLoading"
-                @click="getData">加载更多</n-button>
+                @click="getData(+$route.params.id)">加载更多</n-button>
         </div>
         <EmptyPage v-if="!isLoading && !list.length" description="该歌手没有发布mv哟 😋" :show-btn="false" />
     </div>
@@ -56,8 +56,8 @@ async function getData(id: number) {
  */
 onBeforeRouteUpdate((to) => {
     // 清除当前歌手的mv
-     list.splice(0, list.length)
-   getData(+to.params.id)
+    list.splice(0, list.length)
+    getData(+to.params.id)
 })
 
 </script>

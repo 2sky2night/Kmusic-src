@@ -32,9 +32,9 @@ function renderCustomHeader() {
         'div',
         { style: 'display:flex;padding:0 10px;height:50px;align-items: center;user-select: none;;', class: 'drop-down-header' },
         [
-            h(NAvatar, { src: userStore.userData.avatar+'' }),
+            h(NAvatar, { src: userStore.userData.avatar + '' }),
             h('div', { style: 'margin-left:5px;' }, [
-                h('h5', flag ? userStore.userData.nickname+'' : '未登录'),
+                h('h5', flag ? userStore.userData.nickname + '' : '未登录'),
                 h('div', { style: 'font-size:12px;' }, flag ? `等级: ${userStore.userData.level}` : '登录尽享更多权益')
             ])
         ]
@@ -94,6 +94,11 @@ export const unLoginMenu = [
         key: 'header',
         type: 'render',
         render: renderTheme
+    },
+    {
+        label: '播放的历史记录',
+        key: 'history',
+        icon: renderIcon(IosPaperIcon)
     },
     {
         label: '登录',

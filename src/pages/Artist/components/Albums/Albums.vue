@@ -6,7 +6,7 @@
                     :pic-url="item.picUrl" :sub-time="(item.publishTime as number)"></AlbumCard>
             </ul>
         </div>
-        <n-button style="align-self: center;padding: 0 80px;" strong secondary v-if="hasMore && !isLoading" @click="getData">加载更多</n-button>
+        <n-button style="align-self: center;padding: 0 80px;" strong secondary v-if="hasMore && !isLoading" @click="getData(+$route.params.id)">加载更多</n-button>
         <EmptyPage v-if="!isLoading&&!list.length" description="该歌手没有发布专辑哟 😋" :show-btn="false" />
     </div>
 </template>
