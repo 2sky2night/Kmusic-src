@@ -30,3 +30,20 @@ export interface Account {
     vipType: number;
 }
 
+/**
+ * 获取用户等级信息 /user/level
+ */
+export interface LevelRes {
+    code: number;
+    data: {
+        info: string;
+        level: number;
+        nextLoginCount: number;
+        nextPlayCount: number;
+        nowLoginCount: number;
+        nowPlayCount: number;
+        progress: number;
+        userId: number;
+};
+    full: boolean;
+}

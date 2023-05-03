@@ -153,3 +153,79 @@ export interface ReReason {
    */
   songId: number;
 }
+
+/**
+ * 关注列表的响应体 /user/follows
+ */
+export interface FollowsRes {
+  code: number;
+  follow: UserFollow[];
+  more: boolean;
+  touchCount: number;
+}
+
+/**
+ * 粉丝列表的响应体 /user/followeds
+ */
+
+export interface FansRes {
+  code: number;
+  followeds: UserFollow[];
+  more: boolean;
+  size: number;
+}
+
+/**
+ * 关注 粉丝列表响应回来的用户数据
+ */
+export interface UserFollow {
+  accountStatus: number;
+  authStatus: number;
+  avatarDetail: AvatarDetail;
+  avatarUrl: string;
+  blacklist: boolean;
+  eventCount: number;
+  experts: null;
+  expertTags: null;
+  followed: boolean;
+  followeds: number;
+  follows: number;
+  gender: number;
+  mutual: boolean;
+  nickname: string;
+  playlistCount: number;
+  py: string;
+  remarkName: null;
+  signature: string;
+  time: number;
+  userId: number;
+  userType: number;
+  vipRights: VipRights;
+  vipType: number;
+}
+
+export interface AvatarDetail {
+  identityIconUrl: string;
+  identityLevel: number;
+  userType: number;
+}
+
+export interface VipRights {
+  associator: Associator;
+  musicPackage: MusicPackage;
+  redplus: null;
+  redVipAnnualCount: number;
+  redVipLevel: number;
+}
+
+export interface Associator {
+  iconUrl: string;
+  rights: boolean;
+  vipCode: number;
+}
+
+export interface MusicPackage {
+  iconUrl: string;
+  rights: boolean;
+  vipCode: number;
+}

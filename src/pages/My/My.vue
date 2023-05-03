@@ -1,12 +1,10 @@
 <template>
     <div class="page">
-        <UserInfor v-if="userInfor.avatar" :avatar="userInfor.avatar" :create-days="userInfor.createDays"
+        <UserInfor  v-if="userInfor.avatar" :avatar="userInfor.avatar" :create-days="userInfor.createDays"
             :event-count="userInfor.eventCount" :followeds="userInfor.followeds" :follows="userInfor.follows"
             :gender="userInfor.gender" :level="userInfor.level" :nickname="userInfor.nickname"
-            :signature="userInfor.signature">
-            <n-tag type="info" size="small" style="margin-left: 30px;">
-                自己
-            </n-tag>
+            :signature="userInfor.signature" :id="userStore.userData.id as number">
+            <n-progress style="width:100px;margin-left: 10px;" type="line" :percentage="levelProcess" :show-indicator="false" />
         </UserInfor>
         <TabBar :list="list" />
         <RouterView></RouterView>
@@ -19,7 +17,7 @@ import TabBarList from '@/components/TabBar/interfaces';
 // 工具函数
 import message from '@/utils/message'
 // api
-import { getUserAccount } from '@/api/My';
+import { getUserAccount, getUserLevel } from '@/api/My';
 import { getUserDetial } from '@/api/public/user';
 import { reactive, onMounted, provide, ref } from 'vue'
 // 仓库
@@ -44,6 +42,8 @@ const userInfor: any = reactive({})
 const isOk = ref(false)
 // 向子路由暴露加载完成
 provide('isOk', isOk)
+// 用户等级信息
+const levelProcess=ref(0)
 
 function setData(resDetail: UserDetailRes) {
     // 更新用户数据
@@ -67,13 +67,17 @@ onMounted(async () => {
             // 设置仓库数据源用户的id
             userStore.setUserId(resAccount.account.id)
             const resDetail = await getUserDetial(resAccount.account.id as number)
+            if (resDetail.code !== 200) await Promise.reject();
             setData(resDetail)
         } else {
             // 若本地有数据,使用仓库中的id来获取用户数据
             const resDetail = await getUserDetial(userStore.userData.id as number)
+            if (resDetail.code !== 200) await Promise.reject();
             setData(resDetail)
         }
-
+        const res = await getUserLevel()
+        if (res.code !== 200) await Promise.reject();
+        levelProcess.value=res.data.progress*100
         isOk.value = true
 
     } catch (err) {

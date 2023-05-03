@@ -1,4 +1,4 @@
-import type { UserAccountRes } from './interfaces'
+import type { UserAccountRes,LevelRes } from './interfaces'
 import request from '@/utils/request'
 
 /**
@@ -6,4 +6,12 @@ import request from '@/utils/request'
  */
 export const getUserAccount = () => {
    return request.get<UserAccountRes>('/user/account')
+}
+
+/**
+ * 获取用户等级
+ * @returns 
+ */
+export const getUserLevel = () => {
+   return request.get<LevelRes>('/user/level')
 }

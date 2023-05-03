@@ -21,8 +21,8 @@
             <ul>
                 <!--用户的其他信息-->
                 <UserItem title="动态" :value="eventCount" />
-                <UserItem title="关注" :value="follows" />
-                <UserItem title="粉丝" :value="followeds" />
+                <UserItem title="关注" :value="follows"  @click="goToFollow" />
+                <UserItem title="粉丝" :value="followeds" @click="goToFans" />
             </ul>
             <!--用户简介以及创建天数-->
             <div class="more-infor">
@@ -38,7 +38,10 @@
 <script lang='ts' setup>
 import UserItem from './components/UserItem/UserItem.vue';
 import { computed } from 'vue'
+import { useRouter } from 'vue-router';
 import { ManOutlined as ManOutlinedIcon, WomanOutlined as WomanOutlinedIcon } from '@vicons/antd'
+
+
 /**
  * 格式化用户签名
  */
@@ -51,6 +54,7 @@ const sigFormat = computed(() => {
  * 用户信息组件的自定义属性
  */
 const props = defineProps<{
+    id: number;
     avatar: string;
     nickname: string;
     level: number;
@@ -73,6 +77,17 @@ const props = defineProps<{
      */
     createDays: number
 }>()
+const $router=useRouter()
+
+// 去用户粉丝页面
+function goToFans() {
+    $router.push(`/user-fans/${props.id}`)
+}
+
+// 去用户关注页面
+function goToFollow() {
+    $router.push(`/user-follow/${props.id}`)
+}
 
 </script>
 <style scoped lang="scss">

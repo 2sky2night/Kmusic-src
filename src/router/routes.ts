@@ -224,6 +224,20 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/user-follow/:id',
+        component: () => import('@/pages/Follow/Follow.vue'),
+        meta: {
+            title: "关注"
+        }
+    },
+    {
+        path: '/user-fans/:id',
+        component: () => import('@/pages/Fans/Fans.vue'),
+        meta: {
+            title: "粉丝"
+        }
+    },
+    {
         path: "/404",
         name: "404",
         component: () => import("@/pages/404/404.vue"),

@@ -63,6 +63,7 @@ declare module '@vue/runtime-core' {
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     NModal: typeof import('naive-ui')['NModal']
     NPagination: typeof import('naive-ui')['NPagination']
+    NProgress: typeof import('naive-ui')['NProgress']
     NResult: typeof import('naive-ui')['NResult']
     NSkeleton: typeof import('naive-ui')['NSkeleton']
     NSpace: typeof import('naive-ui')['NSpace']
@@ -95,9 +96,11 @@ declare module '@vue/runtime-core' {
     ThemeBtnExp: typeof import('./src/components/ThemeBtnExp/ThemeBtnExp.vue')['default']
     UserCard: typeof import('./src/components/Card/UserCard/UserCard.vue')['default']
     UserInfor: typeof import('./src/components/UserInfor/UserInfor.vue')['default']
+    UserInforCard: typeof import('./src/components/Card/UserInforCard/UserInforCard.vue')['default']
     UserItem: typeof import('./src/components/UserInfor/components/UserItem/UserItem.vue')['default']
     UserPlaylist: typeof import('./src/components/UserPlaylist/UserPlaylist.vue')['default']
     UserPlayList: typeof import('./src/components/UserPlayList/UserPlayList.vue')['default']
+    UserSkeletonList: typeof import('./src/components/SkeletonList/UserSkeletonList/UserSkeletonList.vue')['default']
     Video: typeof import('./src/components/Video/Video.vue')['default']
   }
 }

@@ -1,15 +1,13 @@
 <template>
     <div class="music-list" style="margin: 0;">
-        <TitleHeader title="收藏的歌单"/>
-        <EmptyPage  v-if="playlist.length===0&&!isLoading" 
-            description="没有歌单哟 😍" :show-btn="false"
-        />
+        <TitleHeader title="收藏的歌单" />
+        <EmptyPage v-if="playlist.length === 0 && !isLoading" description="没有歌单哟 😍" :show-btn="false" />
         <ul v-if="!isLoading" style="padding:0 5px;">
             <PlayListCard v-for="item in playlist" :key="item.id" :cover-img-url="item.coverImgUrl" :id="item.id"
                 :name="item.name" :play-count="item.playCount" />
         </ul>
-        <SkeletonList  :text-center="false" :cover-radius="8"  :length="10" v-if="isLoading"/>
-        <n-button v-if="!isEnd&&!isLoading" class="more-btn" @click="toGetUserPlayList">点击加载更多</n-button>
+        <SkeletonList :text-center="false" :cover-radius="8" :length="10" v-if="isLoading" />
+        <n-button v-if="!isEnd && !isLoading" class="more-btn" @click="toGetUserPlayList">点击加载更多</n-button>
     </div>
 </template>
 <script lang='ts' setup>
@@ -50,9 +48,6 @@ async function toGetUserPlayList() {
                 res.playlist.forEach(ele => {
                     playlist.push(ele)
                 })
-                if (isEnd.value) {
-                    message('没有更多了 😴', "warning")
-                }
                 // 页数+1
                 page.value++
             }
@@ -60,9 +55,6 @@ async function toGetUserPlayList() {
             // 参数错误
             message('参数错误!😋', "warning")
         }
-    } else {
-        // 若已经加载完成了
-        message('没有更多了!', "warning")
     }
     isLoading.value = false
 }

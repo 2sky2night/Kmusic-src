@@ -1,9 +1,10 @@
 <template>
     <div class="page">
         <div v-if="userData">
-            <UserInfor :avatar="userData.avatar" :create-days="userData.createDays" :event-count="userData.eventCount"
-                :followeds="userData.followeds" :gender="userData.gender ? true : false" :follows="userData.follows"
-                :level="userData.level" :nickname="userData.nickname" :signature="userData.signature">
+            <UserInfor :id="userData.uid" :avatar="userData.avatar" :create-days="userData.createDays"
+                :event-count="userData.eventCount" :followeds="userData.followeds" :gender="userData.gender ? true : false"
+                :follows="userData.follows" :level="userData.level" :nickname="userData.nickname"
+                :signature="userData.signature">
                 <n-button size="small" @click="toFollowUser" style="margin-left: 10px;"
                     :type="userData.followed ? 'primary' : ''">{{ followFormat
                     }}</n-button>
@@ -107,7 +108,7 @@ const followFormat = computed(() => {
 })
 
 async function toFollowUser() {
-    return message("接口异常，禁止使用! 😎","info")
+    return message("接口异常，禁止使用! 😎", "info")
     const user = (userData.value as UserData)
     if (user.followed) {
         // 当前为已关注,则再次点击为取消关注用户
