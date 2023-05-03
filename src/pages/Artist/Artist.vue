@@ -33,17 +33,22 @@
                         </n-icon>
                         {{ artistData?.artist.mvSize }} 个MV
                     </span>
+                    <n-button size="small" strong secondary @click="toSubArtist" :type="isSub ? 'warning' : 'default'">{{
+                        isSub ? '已收藏' : '收藏歌手' }}</n-button>
                 </div>
                 <!--歌手的简介-->
-                <span style="word-break: break-all;">
-                    {{ artistData?.artist.briefDesc }}
-                </span>
+                <n-ellipsis :line-clamp="3" :tooltip="false">
+                    <span style="word-break: break-all;cursor: pointer;" @click="checkArtistDes">
+                        {{ artistData?.artist.briefDesc }}
+                    </span>
+                </n-ellipsis>
+
             </div>
         </div>
-
+        <!--面吧信息-->
         <n-tabs type="segment" animated>
             <n-tab-pane name="chap1" tab="热门单曲">
-                <Songs />
+                <Songs @sub-state="getSubState" />
             </n-tab-pane>
             <n-tab-pane name="chap2" tab="专辑">
                 <Albums />
@@ -63,7 +68,7 @@ import Albums from './components/Albums/Albums.vue'
 // 接口
 import type { ArtistData } from '@/api/Artist/interfaces';
 // api
-import { getArtistInfor } from '@/api/Artist';
+import { getArtistInfor, subArtist } from '@/api/Artist';
 // 钩子
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue';
@@ -71,12 +76,16 @@ import { onMounted, ref } from 'vue';
 import message from '@/utils/message';
 //  图标
 import { MusicalNotes, Albums as AlbumsIcon, Videocam } from '@vicons/ionicons5'
+// 渲染函数
+import { messageboxWithout } from '@/render/MessageBox';
 
 const $route = useRoute()
 // 歌手详情信息
 const artistData = ref<ArtistData>()
 // 正在加载
 const isLoading = ref(true)
+// 收藏该歌手没
+const isSub = ref(false)
 
 onMounted(async () => {
     const id = +$route.params.id
@@ -84,12 +93,56 @@ onMounted(async () => {
         const res = await getArtistInfor(id)
         if (res.code !== 200) await Promise.reject()
         artistData.value = res.data
-        isLoading.value=false
+        isLoading.value = false
     } catch (error) {
         message("获取歌手详情信息失败 😪", "error")
     }
 })
 
+/**
+ * 查看歌手简介
+ */
+function checkArtistDes() {
+    messageboxWithout((artistData.value as ArtistData).artist.briefDesc, "歌手简介")
+}
+
+/**
+ * 获取歌手的收藏状态
+ */
+function getSubState(value: boolean) {
+    isSub.value = value
+}
+
+/**
+ * 收藏歌手 接口问题只能取消收藏歌手
+ */
+async function toSubArtist() {
+
+    try {
+        if (isSub.value) {
+            const res = await subArtist(+$route.params.id, 0)
+            if (res.code === 200) {
+                message("取消收藏歌手成功 !🤗", "success")
+                isSub.value = false
+            } else {
+                await Promise.reject()
+            }
+        } else {
+            message("接口安全问题 暂时不能收藏歌手 😉", "info")
+            return
+             const res = await subArtist(+$route.params.id, 1)
+            if (res.code === 200) {
+                message("收藏歌手成功 !🤗", "success")
+                isSub.value = true
+            } else {
+                await Promise.reject()
+            }
+        }
+
+    } catch (error) {
+        message("收藏/取消收藏歌手失败 🙄", "error")
+    }
+}
 
 </script>
 <style scoped lang="scss">
@@ -157,6 +210,7 @@ onMounted(async () => {
 
     .artist-infor {
         flex-direction: column;
+        margin-bottom: 0;
 
         .artist-data>h1 {
             font-size: 25px;
@@ -175,9 +229,6 @@ onMounted(async () => {
         .artist-cover {
             min-width: 150px;
             height: 150px;
-        }
-        .artist-data>span:last-child{
-            font-size: 12px;
         }
     }
 }

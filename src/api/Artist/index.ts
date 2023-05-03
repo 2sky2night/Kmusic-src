@@ -32,16 +32,16 @@ export const subArtist = (id: number, t: 0 | 1) => {
 /**
  * 获取歌手的专辑
  * @param id  - 歌手id
- * @param page - 加载第几页数据
+ * @param offset - 从第几条数据开始获取数据
  * @param limit - 每次获取多少条数据
  * @returns 
  */
-export const getArtistAlbum = (id: number, page: number, limit: 20) => {
+export const getArtistAlbum = (id: number, offset: number, limit: number=24) => {
     return request.get<ArtistAlbumRes>('/artist/album', {
         params: {
             id,
             limit,
-            offset: (page - 1) * limit
+            offset
         }
     })
 }
@@ -50,16 +50,16 @@ export const getArtistAlbum = (id: number, page: number, limit: 20) => {
 /**
  * 获取歌手的mv列表
  * @param id - 歌手id
- * @param page  - 加载第几页数据
+ * @param  offset - 从第几条数据开始获取数据
  * @param limit - 每一页多少条数据
  * @returns 
  */
-export const getArtistMv = (id: number, page: number, limit: 20) => {
+export const getArtistMv = (id: number, offset: number, limit: number=20) => {
     return request.get<ArtistMvRes>('/artist/mv', {
         params: {
             id,
             limit,
-            offset: (page - 1) * limit
+            offset
         }
     })
 }

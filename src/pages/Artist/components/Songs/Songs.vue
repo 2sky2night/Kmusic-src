@@ -2,7 +2,7 @@
     <div class="hot-songs">
         <ul v-if="!isLoading">
             <SongItem v-for="item in songs" :key="item.id" :song="item" />
-            <n-button  style="align-self: center;padding: 0 50px;" strong secondary @click="goToArtistSongs">查看歌手的全部歌曲</n-button>
+            <n-button  style="margin:10px 0;align-self: center;padding: 0 50px;" strong secondary @click="goToArtistSongs">查看歌手的全部歌曲</n-button>
         </ul>
         <SongItemSkeletonList v-else :length="10" />
     </div>
@@ -17,7 +17,7 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 // 工具函数
 import message from '@/utils/message';
-import SongItem from '@/components/SongItem/SongItem.vue';
+// 组件
 import SongItemSkeletonList from '@/components/SkeletonList/SongItemSkeletonList/SongItemSkeletonList.vue';
 
 const $router = useRouter()
@@ -26,7 +26,10 @@ const $route = useRoute()
 const isLoading = ref(true)
 // 热歌列表
 const songs = reactive<Song[]>([])
-
+// 自定义属性,将是否收藏歌手的信息发送给父组件
+const emit = defineEmits<{
+    (e:"subState",value:boolean):void
+}>()
 
 onMounted(async () => {
     try {
@@ -35,6 +38,8 @@ onMounted(async () => {
         res.hotSongs.forEach(ele => {
             songs.push(ele)
         })
+        // 将是否关注了歌手的信息发送出去
+        emit("subState",res.artist.followed)
         isLoading.value = false
     } catch (error) {
         message("获取歌手热门单曲失败 😐", "warning")
