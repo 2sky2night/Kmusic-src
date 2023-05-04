@@ -5,13 +5,14 @@
             <span> 的粉丝</span>
         </div>
         <div class="list">
-            <ul v-if="!isLoading">    
+            <ul v-if="!isLoading">
                 <UserInforCard v-for="item in users" :key="item.userId" :data="item" />
             </ul>
-            <UserSkeletonList :length="users.length+20" v-else/>
+            <UserSkeletonList :length="users.length + 20" v-else />
             <n-button style="align-self: center;padding: 0 80px;" strong secondary v-if="hasMore && !isLoading"
                 @click="getData">加载更多</n-button>
-            <EmptyPage v-if="!isLoading && !users.length" description="该用户没有粉丝哟 😋" :show-btn="false" />
+            <EmptyPage v-if="!isLoading && !users.length && !isPrivacy" description="该用户没有粉丝哟 😋" :show-btn="false" />
+            <EmptyPage v-if="!isLoading  && isPrivacy" description="用户隐私设置不允许查看" :show-btn="true" />
         </div>
 
     </div>
@@ -41,6 +42,8 @@ const hasMore = ref(false)
 const users = reactive<UserFollow[]>([])
 // 用户名称
 const name = ref('')
+// 用户是否设置了隐私
+const isPrivacy = ref(false)
 
 onMounted(getData)
 
@@ -54,13 +57,22 @@ async function getData() {
         name.value = resUser.profile.nickname
         // 获取当前用户的粉丝列表
         const resFans = await getUserFans(id, users.length)
-        if (resFans.code !== 200) await Promise.reject()
+        if (resFans.code === 200) {
+            resFans.followeds.forEach(ele => {
+                users.push(ele)
+            })
+            hasMore.value = resFans.more
+            isLoading.value = false
+        } else if (resFans.code === 400) {
+            message("用户隐私无权限查看 😀", "warning")
+            hasMore.value = resFans.more
+            isLoading.value = false
+            isPrivacy.value = true
+        } else {
+            await Promise.reject()
+        }
 
-        resFans.followeds.forEach(ele => {
-            users.push(ele)
-        })
-        hasMore.value = resFans.more
-        isLoading.value=false
+
 
     } catch (error) {
         message("获取用户粉丝列表失败 😐", "warning")
@@ -69,11 +81,12 @@ async function getData() {
 
 </script>
 <style scoped>
-.page{
+.page {
     box-sizing: border-box;
     padding: 10px;
 }
-.list{
+
+.list {
     display: flex;
     flex-direction: column;
 }

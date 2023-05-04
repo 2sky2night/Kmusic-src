@@ -20,7 +20,7 @@ button {
 :root {
   --box-shadow: rgba(0, 0, 0, 0.318);
 
-  --color-primary-light: rgb(196, 223, 253);
+  --color-primary-light: #e4f0fd;
 
   --mask-text-color: #fff;
   --mask-bg-color: #00000030;

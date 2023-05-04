@@ -17,3 +17,40 @@ export function checkPage(page: number) {
         }
     }
 }
+
+/**
+ * 防抖函数
+ * @param cb 
+ * @param delay 
+ * @returns 
+ */
+export const debounce = (cb: any, delay: number) => {
+    let timer: any = null
+    return function () {
+        if (timer) {
+            clearTimeout(timer)
+        }
+        timer = setTimeout(() => {
+            cb()
+            timer = null
+        }, delay)
+    }
+}
+
+/**
+ * 节流函数
+ * @param cb 
+ * @param delay 
+ * @returns 
+ */
+export const throttle = (cb: any, delay: number) => {
+    let timer: any = null
+    return () => {
+        if (timer===null) {
+            timer = setTimeout(() => {
+                timer=null
+            }, delay)
+            cb()
+        }
+    }
+}  

@@ -23,7 +23,7 @@
                             v-text="song?.al.name" />
                     </div>
                     <!--相似歌曲推荐-->
-                    <div class="simi-songs">
+                    <div class="simi-songs" v-if="simiSongs.length">
                         <span>相似歌曲</span>
                         <SongSortCard v-for="item in simiSongs" :song="item" :key="item.id" />
                     </div>
@@ -45,10 +45,11 @@
             <div class="simi-playlist music-list">
                 <!--推荐歌单-->
                 <TitleHeader title="包含这首歌的歌单" />
-                <ul>
+                <ul v-if="simiPlaylist.length">
                     <PlayListCard v-for="item in simiPlaylist" :key="item.id" :cover-img-url="item.coverImgUrl"
                         :id="item.id" :name="item.name" :play-count="item.playCount" />
                 </ul>
+                <EmptyPage v-else description="这首歌暂时没被收藏到热门歌单过呢 😉" :show-btn="false" />
             </div>
         </div>
     </div>
@@ -70,6 +71,7 @@ import message from '@/utils/message';
 // 组件
 import SongSortCard from '@/components/Card/SongSortCard/SongSortCard.vue';
 import SongSkeleton from '@/components/PageSkeleton/SongSkeleton/SongSkeleton.vue'
+import EmptyPage from '@/components/EmptyPage/EmptyPage.vue';
 import TitleHeader from '@/pages/Home/components/TitleHeader/TitleHeader.vue';
 // 仓库
 import useMusicStore from '@/store/music'

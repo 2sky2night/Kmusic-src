@@ -217,13 +217,13 @@ watch(page, (v) => {
             page: v
         }
     })
-    getSong()
+    
 })
 
 onBeforeRouteUpdate((to,from) => {
     if(to.fullPath===from.fullPath)return
     page.value = checkPage(to.query.page as any);
-    
+    getSong()
 })
 
 // // 路由变化就发送请求获取数据

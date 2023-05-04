@@ -89,10 +89,6 @@ const props = defineProps<{
      * 歌曲信息
      */
     song: Song;
-    /**
-     * 歌曲封面的清晰度
-     */
-    lowCover: boolean
 }>()
 
 /**去音乐页面 */
