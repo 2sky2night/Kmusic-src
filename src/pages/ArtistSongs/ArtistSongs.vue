@@ -2,7 +2,15 @@
     <div class="page">
         <div class="title">
             <span>{{ songs.length ? name : '未知歌手' }}</span>
-            <span>全部歌曲</span>
+            <span style="margin-right: 10px;">全部歌曲</span>
+            <n-switch checked-value="hot" v-model:value="order" unchecked-value="time">
+                <template #checked>
+                    热门排序
+                </template>
+                <template #unchecked>
+                    时间排序
+                </template>
+            </n-switch>
         </div>
         <div class="list">
             <ul v-if="!isLoading">
@@ -10,7 +18,7 @@
                 <div class="pagination" v-if="pages > 1">
                     <n-pagination v-model:page="page" :page-count="pages">
                         <template #prefix>
-                          共 {{ count }} 项
+                            共 {{ count }} 项
                         </template>
                     </n-pagination>
                 </div>
@@ -54,6 +62,8 @@ const count = ref(0)
 let pages = 0
 // 歌手名称
 const name = ref('')
+
+
 /**
  * 获取歌手对应页数的歌曲
  * @param id - 歌手id
@@ -81,7 +91,12 @@ async function getSongsData(id: number) {
     }
 }
 
-onMounted(async () => {
+/**
+ * 首次获取歌手的歌曲数据
+ */
+async function getSongsFirst() {
+    songs.splice(0, songs.length)
+    isLoading.value = true
     const id = +$route.params.id
     try {
         const resName = await getArtistInfor(id)
@@ -108,7 +123,9 @@ onMounted(async () => {
     } catch (error) {
         message("获取歌手的歌曲失败 🤐", "error")
     }
-})
+}
+
+onMounted(getSongsFirst)
 
 watch(page, (v) => {
     $router.push({
@@ -122,6 +139,15 @@ watch(page, (v) => {
 
 onBeforeRouteUpdate((to) => {
     page.value = +(to.query as any).page
+})
+
+/**
+ * 排序方式发生变化了 重新获取歌曲信息
+ */
+watch(order, (v) => {
+    if (v === "time") message("接口有问题,页面显示可能会异常 😙", "info")
+    page.value = 1
+    getSongsFirst()
 })
 
 </script>

@@ -84,7 +84,16 @@ const $router = useRouter()
 // 是否喜欢当前音乐
 const isLike = ref(userStore.userData.ids.some(ele => ele === props.song.id))
 
-const props = defineProps<{ song: Song }>()
+const props = defineProps<{
+    /**
+     * 歌曲信息
+     */
+    song: Song;
+    /**
+     * 歌曲封面的清晰度
+     */
+    lowCover: boolean
+}>()
 
 /**去音乐页面 */
 function goToSong() {

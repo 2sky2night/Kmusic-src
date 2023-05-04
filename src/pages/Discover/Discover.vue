@@ -1,10 +1,44 @@
 <template>
     <div class="page">
-        发现
-        <RouterView></RouterView>
+        <h1>发现</h1>
+        <n-tabs type="segment" @update:value="tabChange" :value="$route.path">
+            <n-tab name="/discover/playlist">
+                歌单
+            </n-tab>
+            <n-tab name="/discover/song">
+                新音乐
+            </n-tab>
+            <n-tab name="/discover/artist">
+                歌手
+            </n-tab>
+        </n-tabs>
+        <router-view v-slot="{ Component }">
+            <keep-alive>
+                <component :is="Component" />
+            </keep-alive>
+        </router-view>
     </div>
 </template>
 <script lang='ts' setup>
+import { useRoute,useRouter } from 'vue-router';
 
+// 路由信息
+const $route = useRoute()
+// 路由对象
+const $router=useRouter()
+
+function tabChange(v:string) {
+    $router.push(v)
+}
 </script>
-<style scoped></style>
+<style scoped lang="scss">
+.page {
+    box-sizing: border-box;
+    padding: 10px;
+    padding-top: 50px;
+}
+
+h1 {
+    font-size: 40px;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
     <div class="logo-btns">
         <n-space align="center">
-            <img src="../../../../assets/vue.svg">
+            <img src="../../../../assets/vue.svg" @click="toHome">
             <button @click="navigate(false)">
                 <n-icon size="20">
                     <IosArrowBack />
@@ -26,11 +26,15 @@ const $router = useRouter()
 function navigate(value: boolean) {
     value ? $router.forward() : $router.back()
 }
+function toHome() {
+    $router.push('/')
+}
 </script>
 <style scoped lang="scss">
-.logo-btns{
+.logo-btns {
     flex-grow: 1;
 }
+
 button {
     cursor: pointer;
     display: flex;
@@ -51,6 +55,7 @@ button:hover {
 img {
     width: 30px;
     height: 30px;
+    cursor: pointer;
 }
 
 // 在610px以下隐藏前进后退
