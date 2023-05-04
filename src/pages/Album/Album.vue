@@ -47,7 +47,7 @@
             </div>
             <div class="album-pub">
                 <span>发行时间: {{ timeFormat((album as AlbumMore).publishTime) }}</span>
-                <span>发行公司: {{ (album as AlbumMore).company }}</span>
+                <span>发行公司: {{ (album as AlbumMore).company||'无' }}</span>
 
             </div>
 

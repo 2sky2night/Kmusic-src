@@ -1,4 +1,4 @@
-import type { UserDetailRes, PlaylistRes,FollowRes,ReSongsRes } from '@/api/public/user/interfaces'
+import type { UserDetailRes, PlaylistRes, FollowRes, ReSongsRes } from '@/api/public/user/interfaces'
 import request from '@/utils/request'
 
 /**
@@ -15,8 +15,8 @@ export const getUserDetial = (uid: number) => {
  * @param page - 加载第几页数据
  * @param limit - 获取多少条数据
  */
-export const getUserPlayList = (uid: number, page: number, limit: number = 20) => {
-    return request.get<PlaylistRes>('/user/playlist', { params: { uid, offset: (page-1) * limit, limit } })
+export const getUserPlayList = (uid: number, offset: number, limit: number = 20) => {
+    return request.get<PlaylistRes>('/user/playlist', { params: { uid, offset, limit } })
 }
 
 /**
@@ -26,7 +26,7 @@ export const getUserPlayList = (uid: number, page: number, limit: number = 20) =
  * @returns 
  */
 export const followUser = (uid: number, t: number) => {
-    return request.get<FollowRes>('/follow',{params:{uid,t}})
+    return request.get<FollowRes>('/follow', { params: { uid, t } })
 }
 
 /**

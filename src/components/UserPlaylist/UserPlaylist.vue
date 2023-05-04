@@ -7,7 +7,7 @@
                 :name="item.name" :play-count="item.playCount" />
         </ul>
         <SkeletonList :text-center="false" :cover-radius="8" :length="10" v-if="isLoading" />
-        <n-button v-if="!isEnd && !isLoading" class="more-btn" @click="toGetUserPlayList">点击加载更多</n-button>
+        <n-button v-if="hasMore && !isLoading" class="more-btn" @click="toGetUserPlayList">点击加载更多</n-button>
     </div>
 </template>
 <script lang='ts' setup>
@@ -22,46 +22,30 @@ const props = defineProps<{ uid: number }>()
 
 // 歌单列表
 const playlist = reactive<Playlist[]>([])
-
-// 加载第几页?
-const page = ref(1)
-
 // 加载完毕了吗?
-const isEnd = ref(false)
+const hasMore = ref(false)
 // 正在加载?
-const isLoading = ref(false)
+const isLoading = ref(true)
 
 /**
- * 获取歌单数据(默认加载二十条)
+ * 获取歌单数据(默认加载11条)
  */
 async function toGetUserPlayList() {
     isLoading.value = true
-    if (isEnd.value === false) {
-        // 当前是否加载完成?
-        if (page.value >= 1) {
-            // 输入的参数正确
-            const res = await getUserPlayList(props.uid, page.value)
-            if (res.code === 200) {
-                // 设置是否还有更多数据
-                isEnd.value = !res.more
-                // 保存数据
-                res.playlist.forEach(ele => {
-                    playlist.push(ele)
-                })
-                // 页数+1
-                page.value++
-            }
-        } else {
-            // 参数错误
-            message('参数错误!😋', "warning")
-        }
+    try {
+        const res = await getUserPlayList(props.uid, playlist.length, 11)
+        if (res.code !== 200) await Promise.reject()
+        hasMore.value = Boolean(res.playlist.length)
+        res.playlist.forEach(ele => {
+            playlist.push(ele)
+        })
+        isLoading.value=false
+    } catch (error) {
+        message("获取用户歌单失败 🥱","warning")
     }
-    isLoading.value = false
 }
 
-onMounted(() => {
-    toGetUserPlayList()
-})
+onMounted(toGetUserPlayList)
 
 </script>
 <style scoped>

@@ -4,7 +4,7 @@
         <Button  @click="navigateTo" :title="title" v-if="children.length === 0" :type="isActive ? 'primary' : 'info'" />
 
         <n-dropdown v-else trigger="hover" :options="children" @select="handleSelect">
-            <Button  :title="title" :type="isActive ? 'primary' : 'info'" />
+            <Button @click="navigateTo" :title="title" :type="isActive ? 'primary' : 'info'" />
         </n-dropdown>
 
     </li>

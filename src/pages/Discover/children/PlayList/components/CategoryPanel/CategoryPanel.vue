@@ -108,22 +108,4 @@ function toChooseCategory(category: string) {
         justify-content: center;
     }
 }
-
-.tag-active {
-    background-color: var(--color-primary-light);
-    color: var(--color-primary)
-}
-
-.tag:hover {
-    background-color: var(--color-primary-light);
-    color: var(--color-primary)
-}
-
-.tag {
-    margin-bottom: 5px;
-    cursor: pointer;
-    margin-right: 5px;
-    border-radius: 10px;
-    font-size: 13px;
-}
 </style>

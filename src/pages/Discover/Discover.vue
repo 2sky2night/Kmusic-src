@@ -6,7 +6,7 @@
                 歌单
             </n-tab>
             <n-tab name="/discover/song">
-                新音乐
+                歌曲
             </n-tab>
             <n-tab name="/discover/artist">
                 歌手
@@ -20,14 +20,14 @@
     </div>
 </template>
 <script lang='ts' setup>
-import { useRoute,useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 // 路由信息
 const $route = useRoute()
 // 路由对象
-const $router=useRouter()
+const $router = useRouter()
 
-function tabChange(v:string) {
+function tabChange(v: string) {
     $router.push(v)
 }
 </script>

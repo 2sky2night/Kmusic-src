@@ -70,7 +70,7 @@ onMounted(async () => {
  * 去歌单页面
  */
 function goToPlaylist() {
-    $router.push(`/album/${playlist.value?.id}`)
+    $router.push(`/playlist/${playlist.value?.id}`)
 }
 
 /**

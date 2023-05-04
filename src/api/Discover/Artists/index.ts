@@ -13,7 +13,7 @@ import request from "@/utils/request"
  * @param limit - 每次响应多少条数据
  * @returns 
  */
-export const getRecArtist = (area: ArtistAreaType = -1, type: ArtistType, offset: number, initial: -1 | string, limit: number = 24) => {
+export const getRecArtist = (area: ArtistAreaType = -1, type: ArtistType, offset: number, initial: number | string, limit: number = 24) => {
     return request.get<RecommendArtist>('/artist/list', {
         params: {
             limit,

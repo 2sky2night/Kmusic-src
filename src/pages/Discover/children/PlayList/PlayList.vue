@@ -19,7 +19,7 @@
                     :name="item.name" :playCount="item.playCount" />
             </ul>
 
-            <div class="pagination">
+            <div class="pagination" v-if="!isLoading">
                 <n-pagination :page-slot="6" v-model:page-size="limit" v-model:page="page" :item-count="count"
                     :page-sizes="pageSizes" show-size-picker>
                     <template #prefix>

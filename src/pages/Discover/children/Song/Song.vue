@@ -1,13 +1,15 @@
 <template>
-    <ul class="song-list" v-if="!isLoading">
-        <SongItem v-for="song in songsPage" :key="song.id" :song="song" />
-        <div class="pagination" v-if="songsPage.length">
-            <n-pagination  :page-slot="6" v-model:page="page" v-model:page-size="limit" show-size-picker :page-sizes="pageSizes"
-              :item-count="songs.length" />
-        </div>
-        <EmptyPage v-else description="这一页没有数据哦 😎" :show-btn="false" />
-    </ul>
-    <SongItemSkeletonList :length="20" v-else />
+    <div class="discover-song">
+        <ul class="song-list" v-if="!isLoading">
+            <SongItem v-for="song in songsPage" :key="song.id" :song="song" />
+            <div class="pagination" v-if="songsPage.length">
+                <n-pagination :page-slot="6" v-model:page="page" v-model:page-size="limit" show-size-picker
+                    :page-sizes="pageSizes" :item-count="songs.length" />
+            </div>
+            <EmptyPage v-else description="这一页没有数据哦 😎" :show-btn="false" />
+        </ul>
+        <SongItemSkeletonList :length="20" v-else />
+    </div>
 </template>
 <script lang='ts' setup>
 // api
@@ -19,10 +21,10 @@ import { Song } from '@/api/public/indexfaces';
 import message from '@/utils/message';
 import { checkPage } from '@/utils/tools';
 // 钩子 
-import { ref, reactive, onMounted, computed,watch } from 'vue'
-import { onBeforeRouteUpdate, useRoute,useRouter } from 'vue-router'
+import { ref, reactive, onMounted, computed, watch } from 'vue'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 
-const $router=useRouter()
+const $router = useRouter()
 // 路由信息
 const $route = useRoute()
 // 正在加载
@@ -30,7 +32,7 @@ const isLoading = ref(true)
 // 歌曲列表
 const songs = reactive<Song[]>([])
 // 当前第几页
-const page = ref($route.query.page?checkPage(+$route.query.page):1)
+const page = ref($route.query.page ? checkPage(+$route.query.page) : 1)
 // 每页多少歌曲
 const limit = ref(10)
 // 某一页的歌曲
@@ -79,13 +81,13 @@ watch(page, (v) => {
     $router.push({
         path: $route.path,
         query: {
-            page:v
+            page: v
         }
     })
 })
 
 onBeforeRouteUpdate(to => {
-    page.value=+(to.query as any).page
+    page.value = +(to.query as any).page
 })
 
 </script>
