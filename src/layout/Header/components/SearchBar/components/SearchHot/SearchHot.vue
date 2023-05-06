@@ -7,19 +7,20 @@
             <span>热搜磅</span>
         </div>
         <ul>
-            <li v-for="(item, index) in hotList" class="hot-item" :key="item.score" @click="()=> toSearch(item.searchWord)">
-                <div :style="{ color: index <= 2 ? 'red' : '' }">{{ index + 1 }}</div>
+            <li v-for="(item, index) in hotList" class="hot-item" :key="item.score" @click="() => toSearch(item.searchWord)">
+                <div :style="{ color: index <= 9 ? 'red' : 'var(--text-color)' }">{{ index + 1 }}</div>
                 <div>
                     <div class="hot-title">
-                        <span>{{ item.searchWord }}</span>
-                        <n-tag round v-if="item.iconType===1" :bordered="false" size="small" type="error">
+                        <span style="color:var(--text-color)">{{ item.searchWord }}</span>
+                        <n-tag round v-if="item.iconType === 1" :bordered="false" size="small" type="error">
                             HOT
                         </n-tag>
                         <n-tag round v-if="item.iconType === 5" :bordered="false" size="small" type="error">
                             UP
                         </n-tag>
                     </div>
-                    <n-ellipsis v-if="item.content" style="max-width: 180px;font-size: 12px;color:var(--text-dark)" :tooltip="false">
+                    <n-ellipsis v-if="item.content" style="max-width: 180px;font-size: 12px;color:var(--text-dark)"
+                        :tooltip="false">
                         {{ item.content }}
                     </n-ellipsis>
                 </div>
@@ -34,9 +35,13 @@ import { HotItem } from '@/api/Search/interfaces';
 import { FireFilled } from '@vicons/antd'
 // 仓库
 import useSearchStore from '@/store/search';
+// 钩子
+import { useRouter } from 'vue-router'
 
+// 路由对象
+const $router = useRouter()
 // 搜索仓库
-const searchStore=useSearchStore()
+const searchStore = useSearchStore()
 // 自定义属性 热搜列表
 const props = defineProps<{ hotList: HotItem[] }>()
 
@@ -44,6 +49,7 @@ const props = defineProps<{ hotList: HotItem[] }>()
 function toSearch(keywords: string) {
     searchStore.keywords = keywords;
     searchStore.addHistory(keywords, Date.now());
+    $router.push(`/search/song?keywords=${keywords}&page=1`)
 }
 
 </script>
@@ -54,7 +60,7 @@ function toSearch(keywords: string) {
         margin-left: 10px;
         display: flex;
         align-items: center;
-        color: rgb(255, 0, 0);
+        color: red;
     }
 }
 

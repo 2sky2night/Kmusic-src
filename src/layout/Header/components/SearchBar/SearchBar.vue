@@ -1,9 +1,9 @@
 <template>
     <n-dropdown style="width:250px" :show="isFocus" :options="keywords ? optionsKeywords : optionsHistory"
-        @select="handleSelect" show-arrow>
+        show-arrow>
         <div class="search-bar" :style="{ width: isFocus ? '200px' : '150px' }">
             <n-input size="small" round autosize style="width: 100%" @focus="handler(true)" @blur="handler(false)"
-                v-model:value="keywords" type="text" placeholder="搜索歌手/歌曲">
+                v-model:value.trim="keywords" type="text" placeholder="搜索歌手/歌曲" @keyup.enter="toSearch">
                 <template #prefix>
                     <n-icon>
                         <IosSearchIcon />
@@ -19,6 +19,7 @@ import { IosSearch as IosSearchIcon } from '@vicons/ionicons4'
 // 钩子
 import { ref, h, onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 // 仓库
 import useSearchStore from '@/store/search'
 // api
@@ -40,7 +41,8 @@ const isFocus = ref(false)
 const { keywords } = storeToRefs(searchStore)
 // 热搜列表
 const hotList:HotItem[] = []
-
+// 钩子
+const $router = useRouter()
 
 /**
  * 输入框失焦/焦点的处理函数
@@ -51,13 +53,6 @@ function handler(flag: boolean) {
     } else {
         isFocus.value = false
     }
-}
-
-/**
- * 用户选择内容后的处理函数
- */
-function handleSelect() {
-
 }
 
 // 组件渲染前获取热搜数据
@@ -94,6 +89,16 @@ const optionsKeywords = [
         render: () => h(SearchSuggest)
     }
 ]
+
+/**
+ * 按下回车搜索
+ */
+function toSearch() {
+    // 添加历史记录
+    searchStore.addHistory(keywords.value,Date.now())
+    // 进入搜索页面
+    $router.push(`/search/song?keywords=${keywords.value}&page=1`)
+}
 </script>
 <style scoped lang="scss">
 .search-bar {

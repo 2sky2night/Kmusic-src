@@ -26,8 +26,8 @@ const useSearchStore = defineStore('search', {
     actions: {
         /**
          * 增加历史记录
-         * @param name - 历史记录的名称
-         * @param time - 历史记录的添加时间
+         * @param name - 搜索的关键词
+        * @param time - 搜索的时间
          */
         addHistory(name: string, time: number) {
             // 检查当前添加历史记录是否存在

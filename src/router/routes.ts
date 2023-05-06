@@ -245,6 +245,61 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/search',
+        component: () => import('@/pages/Search/Search.vue'),
+        meta: {
+            title: "搜索"
+        },
+        children: [
+            {
+                path: '',
+                redirect: '/search/song'
+            },
+            {
+                path: 'song',
+                component: () => import('@/pages/Search/children/Song/Song.vue'),
+                meta: {
+                    title: '搜索歌曲'
+                }
+            },
+            {
+                path: 'mv',
+                component: () => import('@/pages/Search/children/Mv/Mv.vue'),
+                meta: {
+                    title: '搜索mv'
+                }
+            },
+            {
+                path: 'artist',
+                component: () => import('@/pages/Search/children/Artist/Artist.vue'),
+                meta: {
+                    title: '搜索歌手'
+                }
+            },
+            {
+                path: 'album',
+                component: () => import('@/pages/Search/children/Song/Song.vue'),
+                meta: {
+                    title: '搜索专辑'
+                }
+            },
+            {
+                path: 'user',
+                component: () => import('@/pages/Search/children/User/User.vue'),
+                meta: {
+                    title: '搜索用户'
+                }
+            },
+            {
+                path: 'playlist',
+                component: () => import('@/pages/Search/children/Playlist/Playlist.vue'),
+                meta: {
+                    title: '搜索歌单'
+                }
+            }
+        ]
+    },
+    {
         path: "/404",
         name: "404",
         component: () => import("@/pages/404/404.vue"),
