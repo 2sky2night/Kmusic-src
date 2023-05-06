@@ -1,7 +1,7 @@
 <template>
     <n-empty :description="description" size="large" style="margin-top: 30px;font-size: 20px;">
         <template #extra v-if="showBtn">
-            <n-button size="large" @click="$router.push('/')">
+            <n-button  strong secondary @click="$router.push('/')">
                 看看别的 ?
             </n-button>
         </template>

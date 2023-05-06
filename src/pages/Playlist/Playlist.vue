@@ -58,7 +58,7 @@
                 <div class="user">
                     <UserCard :width="30" :height="30" :id="playlistInfor?.creator.userId"
                         :name="playlistInfor?.creator.nickname" :img="playlistInfor?.creator.avatarUrl" />
-                    <span class="text" style="margin-left: 5px;">{{ playlistInfor?.creator.nickname }}</span>
+                    <span @click="goToUser" class="text" style="margin-left: 5px;">{{ playlistInfor?.creator.nickname }}</span>
                 </div>
                 <div class="list-time">
                     <div v-once>
@@ -81,9 +81,9 @@
             <ul v-if="!isLoading && songs.length">
                 <SongItem v-for="item in songs" :key="item.id" :song="item" />
             </ul>
-            <EmptyPage description="当前页没有任何一首歌曲 😉" :show-btn="false" v-if="songs.length === 0 && !isLoading" />
+            <EmptyPage description="当前页没有任何一首歌曲 😉" :show-btn="true" v-if="songs.length === 0 && !isLoading" />
             <SongItemSkeletonList :length="20" v-if="isLoading" />
-            <div class="pagination" v-if="pages>1">
+            <div class="pagination" v-if="pages > 1&&songs.length">
                 <span style="margin-right: 10px;">总共 {{ (playlistInfor as PlaylistInfor).trackIds.length }} 项</span>
                 <n-pagination :page-slot="7" v-model:page="page" :page-count="pages" />
             </div>
@@ -101,7 +101,7 @@ import type { PlaylistInfor, PlaylistDynamicRes } from '@/api/Playlist/interface
 // api
 import { getPlaylistInfor, getPlaylistDynamic, getPlaylistSong, toggleSubPlaylist } from '@/api/Playlist';
 // 钩子
-import {  onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import { onMounted, ref, reactive, watch, nextTick, onUnmounted } from 'vue';
 import useUserStore from '@/store/user';
 // 工具函数
@@ -109,6 +109,7 @@ import { checkPage } from '@/utils/tools'
 import { timeFormat, countFormat, countPage } from '@/utils/computed'
 import message from '@/utils/message';
 import { messageboxWithout } from '@/render/MessageBox';
+
 // 用户仓库
 const userStore = useUserStore()
 // 歌曲简介真实容器
@@ -140,12 +141,12 @@ const $route = useRoute()
 // 初始化时,加载歌单基本数据
 onMounted(async () => {
     // 获取当前访问的第几页歌单
-    page.value= checkPage($route.query.page as any);
+    page.value = checkPage($route.query.page as any);
     isLoading.value = true
     try {
         // 加载歌单详情数据
         const resInfor = await getPlaylistInfor(+$route.params.id)
-        resInfor.code !== 200 ?await Promise.reject() : '';
+        resInfor.code !== 200 ? await Promise.reject() : '';
         playlistInfor.value = resInfor.playlist;
         pages = countPage(20, playlistInfor.value.trackIds.length)
         // 加载歌单动态数据
@@ -217,11 +218,11 @@ watch(page, (v) => {
             page: v
         }
     })
-    
+
 })
 
-onBeforeRouteUpdate((to,from) => {
-    if(to.fullPath===from.fullPath)return
+onBeforeRouteUpdate((to, from) => {
+    if (to.fullPath === from.fullPath) return
     page.value = checkPage(to.query.page as any);
     getSong()
 })
@@ -252,9 +253,25 @@ function checkDes() {
     }
 }
 
+/**
+ * 去歌单评论页
+ */
 function goToPlaylistCmt() {
     $router.push(`/playlist-comment/${playlistInfor.value?.id}?page=1`)
 }
+
+/**
+ * 去用户页面
+ */
+function goToUser() {
+    if (playlistInfor.value?.creator.userId === userStore.userData.id) {
+        $router.push('/my')
+    } else {
+        $router.push(`/user/${playlistInfor.value?.creator.userId}`)
+    }
+}
+
+
 
 /**
  * 移除事件监听

@@ -1,8 +1,10 @@
 <template>
     <li :class="`song-item ${playingSong.id === song.id ? 'song-item-active' : ''}`" @contextmenu="openDropDown">
         <div class="song-infor" v-once>
-            <img 
-                :src="song.al.picUrl||'../../../../public/cover.jpg'">
+            <div style="min-width: 50px;max-width: 50px;margin-right: 10px;display: flex;">
+                <img :src="song.al.picUrl || '../../../../public/cover.jpg'">
+            </div>
+
             <div>
 
                 <div class="song-name">

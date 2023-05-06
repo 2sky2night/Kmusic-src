@@ -145,6 +145,7 @@ li {
 .playlist-name {
     word-break: break-all;
     transition: .3s;
+    min-height:50px;
     user-select: text;
     font-size: 13.5px;
     cursor: pointer;

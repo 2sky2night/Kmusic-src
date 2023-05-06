@@ -1,5 +1,6 @@
 <template>
-    <n-dropdown style="width:250px" :show="isFocus" :options="keywords?optionsKeywords:optionsHistory" @select="handleSelect">
+    <n-dropdown style="width:250px" :show="isFocus" :options="keywords ? optionsKeywords : optionsHistory"
+        @select="handleSelect" show-arrow>
         <div class="search-bar" :style="{ width: isFocus ? '200px' : '150px' }">
             <n-input size="small" round autosize style="width: 100%" @focus="handler(true)" @blur="handler(false)"
                 v-model:value="keywords" type="text" placeholder="搜索歌手/歌曲">
@@ -13,10 +14,33 @@
     </n-dropdown>
 </template>
 <script lang='ts' setup>
+// 图标
 import { IosSearch as IosSearchIcon } from '@vicons/ionicons4'
-import { ref } from 'vue'
+// 钩子
+import { ref, h, onBeforeMount } from 'vue'
+import { storeToRefs } from 'pinia'
+// 仓库
+import useSearchStore from '@/store/search'
+// api
+import { getSearchHotList } from '@/api/Search'
+// 组件
+import HotAndHistory from './components/HotAndHistory/HotAndHistory.vue'
+import SearchSuggest from './components/SearchSuggest/SearchSuggest.vue'
+// 接口
+import { HotItem } from '@/api/Search/interfaces';
+// 工具函数
+import message from '@/utils/message'
+
+
+// 搜索仓库
+const searchStore = useSearchStore()
+// 是否获得焦点 获得焦点显示搜索菜单
 const isFocus = ref(false)
-const keywords = ref("")
+// 搜索关键词
+const { keywords } = storeToRefs(searchStore)
+// 热搜列表
+const hotList:HotItem[] = []
+
 
 /**
  * 输入框失焦/焦点的处理函数
@@ -28,33 +52,36 @@ function handler(flag: boolean) {
         isFocus.value = false
     }
 }
+
 /**
  * 用户选择内容后的处理函数
  */
 function handleSelect() {
 
 }
+
+// 组件渲染前获取热搜数据
+onBeforeMount(async() => {
+    try {
+        const res = await getSearchHotList()
+        if (res.code !== 200) await Promise.reject()
+        res.data.forEach(ele => {
+            hotList.push(ele)
+        })
+    } catch (error) {
+        message("获取热搜数据失败 🥱","warning")
+    }
+})
+
 /**
  * 历史记录和搜索热词的渲染配置项
  */
 const optionsHistory = [
     {
-        label: '滨海湾金沙，新加坡',
-        key: 'marina bay sands',
-        disabled: true
+        type: 'render',
+        key: 'history-and-hot',
+        render:()=>h(HotAndHistory,{hotList})
     },
-    {
-        label: '布朗酒店，伦敦',
-        key: "brown's hotel, london"
-    },
-    {
-        label: '亚特兰蒂斯巴哈马，拿骚',
-        key: 'atlantis nahamas, nassau'
-    },
-    {
-        label: '比佛利山庄酒店，洛杉矶',
-        key: 'the beverly hills hotel, los angeles'
-    }
 ]
 
 /**
@@ -62,21 +89,9 @@ const optionsHistory = [
  */
 const optionsKeywords = [
     {
-        label: '联想词1',
-        key: 'marina bay sands',
-        disabled: true
-    },
-    {
-        label: '联想词2',
-        key: "brown's hotel, london"
-    },
-    {
-        label: '联想词3',
-        key: 'atlantis nahamas, nassau'
-    },
-    {
-         label: '联想词4',
-        key: 'the beverly hills hotel, los angeles'
+        type: 'render',
+        key: 'suggest',
+        render: () => h(SearchSuggest)
     }
 ]
 </script>

@@ -4,6 +4,7 @@ import Layout from '@/layout/Layout.vue'
 import useThemeStore from '@/store/theme';
 import useUserStore from '@/store/user'
 import useMusicStore from './store/music';
+import useSearchStore from './store/search';
 import { useRouter } from 'vue-router';
 import { setLocal } from './utils/localStorage';
 // 主题仓库
@@ -12,6 +13,8 @@ const themeStore = useThemeStore();
 const userStore = useUserStore();
 // 音乐仓库
 const musicStore = useMusicStore();
+// 搜索仓库
+const searchStore = useSearchStore();
 
 (window as any).$push = useRouter().push;
 
@@ -22,17 +25,24 @@ if (userStore.isLogin && userStore.cookie) {
   userStore.toGetStarAlbum()
 }
 
-// 检测到用户仓库的方法执行,将最新的数据保存在仓库中
+// 检测到用户仓库的方法执行,将最新的数据保存在本地中
 userStore.$onAction(({ after }) => {
   after(() => {
     setLocal('userData', userStore.userData)
   })
 })
 
-// 检测到音乐仓库的方法执行,就将最新数据保存在仓库中
+// 检测到音乐仓库的方法执行,就将最新数据保存在本地中
 musicStore.$onAction(({ after }) => {
   after(() => {
     setLocal('musicData', musicStore.$state)
+  })
+})
+
+// 检查到搜索仓库的方法执行就将当前最新的数据保存在本地中
+searchStore.$onAction(({ after }) => {
+  after(() => {
+    setLocal('search-history', searchStore.history)
   })
 })
 
@@ -372,4 +382,5 @@ musicStore.$onAction(({ after }) => {
   font-size: 13px;
 }
 
-// 标签样式结束</style>
+// 标签样式结束
+</style>

@@ -1,13 +1,13 @@
 <template>
-    <div class="music-list" style="margin: 0;">
+    <div class="music-list" style="margin: 0 10px;">
         <TitleHeader title="收藏的歌单" />
         <EmptyPage v-if="playlist.length === 0 && !isLoading" description="没有歌单哟 😍" :show-btn="false" />
-        <ul v-if="!isLoading" style="padding:0 5px;">
+        <ul style="padding:0 10px;">
             <PlayListCard v-for="item in playlist" :key="item.id" :cover-img-url="item.coverImgUrl" :id="item.id"
                 :name="item.name" :play-count="item.playCount" />
         </ul>
-        <SkeletonList :text-center="false" :cover-radius="8" :length="10" v-if="isLoading" />
-        <n-button v-if="hasMore && !isLoading" class="more-btn" @click="toGetUserPlayList">点击加载更多</n-button>
+        <SkeletonList :text-center="false" :cover-radius="8" :length="10" v-if="isFirstLoading" />
+        <n-button strong secondary v-if="hasMore" :loading="isLoading" class="more-btn" @click="toGetUserPlayList">点击加载更多</n-button>
     </div>
 </template>
 <script lang='ts' setup>
@@ -26,6 +26,8 @@ const playlist = reactive<Playlist[]>([])
 const hasMore = ref(false)
 // 正在加载?
 const isLoading = ref(true)
+// 首次加载
+const isFirstLoading = ref(true)
 
 /**
  * 获取歌单数据(默认加载11条)
@@ -39,19 +41,21 @@ async function toGetUserPlayList() {
         res.playlist.forEach(ele => {
             playlist.push(ele)
         })
-        isLoading.value=false
+        isLoading.value = false
     } catch (error) {
-        message("获取用户歌单失败 🥱","warning")
+        message("获取用户歌单失败 🥱", "warning")
     }
 }
 
-onMounted(toGetUserPlayList)
+onMounted(async () => {
+    await toGetUserPlayList()
+    isFirstLoading.value = false
+})
 
 </script>
 <style scoped>
 .more-btn {
     align-self: center;
-    width: 80%;
     margin-bottom: 10px;
 }
 </style>

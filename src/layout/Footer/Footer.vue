@@ -1,17 +1,17 @@
 <template>
     <div class="music-controller">
-        1
         <audio v-if="!isLoading" controls autoplay name="media">
             <source :src="(songData as SongData).url" type="audio/mpeg">
         </audio>
         <span v-else>暂无歌曲</span>
+
     </div>
 </template>
 <script lang='ts' setup>
 // 工具函数
 import message from '@/utils/message';
 // 组件
-import Music from './components/Music.vue'
+import Music from './components/Music/Music.vue'
 import { SongData } from '@/api/public/song/interfaces'
 // api
 import { getSongs } from '@/api/ArtistSongs';
@@ -24,7 +24,7 @@ import { ref } from 'vue'
 const isLoading = ref(true)
 
 // 歌曲数据
-const songData = ref<SongData | {}>({})
+const songData = ref<SongData>()
 
 // 歌曲仓库
 const musicStore = useMusicStore()
@@ -47,25 +47,23 @@ async function musicSetAfter() {
         if (resCheck.success) {
             // 若歌曲能够正常播放 就获取歌曲数据
             const resSongData = await getSongData(id, "hires");
-            if (resSongData.code === 200) {
-                // 若歌曲数据正常
 
-                (songData.value as SongData) = resSongData.data[0]
+            // 若歌曲数据不正常 歌曲能够正常播放就将其保存在历史记录中 
+            if (resSongData.code !== 200) await Promise.reject()
+            // 若歌曲数据正常
+            songData.value = resSongData.data[0]
 
-                // 歌曲能够正常播放就将其保存在历史记录中 需要先获取歌曲的基本信息
-                const resSongInfor = await getSongs([id])
-                if (resSongInfor.code === 200) {
-                    // 将歌曲的基本信息保存在仓库中
-                    musicStore.addHistory({...resSongInfor.songs[0],privilege:resSongInfor.privileges[0]})
-                } else {
-                    await Promise.reject()
-                }
 
-                isLoading.value = false
-            } else {
-                // 若歌曲无法正常播放
-                await Promise.reject()
-            }
+            //  需要先获取歌曲的基本信息,来知晓歌曲是否为vip歌曲
+            const resSongInfor = await getSongs([id])
+            // 若歌曲信息获取失败
+            if (resSongInfor.code !== 200) await Promise.reject()
+
+            // 将歌曲的基本信息保存在仓库中
+            musicStore.addHistory({ ...resSongInfor.songs[0], privilege: resSongInfor.privileges[0] })
+
+            isLoading.value = false
+
         } else {
             // 若歌曲无法正常播放
             message(resCheck.message, "warning")
@@ -80,4 +78,12 @@ async function musicSetAfter() {
 }
 
 </script>
-<style scoped></style>
+<style scoped>
+.music-controller {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+</style>

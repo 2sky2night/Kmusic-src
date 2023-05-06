@@ -16,7 +16,9 @@
             <SkeletonList v-if="isLoading" :length="limit" :coverRadius="10" :textCenter="false" />
             <ul v-else>
                 <PlayListCard v-for="item in list" :key="item.id" :coverImgUrl="item.coverImgUrl" :id="item.id"
-                    :name="item.name" :playCount="item.playCount" />
+                    :name="item.name" :playCount="item.playCount">
+                    <span class="user" @click="() => goToUser(item.userId)">{{ item.creator.nickname }}</span>
+                </PlayListCard>
             </ul>
 
             <div class="pagination" v-if="!isLoading">
@@ -48,7 +50,11 @@ import PubSub from 'pubsub-js';
 import CategoryPanel from './components/CategoryPanel/CategoryPanel.vue';
 import SkeletonList from '@/components/SkeletonList/SkeletonList.vue';
 import PlayListCard from '@/components/Card/PlayListCard/PlayListCard.vue';
+// 仓库
+import useUserStore from '@/store/user';
 
+// 用户仓库
+const userStore = useUserStore()
 // 路由对象
 const $router = useRouter()
 // 路由源数据
@@ -152,6 +158,15 @@ async function getPlaylistData() {
     }
 }
 
+/**
+ * 去用户页面 若用户是当前登录的用户就进入我的页面
+ */
+function goToUser(id: number) {
+    id !== userStore.userData.id ?
+        $router.push(`/user/${id}`) :
+        $router.push('/my')
+}
+
 // 监听当前分类的变化 重置页数
 watch(tag, (v) => {
     console.log('tag');
@@ -217,5 +232,15 @@ onMounted(async () => {
 <style scoped>
 .tags-btn {
     margin: 10px 0;
+}
+
+/* 歌单用户名称 */
+.user {
+    cursor: pointer;
+    color: var(--text-dark);
+    transition: .5s;
+}
+.user:hover{
+    color:var(--color-primary);
 }
 </style>
