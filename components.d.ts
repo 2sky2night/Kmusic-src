@@ -106,6 +106,7 @@ declare module '@vue/runtime-core' {
     UserItem: typeof import('./src/components/UserInfor/components/UserItem/UserItem.vue')['default']
     UserPlaylist: typeof import('./src/components/UserPlaylist/UserPlaylist.vue')['default']
     UserPlayList: typeof import('./src/components/UserPlayList/UserPlayList.vue')['default']
+    UserSkeleton: typeof import('./src/components/PageSkeleton/UserSkeleton/UserSkeleton.vue')['default']
     UserSkeletonList: typeof import('./src/components/SkeletonList/UserSkeletonList/UserSkeletonList.vue')['default']
     Video: typeof import('./src/components/Video/Video.vue')['default']
   }

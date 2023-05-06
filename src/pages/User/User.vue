@@ -1,6 +1,7 @@
 <template>
     <div class="page">
-        <div v-if="userData">
+        <UserSkeleton v-if="isLoading" />
+        <div v-if="!isLoading && userData">
             <UserInfor :id="userData.uid" :avatar="userData.avatar" :create-days="userData.createDays"
                 :event-count="userData.eventCount" :followeds="userData.followeds" :gender="userData.gender ? true : false"
                 :follows="userData.follows" :level="userData.level" :nickname="userData.nickname"
@@ -11,14 +12,24 @@
             </UserInfor>
             <UserPlaylist :uid="userData.uid" />
         </div>
+        <div class="music-list" v-if="isLoading">
+            <SkeletonList :length="12" :cover-radius="10" :text-center="false"  />
+        </div>
+
     </div>
 </template>
 <script lang='ts' setup>
+// api
 import { getUserDetial, followUser } from '@/api/public/user';
+// 组件
 import UserInfor from '@/components/UserInfor/UserInfor.vue';
 import UserPlaylist from '@/components/UserPlaylist/UserPlaylist.vue';
-import { useRoute, useRouter } from 'vue-router';
+import UserSkeleton from '@/components/PageSkeleton/UserSkeleton/UserSkeleton.vue'
+import SkeletonList from '@/components/SkeletonList/SkeletonList.vue';
+// 钩子
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 import { computed, onMounted, ref } from 'vue'
+// 工具函数
 import message from '@/utils/message';
 import messagebox from '@/render/MessageBox';
 
@@ -54,43 +65,23 @@ interface UserData {
     followMe: boolean;
     uid: number
 }
+
+// 正在加载
+const isLoading = ref(true)
+// 路由元信息
 const $route = useRoute()
 // 用户数据
 const userData = ref<UserData | null>(null)
 // 路由实例对象
 const $router = useRouter()
 
-onMounted(async () => {
-    try {
-        if ($route.params.id) {
-            // 参数合法
-            const res = await getUserDetial(+$route.params.id)
-            if (res.code === 200) {
-                (userData.value as any) = {};
-                (userData.value as UserData).avatar = res.profile.avatarUrl;
-                (userData.value as UserData).createDays = res.createDays;
-                (userData.value as UserData).eventCount = res.profile.eventCount;
-                (userData.value as UserData).followeds = res.profile.followeds;
-                (userData.value as UserData).gender = res.profile.gender;
-                (userData.value as UserData).level = res.level;
-                (userData.value as UserData).nickname = res.profile.nickname;
-                (userData.value as UserData).signature = res.profile.signature;
-                (userData.value as UserData).followed = res.profile.followed;
-                (userData.value as UserData).followMe = res.profile.followMe;
-                (userData.value as UserData).follows = res.profile.follows;
-                (userData.value as UserData).uid = res.profile.userId;
-            }
-        }
-    } catch (error) {
-        messagebox("此用户id不存在，是否依据此id前往歌手页面? 🧐").then(() => {
-            $router.push(`/artist?id=${$route.params.id}`)
-        }).catch(() => {
-            $router.back()
-        })
-    }
-
+onMounted(() => {
+    getUserData(+$route.params.id)
 })
 
+/**
+ * 关注的格式化
+ */
 const followFormat = computed(() => {
     const user = (userData.value as UserData)
     if (user.avatar) {
@@ -107,6 +98,9 @@ const followFormat = computed(() => {
     }
 })
 
+/**
+ * 关注用户
+ */
 async function toFollowUser() {
     return message("接口异常，禁止使用! 😎", "info")
     const user = (userData.value as UserData)
@@ -124,6 +118,47 @@ async function toFollowUser() {
         }
     }
 }
+
+async function getUserData(id: number) {
+    isLoading.value = true
+    try {
+        if (id) {
+            // 参数合法
+            const res = await getUserDetial(id)
+            if (res.code === 200) {
+                (userData.value as any) = {};
+                (userData.value as UserData).avatar = res.profile.avatarUrl;
+                (userData.value as UserData).createDays = res.createDays;
+                (userData.value as UserData).eventCount = res.profile.eventCount;
+                (userData.value as UserData).followeds = res.profile.followeds;
+                (userData.value as UserData).gender = res.profile.gender;
+                (userData.value as UserData).level = res.level;
+                (userData.value as UserData).nickname = res.profile.nickname;
+                (userData.value as UserData).signature = res.profile.signature;
+                (userData.value as UserData).followed = res.profile.followed;
+                (userData.value as UserData).followMe = res.profile.followMe;
+                (userData.value as UserData).follows = res.profile.follows;
+                (userData.value as UserData).uid = res.profile.userId;
+                isLoading.value = false
+            }
+        }
+    } catch (error) {
+        messagebox("此用户id不存在，是否依据此id前往歌手页面? 🧐").then(() => {
+            $router.push(`/artist?id=${$route.params.id}`)
+        }).catch(() => {
+            $router.back()
+        })
+    }
+}
+
+/**
+ * 路由更新重新获取用户信息
+ */
+onBeforeRouteUpdate((to) => {
+    if (to.params.id) {
+        getUserData(+to.params.id)
+    }
+})
 
 </script>
 <style scoped>

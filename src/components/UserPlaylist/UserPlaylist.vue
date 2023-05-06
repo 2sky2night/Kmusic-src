@@ -11,10 +11,15 @@
     </div>
 </template>
 <script lang='ts' setup>
+// 组件
 import TitleHeader from '@/pages/Home/components/TitleHeader/TitleHeader.vue'
+// 工具函数
 import message from '@/utils/message';
+// 接口
 import { Playlist } from '@/api/public/indexfaces';
-import { reactive, ref, onMounted } from 'vue'
+// 钩子
+import { reactive, ref, onMounted, watch } from 'vue'
+// api
 import { getUserPlayList } from '@/api/public/user';
 
 // 自定义属性获取需要加载的用户歌单
@@ -50,6 +55,14 @@ async function toGetUserPlayList() {
 onMounted(async () => {
     await toGetUserPlayList()
     isFirstLoading.value = false
+})
+
+/**
+ * 传入的id更新重新获取歌单数据
+ */
+watch(() => props.uid, () => {
+    playlist.length=0
+    toGetUserPlayList()
 })
 
 </script>

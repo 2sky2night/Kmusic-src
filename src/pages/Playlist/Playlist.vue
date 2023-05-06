@@ -58,7 +58,8 @@
                 <div class="user">
                     <UserCard :width="30" :height="30" :id="playlistInfor?.creator.userId"
                         :name="playlistInfor?.creator.nickname" :img="playlistInfor?.creator.avatarUrl" />
-                    <span @click="goToUser" class="text" style="margin-left: 5px;">{{ playlistInfor?.creator.nickname }}</span>
+                    <span @click="goToUser" class="text" style="margin-left: 5px;">{{ playlistInfor?.creator.nickname
+                    }}</span>
                 </div>
                 <div class="list-time">
                     <div v-once>
@@ -83,7 +84,7 @@
             </ul>
             <EmptyPage description="当前页没有任何一首歌曲 😉" :show-btn="true" v-if="songs.length === 0 && !isLoading" />
             <SongItemSkeletonList :length="20" v-if="isLoading" />
-            <div class="pagination" v-if="pages > 1&&songs.length">
+            <div class="pagination" v-if="pages > 1 && songs.length">
                 <span style="margin-right: 10px;">总共 {{ (playlistInfor as PlaylistInfor).trackIds.length }} 项</span>
                 <n-pagination :page-slot="7" v-model:page="page" :page-count="pages" />
             </div>
@@ -139,7 +140,10 @@ const $router = useRouter()
 const $route = useRoute()
 
 // 初始化时,加载歌单基本数据
-onMounted(async () => {
+onMounted(getData)
+
+async function getData() {
+
     // 获取当前访问的第几页歌单
     page.value = checkPage($route.query.page as any);
     isLoading.value = true
@@ -165,8 +169,8 @@ onMounted(async () => {
     } catch (error) {
         message("加载歌单失败 😰", "error")
     }
-})
 
+}
 
 /**
  * 获取某一页的歌曲
