@@ -383,4 +383,10 @@ searchStore.$onAction(({ after }) => {
 }
 
 // 标签样式结束
+
+// 搜索页的子路由样式
+.search-tab{
+  margin-top:10px ;
+}
+
 </style>

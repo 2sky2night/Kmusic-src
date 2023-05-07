@@ -33,6 +33,9 @@
                 <n-button @click="toSubMv" strong secondary :type="isSub ? 'warning' : 'default'" size="small">{{
                     isSub ? '已收藏' : '收藏' }}</n-button>
             </div>
+            <div class="desc" v-if="(mvInfor as MvData).desc">
+                简介: {{ (mvInfor as MvData).desc   }}
+            </div>
         </div>
     </div>
 </template>
@@ -219,7 +222,10 @@ watch(() => props.id, () => {
     height: 450px;
     margin-bottom: 10px;
 }
-
+.desc{
+    font-size: 12px;
+    color:var(--text-dark);
+}
 .infor {
     display: flex;
     flex-direction: column;

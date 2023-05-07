@@ -1,5 +1,6 @@
 <template>
-    <li :class="`song-item ${playingSong.id === song.id ? 'song-item-active' : ''}`" @contextmenu="openDropDown">
+    <li :class="`song-item ${playingSong.id === song.id ? 'song-item-active' : ''}`" @contextmenu="openDropDown"
+        @dblclick="toSetPlayingSong">
         <div class="song-infor" v-once>
             <div style="min-width: 50px;max-width: 50px;margin-right: 10px;display: flex;">
                 <img :src="song.al.picUrl || '../../../../public/cover.jpg'">
@@ -79,7 +80,9 @@ import { storeToRefs } from 'pinia'
 import { toggleLikeSong } from '@/api/public/song'
 import message from '@/utils/message'
 
-const { playingSong } = storeToRefs(useMusicStore())
+//音乐钩子
+const musicStore = useMusicStore()
+const { playingSong } = storeToRefs(musicStore)
 const userStore = useUserStore()
 
 const $router = useRouter()
@@ -147,6 +150,21 @@ async function toToggleLike() {
     }
 
 }
+
+/**
+ * 播放歌曲
+ */
+function toSetPlayingSong() {
+    // 将当前歌曲的数据发送给仓库中去,修改当前播放的歌曲信息
+    musicStore.setPlayingSong({
+        id: props.song.id,
+        name: props.song.name,
+        album: { name: props.song.al.name, id: props.song.al.id, picUrl: props.song.al.picUrl },
+        artists: props.song.ar,
+        isVip: props.song.privilege.freeTrialPrivilege.resConsumable
+    })
+}
+
 
 </script>
 

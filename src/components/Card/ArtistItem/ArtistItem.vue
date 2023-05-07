@@ -1,6 +1,6 @@
 <template>
     <li class="artsit-item" >
-        <img :src="url">
+        <img :src="url" v-if="url">
         <span class="text" @click.stop="goToArtist">{{ name }}</span>
     </li>
 </template>
@@ -11,7 +11,7 @@ const $router = useRouter()
 const props = defineProps<{
     id: number;
     name: string;
-    url: string;
+    url: string|null;
 }>()
 
 function goToArtist() {

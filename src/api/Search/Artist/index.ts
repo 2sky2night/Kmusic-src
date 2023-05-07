@@ -8,11 +8,11 @@ import { SearchRes, ArtistSearch } from "../interfaces";
  * @param limit 
  * @returns 
  */
-export const getSearchUser = (keywords: string, page: number, limit: number = 20) => {
+export const getSearchArtist = (keywords: string, page: number, limit: number = 20) => {
     return request.get<SearchRes<ArtistSearch>>('/cloudsearch', {
         params: {
             keywords,
-            type: 1004,
+            type: 100,
             offset: (page - 1) * limit,
             limit
         }

@@ -20,7 +20,7 @@
                     </ul>
                 </li>
             </ul>
-            <div v-if="isEmpty" class="tips" style="align-items: center;">
+            <div v-if="isEmpty&&!isLoading" class="tips" style="align-items: center;">
                 没有搜索建议 🥵
             </div>
         </n-scrollbar>
@@ -92,7 +92,8 @@ async function getData() {
         if (!Object.keys(res.result).length) {
             isEmpty.value = true
             isLoading.value = false
-            return message("输入的太犀利了, 没有建议呢😅", "info")
+            //  message("输入的太犀利了, 没有建议呢😅", "info")
+            return
         }
 
         isEmpty.value = false
@@ -185,7 +186,7 @@ watch(keywords, (v) => {
 }
 
 .suggest-item {
-    color:var(--text-color);
+    color: var(--text-color);
     padding: 10px;
     transition: .3s;
     border-radius: 10px;

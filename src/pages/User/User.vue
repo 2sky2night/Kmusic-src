@@ -13,7 +13,7 @@
             <UserPlaylist :uid="userData.uid" />
         </div>
         <div class="music-list" v-if="isLoading">
-            <SkeletonList :length="12" :cover-radius="10" :text-center="false"  />
+            <SkeletonList :length="12" :cover-radius="10" :text-center="false" />
         </div>
 
     </div>
@@ -29,6 +29,7 @@ import SkeletonList from '@/components/SkeletonList/SkeletonList.vue';
 // 钩子
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 import { computed, onMounted, ref } from 'vue'
+import useUserStore from '@/store/user';
 // 工具函数
 import message from '@/utils/message';
 import messagebox from '@/render/MessageBox';
@@ -66,6 +67,7 @@ interface UserData {
     uid: number
 }
 
+const userStore = useUserStore()
 // 正在加载
 const isLoading = ref(true)
 // 路由元信息
@@ -102,6 +104,10 @@ const followFormat = computed(() => {
  * 关注用户
  */
 async function toFollowUser() {
+    if (!userStore.cookie && !userStore.isLogin) {
+        message("请先登录 😎", "info")
+        return
+    }
     return message("接口异常，禁止使用! 😎", "info")
     const user = (userData.value as UserData)
     if (user.followed) {

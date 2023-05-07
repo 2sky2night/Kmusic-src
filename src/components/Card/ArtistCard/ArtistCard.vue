@@ -73,7 +73,7 @@ li {
     transition: .5s;
     position: absolute;
     z-index: 1000;
-    top:0;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
@@ -81,7 +81,7 @@ li {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.197);
+    // background-color: rgba(0, 0, 0, 0.197);
     display: none;
 }
 

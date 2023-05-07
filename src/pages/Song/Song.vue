@@ -263,8 +263,9 @@ function goToMv() {
 
         // 歌手
         div:nth-child(2) {
+            margin-top: 10px;
             color: var(--text-dark);
-            font-size: 14px;
+            font-size: 12px;
         }
     }
 
@@ -294,6 +295,9 @@ function goToMv() {
 }
 
 @media screen and (max-width:675px) {
+    .artist{
+        font-size: 12px !important;
+    }
     .song-infor {
         position: relative;
 
@@ -315,6 +319,7 @@ function goToMv() {
 @media screen and (max-width:468px) {
     .song-infor {
         h2 {
+            font-size: 15px;
             padding: 15px 0;
         }
     }

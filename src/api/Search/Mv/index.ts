@@ -8,7 +8,7 @@ import { SearchRes, MvSearch } from "../interfaces";
  * @param limit 
  * @returns 
  */
-export const getSearchUser = (keywords: string, page: number, limit: number = 20) => {
+export const getSearchMv = (keywords: string, page: number, limit: number = 20) => {
     return request.get<SearchRes<MvSearch>>('/cloudsearch', {
         params: {
             keywords,

@@ -266,7 +266,7 @@ const routes: RouteRecordRaw[] = [
                 path: 'mv',
                 component: () => import('@/pages/Search/children/Mv/Mv.vue'),
                 meta: {
-                    title: '搜索mv'
+                    title: '搜索视频'
                 }
             },
             {
@@ -278,7 +278,7 @@ const routes: RouteRecordRaw[] = [
             },
             {
                 path: 'album',
-                component: () => import('@/pages/Search/children/Song/Song.vue'),
+                component: () => import('@/pages/Search/children/Album/Album.vue'),
                 meta: {
                     title: '搜索专辑'
                 }

@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import { SearchRes, ArtistSearch } from "../interfaces";
+import { SearchRes, AlbumSearch } from "../interfaces";
 
 /**
  * 获取搜索的专辑
@@ -8,11 +8,11 @@ import { SearchRes, ArtistSearch } from "../interfaces";
  * @param limit 
  * @returns 
  */
-export const getSearchUser = (keywords: string, page: number, limit: number = 20) => {
-    return request.get<SearchRes<ArtistSearch>>('/cloudsearch', {
+export const getSearchAlbum = (keywords: string, page: number, limit: number = 20) => {
+    return request.get<SearchRes<AlbumSearch>>('/cloudsearch', {
         params: {
             keywords,
-            type: 1004,
+            type: 10,
             offset: (page - 1) * limit,
             limit
         }

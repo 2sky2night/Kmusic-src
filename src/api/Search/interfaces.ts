@@ -1,4 +1,5 @@
-import { Artist, Album, Song, User, Playlist } from "../public/indexfaces";
+import type { Artist, Album, Song, Playlist } from "../public/indexfaces";
+import type { UserFollow } from "../public/user/interfaces";
 /**
  * 获取搜索热词 /search/hot/detail
  */
@@ -162,7 +163,7 @@ export interface AlbumSearch {
  */
 export interface UserSearch {
     userprofileCount: number;
-    userprofiles: User[];
+    userprofiles: UserFollow[];
 }
 
 /**
