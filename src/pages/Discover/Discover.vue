@@ -35,10 +35,11 @@ function tabChange(v: string) {
 .page {
     box-sizing: border-box;
     padding: 10px;
-    padding-top: 50px;
+    padding-top: 20px;
 }
 
 h1 {
     font-size: 40px;
+    margin-bottom: 10px;
 }
 </style>

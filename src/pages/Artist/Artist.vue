@@ -72,7 +72,7 @@ import type { ArtistData } from '@/api/Artist/interfaces';
 // api
 import { getArtistInfor, subArtist } from '@/api/Artist';
 // 钩子
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue';
 import useUserStore from '@/store/user';
 // 工具函数
@@ -82,6 +82,7 @@ import { MusicalNotes, Albums as AlbumsIcon, Videocam } from '@vicons/ionicons5'
 // 渲染函数
 import { messageboxWithout } from '@/render/MessageBox';
 
+const $router = useRouter()
 const $route = useRoute()
 // 歌手详情信息
 const artistData = ref<ArtistData>()
@@ -122,6 +123,7 @@ async function getArtistData(id: number) {
         isLoading.value = false
     } catch (error) {
         message("获取歌手详情信息失败 😪", "error")
+        $router.replace('/404')
     }
 }
 

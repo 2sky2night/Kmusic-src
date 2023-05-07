@@ -3,7 +3,7 @@
         <div class="title">
             <span>{{ songs.length ? name : '未知歌手' }}</span>
             <span style="margin-right: 10px;">全部歌曲</span>
-            <n-switch checked-value="hot" v-model:value="order" unchecked-value="time">
+            <n-switch :loading="isLoading" checked-value="hot" v-model:value="order" unchecked-value="time">
                 <template #checked>
                     热门排序
                 </template>
@@ -94,10 +94,9 @@ async function getSongsData(id: number) {
 /**
  * 首次获取歌手的歌曲数据
  */
-async function getSongsFirst() {
+async function getSongsFirst(id: number) {
     songs.splice(0, songs.length)
     isLoading.value = true
-    const id = +$route.params.id
     try {
         const resName = await getArtistInfor(id)
         if (resName.code !== 200) await Promise.reject()
@@ -121,11 +120,14 @@ async function getSongsFirst() {
 
         isLoading.value = false
     } catch (error) {
-        message("获取歌手的歌曲失败 🤐", "error")
+        message("获取歌手的全部歌曲失败 🤐", "warning")
+        $router.replace('/404')
     }
 }
 
-onMounted(getSongsFirst)
+onMounted(() => {
+    getSongsFirst(+$route.params.id)
+})
 
 watch(page, (v) => {
     $router.push({
@@ -134,11 +136,21 @@ watch(page, (v) => {
             page: v
         }
     })
-    getSongsData(+$route.params.id)
+
 })
 
-onBeforeRouteUpdate((to) => {
-    page.value = +(to.query as any).page
+onBeforeRouteUpdate((to, from) => {
+    const newId = + to.params.id;
+    const oldId = +from.params.id;
+
+    if (newId !== oldId) {
+        // 若动态参数更新需要重新获取歌手的全部歌曲 和歌手的信息
+        getSongsFirst(newId)
+    }
+
+    // 更新页数
+    page.value = +(to.query as any).page;
+    getSongsData(newId)
 })
 
 /**
@@ -147,7 +159,7 @@ onBeforeRouteUpdate((to) => {
 watch(order, (v) => {
     if (v === "time") message("接口有问题,页面显示可能会异常 😙", "info")
     page.value = 1
-    getSongsFirst()
+    getSongsFirst(+$route.params.id)
 })
 
 </script>

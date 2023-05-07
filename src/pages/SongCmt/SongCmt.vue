@@ -25,7 +25,7 @@
                 </div>
             </div>
             <!--评论区-->
-            <Comment   :type="0" :get-data="getSongComment" :id="(song as Song).id" />
+            <Comment :type="0" :get-data="getSongComment" :id="(song as Song).id" />
         </div>
 
     </div>
@@ -34,7 +34,7 @@
 // 接口
 import type { Song } from '@/api/public/indexfaces';
 // 钩子
-import { useRoute, useRouter } from 'vue-router';
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue'
 // api
 import { getSongComment } from '@/api/SongCmt';
@@ -53,17 +53,8 @@ const $router = useRouter()
 const $route = useRoute()
 
 
-onMounted(async () => {
-    try {
-        // 获取歌曲信息
-        const resSong = await getSongInfor(+$route.params.id)
-        if (resSong.code !== 200) await Promise.reject()
-        song.value = resSong.songs[0]
-
-        isLoading.value = false
-    } catch (error) {
-        message("获取歌曲评论失败 🤔", "error")
-    }
+onMounted(() => {
+    getData(+$route.params.id)
 })
 
 /**
@@ -79,6 +70,39 @@ function goToSong() {
 function goToArtist(id: number) {
     $router.push(`/artist/${id}`)
 }
+
+/**
+ * 获取评论信息
+ * @param id 
+ */
+async function getData(id: number) {
+    try {
+        // 获取歌曲信息
+        const resSong = await getSongInfor(id)
+        if (resSong.code !== 200) await Promise.reject()
+        if (resSong.songs.length) {
+            song.value = resSong.songs[0]
+        } else {
+            await Promise.reject()
+        }
+        isLoading.value = false
+    } catch (error) {
+        message("获取歌曲评论失败 🤔", "error")
+        $router.replace('/404')
+    }
+}
+
+// 路由动态参数更新时重新获取歌曲数据
+onBeforeRouteUpdate(async (to, from) => {
+
+    const newId = +to.params.id;
+    const oldId = +from.params.id;
+    if (newId !== oldId) {
+        isLoading.value = true;
+        await getData(+to.params.id)
+    }
+
+})
 
 </script>
 <style scoped>

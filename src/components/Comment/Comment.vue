@@ -41,12 +41,12 @@
                     :key="item.commentId" :comment="item" />
             </ul>
             <div class="pagination" v-if="pages > 1">
-                <n-pagination size="small" v-model:page="page" :page-slot="5" :page-count="pages" />
+                <n-pagination size="small" v-model:page="page" :page-slot="6" :page-count="pages" />
             </div>
-            <EmptyPage description="没有评论哟，快来抢沙发吧~" :show-btn="false" v-if="!isLoading && !comments.length" />
+            <EmptyPage description="没有评论哟或本页没有数据~" :show-btn="false" v-if="!isLoading && !comments.length" />
         </div>
 
-    <CommentsSkeleton v-if="isLoading"/>
+        <CommentsSkeleton v-if="isLoading" />
 
     </div>
 </template>
@@ -59,7 +59,7 @@ import EmptyPage from '../EmptyPage/EmptyPage.vue';
 // 接口
 import type { CommentRes, Comment, CommentType } from '@/api/public/comment/interfaces';
 // 钩子
-import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { ref, reactive, onMounted, watch } from 'vue'
 // 工具函数
 import { countPage } from '@/utils/computed'
@@ -91,7 +91,7 @@ const $route = useRoute()
 // 路由对象
 const $router = useRouter()
 // 当前第几页
-const page = ref(0)
+const page = ref($route.query.page ? checkPage(+$route.query.page) : 1);
 // 总共多少页
 let pages = 0
 // 正在加载
@@ -102,8 +102,6 @@ const hotComments = reactive<Comment[]>([])
 const comments = reactive<Comment[]>([])
 // 一共有多少条评论
 let sumComments = ref(0)
-// 是否离开当前页面
-let isLeave = false;
 // 是否展示热门评论
 const showHot = ref(true)
 // 用户输入的内容
@@ -112,7 +110,7 @@ const content = ref('')
 /**
  * 获取(对应页数的评论)评论数据
  */
-async function getCommentData() {
+async function getCommentData(id: number) {
     isLoading.value = true
     // 清空当前评论页的数据
     comments.splice(0, comments.length)
@@ -121,7 +119,7 @@ async function getCommentData() {
         showHot.value = false
     }
     try {
-        const res = await props.getData(props.id, page.value)
+        const res = await props.getData(id, page.value)
         res.code !== 200 ? Promise.reject() : ''
 
         res.comments.forEach(ele => {
@@ -163,7 +161,9 @@ async function toSendComment() {
             liked: false
         })
         // 清空输入的内容
-        content.value = ''
+        content.value = '';
+        // 增加评论总数
+        sumComments.value++
     } catch (error) {
         message((error as any).response.data.msg, "error")
     }
@@ -171,12 +171,26 @@ async function toSendComment() {
 
 }
 
-onMounted(async () => {
-    console.log(checkPage($route.query.page as any));
-    // 初始化当前加载的页面
-    page.value = checkPage($route.query.page as any)
+onMounted(() => {
+    getData(+$route.params.id)
+})
+
+watch(page, (v) => {
+    $router.push({
+        path: $route.path,
+        query: {
+            page: v
+        }
+    })
+})
+
+/**
+ * 初次加载时获取评论信息 包括热评
+ */
+async function getData(id: number) {
+    isLoading.value = true
     try {
-        const res = await props.getData(props.id, 1)
+        const res = await props.getData(id, 1)
         res.code !== 200 ? Promise.reject() : ''
         // 获取总共多少页
         pages = countPage(20, res.total)
@@ -194,7 +208,7 @@ onMounted(async () => {
             })
         } else {
             // 若不是第一页的话 需要加载对应页面的评论
-            await getCommentData()
+            await getCommentData(id)
         }
 
         isLoading.value = false
@@ -202,29 +216,26 @@ onMounted(async () => {
     } catch (error) {
         message("获取歌曲评论失败 🤣", "error")
     }
+}
 
+// 路由更新时 评论页有两种更新方式
+onBeforeRouteUpdate(async (to, from) => {
+    const newId = +to.params.id;
+    const oldId = +from.params.id;
 
-})
+    isLoading.value = true;
+    // 检查是否动态参数更新
+    if (newId !== oldId) {
+        // 若为动态参数更新需要重新获取热评 评论总数等其他信息
+        hotComments.length = 0;
+        comments.length = 0;
+        getData(newId)
+    }
 
-watch(page, (v) => {
-    $router.push({
-        path: $route.path,
-        query: {
-            page: v
-        }
-    })
-})
+    // 更新page
+    page.value = to.query.page ? checkPage(+to.query.page) : 1;
 
-watch(() => $route.query, () => {
-    if (isLeave) return
-    getCommentData()
-})
-
-/**
- * 离开当前路由时,设置为离开页面了,不允许加载数据了
- */
-onBeforeRouteLeave(() => {
-    isLeave = true
+    getCommentData(newId)
 })
 
 

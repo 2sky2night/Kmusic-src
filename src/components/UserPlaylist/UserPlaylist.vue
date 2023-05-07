@@ -7,7 +7,8 @@
                 :name="item.name" :play-count="item.playCount" />
         </ul>
         <SkeletonList :text-center="false" :cover-radius="8" :length="10" v-if="isFirstLoading" />
-        <n-button strong secondary v-if="hasMore" :loading="isLoading" class="more-btn" @click="toGetUserPlayList">点击加载更多</n-button>
+        <n-button strong secondary v-if="hasMore" :loading="isLoading" class="more-btn"
+            @click="toGetUserPlayList">点击加载更多</n-button>
     </div>
 </template>
 <script lang='ts' setup>
@@ -35,14 +36,14 @@ const isLoading = ref(true)
 const isFirstLoading = ref(true)
 
 /**
- * 获取歌单数据(默认加载11条)
+ * 获取歌单数据(默认加载12条)
  */
 async function toGetUserPlayList() {
     isLoading.value = true
     try {
-        const res = await getUserPlayList(props.uid, playlist.length, 11)
+        const res = await getUserPlayList(props.uid, playlist.length, 12)
         if (res.code !== 200) await Promise.reject()
-        hasMore.value = Boolean(res.playlist.length)
+        hasMore.value = res.more
         res.playlist.forEach(ele => {
             playlist.push(ele)
         })
@@ -61,7 +62,7 @@ onMounted(async () => {
  * 传入的id更新重新获取歌单数据
  */
 watch(() => props.uid, () => {
-    playlist.length=0
+    playlist.length = 0
     toGetUserPlayList()
 })
 

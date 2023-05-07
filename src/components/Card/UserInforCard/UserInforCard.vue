@@ -20,8 +20,8 @@
                 </div>
 
                 <div class="follows">
-                    <span>关注:{{ data.follows }}</span>
-                    <span>粉丝:{{ data.followeds }}</span>
+                    <span @click="goToFollow" class="text" style="font-size: 12px;">关注:{{ data.follows }}</span>
+                    <span @click="goToFans"  class="text" style="font-size: 12px;">粉丝:{{ data.followeds }}</span>
                 </div>
                 <n-ellipsis style="max-width: 240px" :tooltip="false">
                     <span style="font-size: 12px; color:var(--text-dark)">{{ data.signature }}</span>
@@ -58,6 +58,21 @@ function toFollowUser() {
     }
     message("由于安全问题,暂时不能关注/取消关注用户 😎", "info")
 }
+
+/**
+ * 去关注页面
+ */
+function goToFollow() {
+    $router.push(`/user-follow/${props.data.userId}`)
+}
+
+/**
+ * 去粉丝页面
+ */
+function goToFans() {
+    $router.push(`/user-fans/${props.data.userId}`)
+}
+
 </script>
 <style scoped lang="scss">
 .user-infor-card {

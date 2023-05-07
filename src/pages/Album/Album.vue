@@ -9,14 +9,12 @@
                 <h1>{{ (album as AlbumMore).name }}</h1>
                 <n-h2>专辑简介</n-h2>
                 <div class="desc">
-                    <n-ellipsis style="width:250px;" :line-clamp="4" :tooltip="false" ref="textClip">
+                    <n-ellipsis style="width:250px;" :line-clamp="4" :tooltip="false">
                         {{ (album as AlbumMore).description || '无' }}
                     </n-ellipsis>
-                    <span style="width: 250px;visibility: hidden;position: absolute;" ref="text">
-                        {{ (album as AlbumMore).description || '无' }}
-                    </span>
-                    <n-button @click="messageboxWithout((album as AlbumMore).description, '歌单简介')"
-                        style="width: 100%;margin-bottom: 10px;" strong secondary v-if="checkDescShow">
+                    <n-button v-if="(album as AlbumMore).description"
+                        @click="messageboxWithout((album as AlbumMore).description, '歌单简介')"
+                        style="width: 100%;margin-bottom: 10px;" strong secondary>
                         全部简介
                     </n-button>
 
@@ -47,7 +45,7 @@
             </div>
             <div class="album-pub">
                 <span>发行时间: {{ timeFormat((album as AlbumMore).publishTime) }}</span>
-                <span>发行公司: {{ (album as AlbumMore).company||'无' }}</span>
+                <span>发行公司: {{ (album as AlbumMore).company || '无' }}</span>
 
             </div>
 
@@ -59,8 +57,8 @@
 </template>
 <script lang='ts' setup>
 // 钩子
-import { useRoute, useRouter } from 'vue-router'
-import { reactive, ref, onMounted, nextTick, onUnmounted } from 'vue'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
+import { reactive, ref, onMounted } from 'vue'
 // 组件
 import PlaylistSkeleton from '@/components/PageSkeleton/PlaylistSkeleton/PlaylistSkeleton.vue';
 import Cover from '@/components/Cover/Cover.vue';
@@ -77,12 +75,6 @@ import { timeFormat } from '@/utils/computed';
 // 仓库
 import useUserStore from '@/store/user';
 
-// 简介真实容器
-const text = ref<HTMLElement | null>(null)
-// 歌曲简介裁剪成4行的容器
-const textClip = ref<any | null>(null)
-// 是否需要显示查看简介的按钮
-const checkDescShow = ref(false)
 // 正在加载
 const isLoading = ref(true)
 //  专辑歌曲
@@ -98,37 +90,10 @@ const $router = useRouter()
 const userStore = useUserStore()
 
 // 获取数据
-onMounted(async () => {
-    try {
-        const res = await getAlbumInfor(+$route.params.id)
-        res.code !== 200 ? await Promise.reject() : ''
-        // 获取专辑歌曲数据
-        res.songs.forEach(ele => {
-            songs.push(ele)
-        })
-        // 获取专辑信息
-        album.value = res.album
-        // 获取收藏状态 (根据仓库中是否收藏此专辑的id即可知道当前是否收藏过该专辑)
-        isSub.value = userStore.userData.idAlbums.some(ele => ele === res.album.id)
-        isLoading.value = false
-        // 检测当前简介是否超过一定高度,来设置查看全部简介的按钮的显示
-        nextTick(checkDes)
-        // 开启窗口监听
-        window.addEventListener("resize", checkDes)
-    } catch (error) {
-        message("获取专辑数据失败 😋", "error", () => $router.back())
-    }
+onMounted(() => {
+    getData(+$route.params.id)
 })
 
-/**
- * 检测当前简介是否超过一定高度
- */
-function checkDes() {
-    if ((text.value as HTMLElement).clientHeight > textClip.value.$el.clientHeight) {
-        checkDescShow.value = true
-        console.log('裁剪后的简介和未裁剪的高度不一致,需要显示查看全部简介的按钮');
-    }
-}
 
 /**
  * 收藏或取消收藏专辑
@@ -146,7 +111,7 @@ async function toSubAlbum() {
                 message("取消收藏专辑成功! 🤑", "success")
                 isSub.value = false
             } else {
-               await Promise.reject()
+                await Promise.reject()
             }
         } else {
             //  收藏专辑
@@ -171,9 +136,31 @@ function goToComment() {
     $router.push(`/album-comment/${(album.value as AlbumMore).id}?page=1`)
 }
 
-// 页面被销毁时,移除事件监听器
-onUnmounted(() => {
-    window.removeEventListener("resize", checkDes)
+async function getData(id: number) {
+    isLoading.value = true
+    try {
+        const res = await getAlbumInfor(id)
+        res.code !== 200 ? await Promise.reject() : ''
+        // 获取专辑歌曲数据
+        res.songs.forEach(ele => {
+            songs.push(ele)
+        })
+        // 获取专辑信息
+        album.value = res.album
+        // 获取收藏状态 (根据仓库中是否收藏此专辑的id即可知道当前是否收藏过该专辑)
+        isSub.value = userStore.userData.idAlbums.some(ele => ele === res.album.id)
+        isLoading.value = false
+    } catch (error) {
+        message("获取专辑数据失败 😋", "error")
+        $router.replace('/404')
+    }
+}
+
+// 路由更新时,获取最新数据
+onBeforeRouteUpdate(to => {
+    // 清空专辑歌曲,重新获取
+    songs.length = 0;
+    getData(+to.params.id)
 })
 
 </script>

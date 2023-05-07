@@ -3,7 +3,7 @@
         <!--头部标题-->
         <div v-once>
             <h2>
-                <span class="date">{{ new Date().getDate() }}</span>
+                <span class="date">{{ new Date().getDate() >= 10 ? new Date().getDate() : '0' + new Date().getDate() }}</span>
                 <n-icon size="90" color="#4098fc">
                     <IosCalendarIcon />
                 </n-icon>

@@ -1,19 +1,22 @@
 <template>
-    <li class="song-card" >
+    <li class="song-card">
         <div class="song-cover" @click="goToSong">
             <img :src="picUrl">
             <div class="song-more">
 
                 <div class="item">
                     <span class="title">歌手:</span>
-                    <span  @click.stop="goToArtist(item.id)" class="text" v-for="item in song.artists" :key="item.id">
-                        {{ item.name }}
+                    <span @click.stop="goToArtist" class="text" >
+                        {{ song.artists[0].name }}
                     </span>
                 </div>
 
                 <div class="item">
                     <span class="title">专辑:</span><br />
-                    <span class="text" @click.stop="goToAlbum">{{ song.album.name }}</span>
+                    <n-ellipsis :line-clamp="2" :tooltip="false">
+                        <span class="text" @click.stop="goToAlbum">{{ song.album.name }}</span>
+                    </n-ellipsis>
+
                 </div>
 
                 <div class="item">
@@ -27,9 +30,12 @@
                 </div>
             </div>
         </div>
-        <span class="song-infor text" @click="goToSong">
-            {{ name }}
-        </span>
+        <n-ellipsis :line-clamp="2" :tooltip="false">
+            <span class="song-infor text" @click="goToSong">
+                {{ name }}
+            </span>
+        </n-ellipsis>
+
 
     </li>
 </template>
@@ -58,8 +64,8 @@ const $router = useRouter()
  * 去某个歌手详情页
  * @param id 
  */
-function goToArtist(id:number) {
-    $router.push(`/artist/${id}`)
+function goToArtist() {
+    $router.push(`/artist/${props.song.artists[0].id}`)
 }
 
 /**
@@ -110,18 +116,22 @@ function goToSong() {
     word-break: break-all;
     opacity: 0;
     transition: .5s;
+
     .title {
         font-size: 13px;
         font-weight: 700;
     }
 }
-.song-cover:hover .song-more{
+
+.song-cover:hover .song-more {
     opacity: 1;
 }
-.song-more .item:first-child{
+
+.song-more .item:first-child {
     display: flex;
     flex-direction: column;
-    span{
+
+    span {
         align-self: start;
     }
 }

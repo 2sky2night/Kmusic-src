@@ -23,7 +23,7 @@
                 </div>
             </div>
             <!--评论区-->
-            <Comment  :type="2" :get-data="getPlaylistCmt" :id="(playlist as PlaylistInfor).id" />
+            <Comment :type="2" :get-data="getPlaylistCmt" :id="(playlist as PlaylistInfor).id" />
         </div>
     </div>
 </template>
@@ -31,7 +31,7 @@
 // 接口
 import type { PlaylistInfor } from '@/api/Playlist/interfaces';
 // 钩子
-import { useRoute, useRouter } from 'vue-router';
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue'
 // api
 import { getPlaylistCmt } from '@/api/PlaylistCmt';
@@ -53,17 +53,8 @@ const $router = useRouter()
 const $route = useRoute()
 
 
-onMounted(async () => {
-    try {
-        // 获取专辑信息
-        const res = await getPlaylistInfor(+$route.params.id)
-        if (res.code !== 200) await Promise.reject()
-        playlist.value = res.playlist
-
-        isLoading.value = false
-    } catch (error) {
-        message("获取歌单评论失败 🤔", "error")
-    }
+onMounted(() => {
+    getData(+$route.params.id)
 })
 
 /**
@@ -82,8 +73,36 @@ function goToUser() {
     } else {
         $router.push(`/user/${playlist.value?.userId}`)
     }
-
 }
+
+/**
+ * 获取歌单信息
+ * @param id 
+ */
+async function getData(id: number) {
+    try {
+        const res = await getPlaylistInfor(id)
+        if (res.code !== 200) await Promise.reject()
+        if (!res.playlist.creator) await Promise.reject()
+        playlist.value = res.playlist
+
+        isLoading.value = false
+    } catch (error) {
+        message("获取歌单评论失败 🤔", "error")
+        $router.replace('/404')
+    }
+}
+
+
+onBeforeRouteUpdate((to, from) => {
+    const newId = +to.params.id;
+    const oldId = +from.params.id;
+    if (newId !== oldId) {
+        // 动态参数更新 重新获取歌单数据
+        isLoading.value = true;
+        getData(newId)
+    }
+})
 
 </script>
 <style scoped >

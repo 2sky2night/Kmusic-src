@@ -122,7 +122,8 @@ async function getSongData() {
         isLike.value = userStore.userData.ids.some(ele => ele === (song.value as Song).id)
         isLoading.value = false
     } catch (error) {
-        message("获取歌曲数据失败 🤔", "error", () => $router.back())
+        message("获取歌曲数据失败 🤔", "warning");
+        $router.replace('/404')
     }
 }
 

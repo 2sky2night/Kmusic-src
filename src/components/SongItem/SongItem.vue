@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="artists-name">
-                    <n-ellipsis style="max-width: 240px">
+                    <n-ellipsis style="max-width: 240px" :tooltip="false">
                         <span v-for="(item, index) in song.ar" :key="item.id">
                             <span class="text" @click.stop="goToArtist(item.id)">{{ item.name }}</span>
                             <span v-if="index !== song.ar.length - 1">/</span>

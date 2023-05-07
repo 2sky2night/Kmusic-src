@@ -5,12 +5,14 @@
 
 <script lang="ts" setup>
 import { NIcon } from "naive-ui";
+import { MessageOutlined as MessageOutlinedIcon} from '@vicons/antd'
 import {
     IosMusicalNotes as IosMusicalNotesIcon,
     IosVideocam as IosVideocamIcon,
     MdPlayCircle as MdPlayCircleIcon,
     IosPlay as IosPlayIcon,
-    IosArrowForward as IosArrowForwardIcon
+    IosArrowForward as IosArrowForwardIcon,
+    MdFolderOpen as MdFolderOpenIcon
 } from "@vicons/ionicons4";
 import { ref, nextTick, h, reactive } from 'vue'
 import PubSub from 'pubsub-js'
@@ -44,9 +46,19 @@ const options = reactive([
         key: 'd1'
     },
     {
-        label: '歌曲详情页',
+        label: '歌曲详情',
         key: 'song-infor',
         icon: () => h(NIcon, { size: 20 }, () => h(IosMusicalNotesIcon))
+    },
+    {
+        label: '歌曲专辑',
+        key: 'song-album',
+        icon: () => h(NIcon, { size: 20 }, () => h(MdFolderOpenIcon))
+    },
+    {
+        label: '歌曲评论',
+        key: 'song-comment',
+        icon: () => h(NIcon, { size: 20 }, () => h(MessageOutlinedIcon))
     }
 ])
 
@@ -76,6 +88,8 @@ function handleSelect(key: string | number) {
         case 'play-next': console.log('play-next'); break;
         case 'add-playlist': console.log('add-playlist'); break;
         case 'play-now': toSetPlayingSong(); break;
+        case 'song-album': $router.push(`/album/${data.al.id}`); break;
+        case 'song-comment': $router.push(`/song-comment/${data.id}`); break;
     }
 }
 
@@ -87,8 +101,8 @@ PubSub.subscribe('open', (_, res: { data: Song, x: number, y: number }) => {
     // 获得数据后,检查是否有mv
     if (res.data.mv) {
         // 有mv就添加这一项数据 需要检查当前是否有mv,没有mv选项才添加
-        if(options.findIndex(ele=>ele.key==="mv")===-1)
-        options.push(mvOption)
+        if (options.findIndex(ele => ele.key === "mv") === -1)
+            options.push(mvOption)
     } else {
         // 没有mv就删除mv选项
         options.some((ele, index) => {
@@ -117,7 +131,7 @@ function toSetPlayingSong() {
         name: data.name,
         album: { name: data.al.name, id: data.al.id, picUrl: data.al.picUrl },
         artists: data.ar,
-        isVip:data.privilege.freeTrialPrivilege.resConsumable
+        isVip: data.privilege.freeTrialPrivilege.resConsumable
     })
 }
 

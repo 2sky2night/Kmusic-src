@@ -1,12 +1,18 @@
 <template>
     <div class="page">
-        <UserInfor  v-if="userInfor.avatar" :avatar="userInfor.avatar" :create-days="userInfor.createDays"
-            :event-count="userInfor.eventCount" :followeds="userInfor.followeds" :follows="userInfor.follows"
-            :gender="userInfor.gender" :level="userInfor.level" :nickname="userInfor.nickname"
-            :signature="userInfor.signature" :id="userStore.userData.id as number">
-            <n-progress style="width:100px;margin-left: 10px;" type="line" :percentage="levelProcess" :show-indicator="false" />
+        <UserSkeleton v-if="!isOk" />
+        <UserInfor v-else :avatar="userInfor.avatar" :create-days="userInfor.createDays" :event-count="userInfor.eventCount"
+            :followeds="userInfor.followeds" :follows="userInfor.follows" :gender="userInfor.gender"
+            :level="userInfor.level" :nickname="userInfor.nickname" :signature="userInfor.signature"
+            :id="userStore.userData.id as number">
+            <n-progress style="width:100px;margin-left: 10px;" type="line" :percentage="levelProcess"
+                :show-indicator="false" />
         </UserInfor>
-        <TabBar :list="list" />
+        <TabBar :list="list" v-if="isOk" />
+        <div class="music-list" v-else style="margin-top: 50px;">
+            <SkeletonList :length="12" :cover-radius="10" :text-center="false" />
+        </div>
+
         <RouterView></RouterView>
     </div>
 </template>
@@ -25,6 +31,7 @@ import useUserStore from '@/store/user'
 // 组件
 import UserInfor from '@/components/UserInfor/UserInfor.vue';
 import TabBar from '@/components/TabBar/TabBar.vue';
+import UserSkeleton from '@/components/PageSkeleton/UserSkeleton/UserSkeleton.vue'
 
 // tabBar数据
 const list: TabBarList = [
@@ -43,7 +50,7 @@ const isOk = ref(false)
 // 向子路由暴露加载完成
 provide('isOk', isOk)
 // 用户等级信息
-const levelProcess=ref(0)
+const levelProcess = ref(0)
 
 function setData(resDetail: UserDetailRes) {
     // 更新用户数据
@@ -77,7 +84,7 @@ onMounted(async () => {
         }
         const res = await getUserLevel()
         if (res.code !== 200) await Promise.reject();
-        levelProcess.value=res.data.progress*100
+        levelProcess.value = res.data.progress * 100
         isOk.value = true
 
     } catch (err) {

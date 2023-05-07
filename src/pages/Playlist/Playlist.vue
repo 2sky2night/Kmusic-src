@@ -8,22 +8,15 @@
                 <n-h1> {{ playlistInfor?.name }}</n-h1>
 
                 <n-h2>歌单简介</n-h2>
-                <div class="desc">
-                    <n-ellipsis style="width:250px;" :line-clamp="4" :tooltip="false" ref="textClip">
+                <div class="desc" @click="showDes" style="cursor: pointer;">
+                    <n-ellipsis style="width:250px;" :line-clamp="4" :tooltip="false">
                         {{ playlistInfor?.description || '无' }}
                     </n-ellipsis>
-                    <span style="width: 250px;visibility: hidden;position: absolute;" ref="text">
-                        {{ playlistInfor?.description || '无' }}
-                    </span>
-                    <n-button @click="messageboxWithout((playlistInfor as PlaylistInfor).description, '歌单简介')"
-                        style="width: 100%;margin-bottom: 10px;" strong secondary v-if="checkDescShow">
-                        全部简介
-                    </n-button>
                 </div>
 
                 <div class="tags" v-once>
-                    <Tag style="margin-right: 5px;" v-for="item in playlistInfor?.tags" :key="item" :title="item"
-                        :round="true" size="small" />
+                    <Tag @click="() => toDiscover(item)" style="margin-right: 5px;cursor: pointer;"
+                        v-for="item in playlistInfor?.tags" :key="item" :title="item" :round="true" size="small" />
                 </div>
 
                 <div class="list-data" v-once>
@@ -73,10 +66,9 @@
                         {{ isSub ? '已收藏' : '收藏' }}
                     </n-button>
                     <n-button strong secondary size="small" class="check-desc" v-if="playlistInfor?.description"
-                        @click="messageboxWithout((playlistInfor as PlaylistInfor).description, '歌单简介')"
-                        style="margin-left: 5px;">查看简介</n-button>
+                        @click="showDes" style="margin-left: 5px;">查看简介</n-button>
                     <n-button @click="goToPlaylistCmt" size="small" strong secondary type="info"
-                        style="margin-left: 5px;">评论 {{ playlistDynamic?.commentCount }}</n-button>
+                        style="margin-left: 5px;">评论 {{ countFormat(playlistDynamic?.commentCount as number) }}</n-button>
                 </div>
             </div>
             <ul v-if="!isLoading && songs.length">
@@ -103,7 +95,7 @@ import type { PlaylistInfor, PlaylistDynamicRes } from '@/api/Playlist/interface
 import { getPlaylistInfor, getPlaylistDynamic, getPlaylistSong, toggleSubPlaylist } from '@/api/Playlist';
 // 钩子
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
-import { onMounted, ref, reactive, watch, nextTick, onUnmounted } from 'vue';
+import { onMounted, ref, reactive, watch } from 'vue';
 import useUserStore from '@/store/user';
 // 工具函数
 import { checkPage } from '@/utils/tools'
@@ -113,12 +105,6 @@ import { messageboxWithout } from '@/render/MessageBox';
 
 // 用户仓库
 const userStore = useUserStore()
-// 歌曲简介真实容器
-const text = ref<HTMLElement | null>(null)
-// 歌曲简介裁剪成4行的容器
-const textClip = ref<any | null>(null)
-// 是否需要显示查看简介的按钮
-const checkDescShow = ref(false)
 // 歌曲的详情信息
 const playlistInfor = ref<PlaylistInfor | null>(null)
 // 歌曲的动态信息
@@ -140,48 +126,54 @@ const $router = useRouter()
 const $route = useRoute()
 
 // 初始化时,加载歌单基本数据
-onMounted(getData)
+onMounted(() => {
+    getData(+$route.params.id)
+})
 
-async function getData() {
+/**
+ * 获取歌单信息
+ * @param id - 歌单的id
+ */
+async function getData(id: number) {
 
     // 获取当前访问的第几页歌单
     page.value = checkPage($route.query.page as any);
     isLoading.value = true
     try {
         // 加载歌单详情数据
-        const resInfor = await getPlaylistInfor(+$route.params.id)
+        const resInfor = await getPlaylistInfor(id)
         resInfor.code !== 200 ? await Promise.reject() : '';
+        if (!resInfor.playlist.creator) await Promise.reject()
         playlistInfor.value = resInfor.playlist;
         pages = countPage(20, playlistInfor.value.trackIds.length)
         // 加载歌单动态数据
-        const resDynamic = await getPlaylistDynamic(+$route.params.id)
+        const resDynamic = await getPlaylistDynamic(id)
         resDynamic.code !== 200 ? await Promise.reject() : ''
         playlistDynamic.value = resDynamic
         isSub.value = playlistDynamic.value.subscribed
         isLoading.value = false
         firstLoading.value = false
-        // 检测当前简介是否超过一定高度,来设置查看全部简介的按钮的显示
-        nextTick(checkDes)
-        // 开启窗口监听
-        window.addEventListener("resize", checkDes)
-        // 获取当前页的数据
-        getSong()
+        getSong(id)
     } catch (error) {
         message("加载歌单失败 😰", "error")
+        $router.replace('/404')
     }
 
 }
 
 /**
  * 获取某一页的歌曲
+* @param id - 歌单的id
  */
-async function getSong() {
-    isLoading.value = true
+async function getSong(id: number) {
+    isLoading.value = true;
     // 删除当前页歌单的歌曲
-    songs.splice(0, songs.length)
+    songs.length = 0;
     try {
-        const res = await getPlaylistSong(+$route.params.id, page.value)
-        res.code !== 200 ? await Promise.reject() : ''
+        const res = await getPlaylistSong(id, page.value);
+        res.code !== 200 ? await Promise.reject() : '';
+        // 解决路由更新莫名其妙调用两次回调的问题
+        if (songs.length > 0) return
         res.songs.forEach((ele, index) => {
             songs.push({ ...ele, privilege: { ...res.privileges[index] } })
         })
@@ -190,7 +182,8 @@ async function getSong() {
         }
         isLoading.value = false
     } catch (error) {
-        message("加载歌单的歌曲失败 😓", "error")
+        message("加载歌单的歌曲失败 😓", "warning")
+        $router.replace('/404')
     }
 }
 
@@ -214,6 +207,14 @@ async function toSubscribe() {
     }
 }
 
+/**
+ * 点击标签进入发现页搜索歌单
+ * @param tag 
+ */
+function toDiscover(tag: string) {
+    $router.push(`/discover/playlist?tag=${tag}&page=1`)
+}
+
 // 监听页数的变化,发送请求获取数据
 watch(page, (v) => {
     $router.push({
@@ -225,37 +226,20 @@ watch(page, (v) => {
 
 })
 
-onBeforeRouteUpdate((to, from) => {
-    if (to.fullPath === from.fullPath) return
-    page.value = checkPage(to.query.page as any);
-    getSong()
-})
-
-// // 路由变化就发送请求获取数据
-// watch(() => $route.fullPath, () => {
-//     // 若当前离开当前页了,就不执行获取数据了
-//     if (isLeave.value) {
-//         return
-//     }
-//     //更新页码,获取歌单当前页的歌曲
-//     page.value = checkPage($route.query.page as any);
-//     getSong()
-// })
-
-// onBeforeRouteLeave(() => {
-//     console.log('离开路由了');
-//     isLeave.value = true
-// })
-
-/**
- * 检测当前简介是否超过一定高度
- */
-function checkDes() {
-    if ((text.value as HTMLElement).clientHeight > textClip.value.$el.clientHeight) {
-        checkDescShow.value = true
-        console.log('裁剪后的简介和未裁剪的高度不一致,需要显示查看全部简介的按钮');
+onBeforeRouteUpdate(async (to, from) => {
+    // 对比新旧动态参数,若两者不相同说明动态参数更新了
+    const newId = +to.params.id;
+    const oldId = +from.params.id;
+    if (newId !== oldId) {
+        // 若新旧动态参数不一致,重新获取最新的歌单信息
+        firstLoading.value = true;
+        await getData(newId);
+        firstLoading.value = false;
     }
-}
+    page.value = checkPage(to.query.page as any);
+    // 获取歌曲的内容新旧动态参数无所谓
+    getSong(newId);
+})
 
 /**
  * 去歌单评论页
@@ -275,14 +259,12 @@ function goToUser() {
     }
 }
 
-
-
 /**
- * 移除事件监听
+ * 查看歌曲简介
  */
-onUnmounted(() => {
-    window.removeEventListener("resize", checkDes)
-})
+function showDes() {
+    (playlistInfor.value as PlaylistInfor).description && messageboxWithout((playlistInfor.value as PlaylistInfor).description, '歌单简介')
+}
 
 </script>
 <style scoped lang="scss">
@@ -309,6 +291,12 @@ onUnmounted(() => {
 @media screen and (max-width:800px) {
     .playlist-subscribers {
         display: none;
+    }
+
+    .list-time {
+        >div:nth-child(2) {
+            display: none;
+        }
     }
 }
 </style>

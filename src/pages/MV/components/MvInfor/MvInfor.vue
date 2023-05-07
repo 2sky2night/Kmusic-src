@@ -41,6 +41,7 @@
 import { getMvInfor, getMvURL, subMv } from '@/api/MV';
 // 钩子
 import { onMounted, reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router';
 // 接口
 import type { MvData, MvType } from '@/api/MV/interfaces';
 // 工具函数
@@ -53,6 +54,8 @@ import ArtistItem from '@/components/Card/ArtistItem/ArtistItem.vue';
 import { PlayCircleOutline, ShareSocial } from '@vicons/ionicons5'
 import { MessageOutlined } from '@vicons/antd'
 
+// 路由实例对象
+const $router = useRouter()
 // mv的详情数据
 const mvInfor = ref<MvData>()
 // 是否收藏了该mv
@@ -154,7 +157,7 @@ async function getMvData() {
     } catch (error) {
 
         message("获取mv数据失败 😴", "error")
-
+        $router.replace('/404')
     }
 }
 
