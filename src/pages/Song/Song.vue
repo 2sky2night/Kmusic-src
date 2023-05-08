@@ -35,7 +35,7 @@
                                 <IosHeartEmpty v-else />
                             </n-icon>
                         </n-button>
-                        <n-button size="small" strong secondary>添加到</n-button>
+                        <n-button @click="toAddPlaylist" size="small" strong secondary>添加到</n-button>
                         <n-button @click="goToComment" size="small" strong secondary type="info">评论</n-button>
                         <n-button @click="goToMv" v-if="song?.mv" size="small" strong secondary type="warning">MV</n-button>
                     </div>
@@ -52,6 +52,9 @@
                 <EmptyPage v-else description="这首歌暂时没被收藏到热门歌单过呢 😉" :show-btn="false" />
             </div>
         </div>
+        <n-modal v-model:show="showModal">
+            <PlaylistPanel :song-id="(song as Song).id" @close-box="showModal=false" />
+        </n-modal>
     </div>
 </template>
 <script lang='ts' setup>
@@ -71,15 +74,18 @@ import message from '@/utils/message';
 // 组件
 import SongSortCard from '@/components/Card/SongSortCard/SongSortCard.vue';
 import SongSkeleton from '@/components/PageSkeleton/SongSkeleton/SongSkeleton.vue'
-import EmptyPage from '@/components/EmptyPage/EmptyPage.vue';
 import TitleHeader from '@/pages/Home/components/TitleHeader/TitleHeader.vue';
+import PlaylistPanel from '@/components/PlaylistPanel/PlaylistPanel.vue'
 // 仓库
 import useMusicStore from '@/store/music'
 import useUserStore from '@/store/user';
 
+// 用户仓库
 const userStore = useUserStore()
+// 歌曲仓库
 const musicStore = useMusicStore()
-
+// 显示添加到歌单的模态框
+const showModal = ref(false)
 const $route = useRoute()
 const $router = useRouter()
 //  歌曲信息
@@ -124,6 +130,15 @@ async function getSongData() {
     } catch (error) {
         message("获取歌曲数据失败 🤔", "warning");
         $router.replace('/404')
+    }
+}
+
+// 添加到歌单模态框的展示
+function toAddPlaylist() {
+    if (userStore.cookie && userStore.isLogin) {
+        showModal.value = true
+    } else {
+        message("请先登陆 👀", "info")
     }
 }
 
@@ -288,6 +303,7 @@ function goToMv() {
 // 歌曲封面
 .song-cover {
     margin-right: 10px;
+    display: flex;
 
     :deep(img) {
         width: 300px;
@@ -295,9 +311,10 @@ function goToMv() {
 }
 
 @media screen and (max-width:675px) {
-    .artist{
+    .artist {
         font-size: 12px !important;
     }
+
     .song-infor {
         position: relative;
 

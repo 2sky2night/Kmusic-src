@@ -16,6 +16,7 @@ const musicStore = useMusicStore();
 // 搜索仓库
 const searchStore = useSearchStore();
 
+// 在全局挂载路由的push方法
 (window as any).$push = useRouter().push;
 
 // 根据用户仓库当前的登录状态决定是否获取用户喜欢的歌曲列表
@@ -23,6 +24,7 @@ if (userStore.isLogin && userStore.cookie) {
   //  若当前用户登录了,就获取最新的用户喜欢的歌曲列表 以及 用户收藏的专辑列表
   userStore.toGetSongLikeList()
   userStore.toGetStarAlbum()
+  userStore.toGetUserPlaylist()
 }
 
 // 检测到用户仓库的方法执行,将最新的数据保存在本地中
@@ -385,8 +387,7 @@ searchStore.$onAction(({ after }) => {
 // 标签样式结束
 
 // 搜索页的子路由样式
-.search-tab{
-  margin-top:10px ;
+.search-tab {
+  margin-top: 10px;
 }
-
 </style>

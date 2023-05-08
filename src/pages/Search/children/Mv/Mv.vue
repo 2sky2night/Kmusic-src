@@ -6,7 +6,11 @@
                 :play-time="mv.playCount" :title="mv.name" :vid="mv.id" />
         </ul>
         <n-pagination v-if="total / pageSize > 1 && mvs.length && !isLoading" style="align-self: center;" :page-slot="6"
-            v-model:page="page" :item-count="total" v-model:page-size="pageSize" show-size-picker :page-sizes="pageSizes" />
+            v-model:page="page" :item-count="total" v-model:page-size="pageSize" show-size-picker :page-sizes="pageSizes">
+            <template #prefix>
+                共 {{ total }} 项
+            </template>
+        </n-pagination>
         <EmptyPage v-if="!mvs.length && !isLoading" description="搜索的关键词太犀利了,没有搜索结果呢 🥱" :show-btn="true" />
         <SkeletonList :length="pageSize" :cover-radius="10" :text-center="false" v-if="isLoading" />
     </div>

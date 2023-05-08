@@ -81,6 +81,7 @@ declare module '@vue/runtime-core' {
     NText: typeof import('naive-ui')['NText']
     PlaylistCard: typeof import('./src/components/Card/PlaylistCard.vue')['default']
     PlayListCard: typeof import('./src/components/Card/PlayListCard/PlayListCard.vue')['default']
+    PlaylistPanel: typeof import('./src/components/PlaylistPanel/PlaylistPanel.vue')['default']
     PlaylistSkeleton: typeof import('./src/components/PageSkeleton/PlaylistSkeleton/PlaylistSkeleton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

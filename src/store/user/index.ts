@@ -10,6 +10,8 @@ import message from '@/utils/message'
 // api
 import { getLikeSongList } from '@/api/public/song'
 import { getStarAlbum } from '@/api/My/Album'
+import { getUserPlayList } from '@/api/public/user'
+import { toCreatePlaylist, toDeletePlaylist } from '@/api/public/playlist'
 
 // 用户的初始数据
 const data: UserStoreState = {
@@ -21,7 +23,8 @@ const data: UserStoreState = {
         avatar: 'https://p4.music.126.net/SUeqMM8HOIpHv9Nhl9qt9w==/109951165647004069.jpg',
         level: 0,
         ids: [],
-        idAlbums: []
+        idAlbums: [],
+        myPlaylists: []
     }
 }
 
@@ -42,7 +45,8 @@ if (cookie) {
         data.userData.id = userData.id
         data.userData.nickname = userData.nickname
         data.userData.ids = userData.ids
-        data.userData.ids = userData.idAlbums
+        data.userData.idAlbums = userData.idAlbums
+        data.userData.myPlaylists = userData.myPlaylists
     } else {
         // 没有就初始化用户数据
         setLocal('userData', data.userData)
@@ -59,10 +63,11 @@ const useUserStore = defineStore('user', {
             this.isLogin = value
         },
         setCookie(value: string | null) {
-            // 获取cookie说明用户登录成功,需要获取用户当前喜欢的歌曲列表以及用户收藏的专辑
+            // 获取cookie说明用户登录成功,需要获取用户当前喜欢的歌曲列表以及用户收藏的专辑和用户自己创建的歌单
             this.cookie = value
             this.toGetSongLikeList()
             this.toGetStarAlbum()
+            this.toGetUserPlaylist()
         },
         setUserId(value: number) {
             this.userData.id = value
@@ -97,12 +102,12 @@ const useUserStore = defineStore('user', {
                     this.userData.ids = res.ids
                     setLocal('userData', this.userData)
                 } else {
-                   Promise.reject()
+                    Promise.reject()
                 }
             } catch (error) {
                 message("获取用户喜欢的歌曲失败 😰", "warning")
             }
-     
+
         },
         /**
          * 获取用户收藏的专辑列表
@@ -125,7 +130,7 @@ const useUserStore = defineStore('user', {
          * @param id 
          */
         addStarAlbum(id: number) {
-           this.userData.idAlbums.push(id)
+            this.userData.idAlbums.push(id)
         },
         /**
          * 移除收藏的专辑
@@ -134,10 +139,74 @@ const useUserStore = defineStore('user', {
         removeStarAlbum(id: number) {
             this.userData.idAlbums.some((ele, index, arr) => {
                 if (ele === id) {
-                    arr.splice(index,1)
+                    arr.splice(index, 1)
                     return true
                 }
             })
+        },
+        /**
+         * 获取用户自己的歌单
+         */
+        async toGetUserPlaylist() {
+            try {
+                const res = await getUserPlayList(this.userData.id as number, 0, 9999)
+                if (res.code !== 200) await Promise.reject()
+                // 获取用户所有歌单后过滤出用户自己的歌单
+                this.userData.myPlaylists = res.playlist.filter(ele => ele.creator.userId === this.userData.id as number)
+            } catch (error) {
+                message("获取用户的歌单失败 😱", "warning")
+            }
+        },
+        /**
+         * 添加歌单成功需要更新对应歌单的数据 歌单中的歌曲数量
+         * @param pid - 歌单的id
+         * @param count - 更新后的歌曲数量
+         */
+        updatePlaylist(pid: number, count: number) {
+            this.userData.myPlaylists.some(ele => {
+                if (ele.id === pid) {
+                    ele.trackCount = count;
+                    return
+                }
+            })
+        },
+        /**
+         * 创建歌单
+         * @param name 
+         */
+        async createPlaylist(name: string) {
+            try {
+                const res = await toCreatePlaylist(name);
+                if (res.code !== 200) await Promise.reject()
+                this.userData.myPlaylists.unshift(res.playlist)
+                message("添加歌单成功 😍", "success")
+            } catch (error) {
+                message("创建歌单失败 😂", "warning")
+            }
+        },
+        /**
+         * 删除一个歌单
+         * @param id - 歌单的id
+         */
+        async deletePlaylist(id: number) {
+            try {
+                const res = await toDeletePlaylist([id])
+                if (res.code == 200) {
+                    // 删除歌单成功 删除仓库对应的歌单
+                    this.userData.myPlaylists.some((ele, index, arr) => {
+                        if (ele.id === id) {
+                            arr.splice(index, 1)
+                            return
+                        }
+                    })
+                    message("删除歌单成功 🤑", "success")
+                } else {
+                    await Promise.reject()
+                }
+
+            } catch (error) {
+                message("删除歌单失败 😨", "warning")
+            }
         }
     },
     // 开启数据持久化

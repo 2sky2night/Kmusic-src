@@ -32,7 +32,13 @@ function renderCustomHeader() {
         'div',
         { style: 'display:flex;padding:0 10px;height:50px;align-items: center;user-select: none;;', class: 'drop-down-header' },
         [
-            h(NAvatar, { src: userStore.userData.avatar + '' }),
+            h(NAvatar, {
+                style: { cursor: "pointer" },
+                title:flag?'我的':'登录',
+                src: userStore.userData.avatar + '', onClick: () => {
+                    flag ? (window as any).$push('/my') : (window as any).$push('/login')
+                }
+            }),
             h('div', { style: 'margin-left:5px;' }, [
                 h('h5', flag ? userStore.userData.nickname + '' : '未登录'),
                 h('div', { style: 'font-size:12px;' }, flag ? `等级: ${userStore.userData.level}` : '登录尽享更多权益')
@@ -63,7 +69,7 @@ export const loginMenu = [
         render: renderCustomHeader
     },
     {
-        key: 'header',
+        key: 'theme',
         type: 'render',
         render: renderTheme
     },

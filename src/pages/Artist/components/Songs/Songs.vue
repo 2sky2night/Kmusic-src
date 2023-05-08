@@ -2,9 +2,11 @@
     <div class="hot-songs">
         <ul v-if="!isLoading">
             <SongItem v-for="item in songs" :key="item.id" :song="item" />
-            <n-button  style="margin:10px 0;align-self: center;padding: 0 50px;" strong secondary @click="goToArtistSongs">查看歌手的全部歌曲</n-button>
+            <n-button v-if="songs.length" style="margin:10px 0;align-self: center;padding: 0 50px;" strong secondary
+                @click="goToArtistSongs">查看歌手的全部歌曲</n-button>
         </ul>
         <SongItemSkeletonList v-else :length="10" />
+        <EmptyPage v-if="!isLoading && !songs.length" description="该歌手无热门歌曲 🥰" :show-btn="false" />
     </div>
 </template>
 <script lang='ts' setup>
@@ -14,11 +16,9 @@ import { Song } from '@/api/public/indexfaces';
 import { getArtistHotSong } from '@/api/Artist';
 // 钩子
 import { onMounted, reactive, ref } from 'vue'
-import { useRoute, useRouter,onBeforeRouteUpdate } from 'vue-router';
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 // 工具函数
 import message from '@/utils/message';
-// 组件
-import SongItemSkeletonList from '@/components/SkeletonList/SongItemSkeletonList/SongItemSkeletonList.vue';
 
 const $router = useRouter()
 const $route = useRoute()
@@ -28,7 +28,7 @@ const isLoading = ref(true)
 const songs = reactive<Song[]>([])
 // 自定义属性,将是否收藏歌手的信息发送给父组件
 const emit = defineEmits<{
-    (e:"subState",value:boolean):void
+    (e: "subState", value: boolean): void
 }>()
 
 onMounted(() => {
@@ -40,10 +40,10 @@ onMounted(() => {
  * @param id - 歌手id
  */
 async function getHotSong(id: number) {
-    isLoading.value=true
+    isLoading.value = true
     // 清空当前歌手歌曲数据
-    songs.splice(0,songs.length)
-      try {
+    songs.splice(0, songs.length)
+    try {
         const res = await getArtistHotSong(id)
         if (res.code !== 200) await Promise.reject()
         res.hotSongs.forEach(ele => {
@@ -74,7 +74,7 @@ onBeforeRouteUpdate((to) => {
 </script>
 
 <style scoped lang="scss">
-.hot-songs ul{
+.hot-songs ul {
     display: flex;
     flex-direction: column;
 }

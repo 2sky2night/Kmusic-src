@@ -40,6 +40,10 @@ export interface Playlist {
     tags: string[];
     userId: number;
     picUrl: string;
+    /**
+     * 歌曲数量
+     */
+    trackCount: number,
 }
 
 /**

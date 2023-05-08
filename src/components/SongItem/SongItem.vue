@@ -3,7 +3,7 @@
         @dblclick="toSetPlayingSong">
         <div class="song-infor" v-once>
             <div style="min-width: 50px;max-width: 50px;margin-right: 10px;display: flex;">
-                <img :src="song.al.picUrl || '../../../../public/cover.jpg'">
+                <img :src="song.al.picUrl+'?param=60y60' || '../../../../public/cover.jpg'">
             </div>
 
             <div>

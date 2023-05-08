@@ -21,7 +21,7 @@
         </div>
         <div class="mv-infor">
             <n-ellipsis :tooltip="false">
-                <span @click.stop="toMvPage" style="font-size: 18px;"> {{ title }}</span>
+                <span :title="title" @click.stop="toMvPage" style="font-size: 18px;"> {{ title }}</span>
             </n-ellipsis>
             <div class="createor-list">
                 <n-ellipsis :tooltip="false">

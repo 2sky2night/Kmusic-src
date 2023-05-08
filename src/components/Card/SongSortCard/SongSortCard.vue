@@ -1,7 +1,9 @@
 <template>
     <div class="song-sort-card" @dblclick="playMusic">
         <div>
-            <span class="song-name text" @click.stop="toSongInfor">{{ song.name }}</span>
+            <n-ellipsis style="max-width: 240px" :tooltip="false">
+                <span :title="song.name" class="song-name text" @click.stop="toSongInfor">{{ song.name }}</span>
+            </n-ellipsis>
             ---
             <span @click.stop="toArtistInfor" class="text">{{ song.artists[0].name }}</span>
         </div>

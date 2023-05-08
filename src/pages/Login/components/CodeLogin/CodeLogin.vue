@@ -139,7 +139,7 @@ onUnmounted(() => {
 
 // 直接登陆,将来需要被删除,只是测试哈.
 function loginWithout() {
-    const cookie = 'MUSIC_U=e74c97563270773573f00c57843bb95b5cae03ca5137cba467da73fbd5f1a0a2993166e004087dd3910eb75508bac8132ef4b3fabee164b9b084178e5538515432ecc34b69dd6f68d4dbf082a8813684; __csrf=44fc964338f9feaa0af3b241d14a67e3; NMTID=00OJ'
+    const cookie = '_ga=GA1.1.1791282890.1681301868; _ga_MD3K4WETFE=GS1.1.1681301867.1.0.1681301871.0.0.0; MUSIC_U=2cd1c71b9baf7f53f26ef7f5dfe0de09ee0ec6254d4c74d3bbf95eea378226762db2b90205957188578daf23a96d51d11e3b34d47767323186dd7c53440873a002d144fc052de05ed4dbf082a8813684; __csrf=e752de12f1a9bee2096f705c5d6b749e; NMTID=00OSs5nHVx9OY_IK0RYgVlrPcc_SAQAAAGH-NCW4Q'
     message.success("登录成功!")
     //  登录成功关闭计时器
     clearInterval(timer)

@@ -5,7 +5,11 @@
                 :pic-url="artist.img1v1Url" />
         </ul>
         <n-pagination v-if="total / pageSize > 1 && artists.length && !isLoading" style="align-self: center;" :page-slot="6"
-            v-model:page="page" :item-count="total" v-model:page-size="pageSize" show-size-picker :page-sizes="pageSizes" />
+            v-model:page="page" :item-count="total" v-model:page-size="pageSize" show-size-picker :page-sizes="pageSizes">
+            <template #prefix>
+                共 {{ total }} 项
+            </template>
+        </n-pagination>
         <EmptyPage v-if="!artists.length && !isLoading" description="搜索的关键词太犀利了,没有搜索结果呢 🥱" :show-btn="true" />
         <SkeletonList :length="pageSize" :cover-radius="50" :text-center="true" v-if="isLoading" />
     </div>

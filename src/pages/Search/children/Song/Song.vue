@@ -4,7 +4,11 @@
             <SongItem v-for="song in songs" :key="song.id" :song="song" />
             <n-pagination v-if="total / pageSize > 1 && songs.length" style="align-self: center;" :page-slot="6"
                 v-model:page="page" :item-count="total" v-model:page-size="pageSize" show-size-picker
-                :page-sizes="pageSizes" />
+                :page-sizes="pageSizes">
+                <template #prefix>
+                    共 {{ total }} 项
+                </template>
+            </n-pagination>
             <EmptyPage v-if="!songs.length" description="搜索的关键词太犀利了,没有搜索结果呢 🥱" :show-btn="true" />
         </ul>
         <SongItemSkeletonList v-else :length="20" />

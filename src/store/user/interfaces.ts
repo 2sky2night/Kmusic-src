@@ -1,3 +1,4 @@
+import { Playlist } from "@/api/public/indexfaces";
 export default interface UserStoreState {
     cookie: null | string;
     isLogin: boolean;
@@ -13,6 +14,10 @@ export default interface UserStoreState {
         /**
          * 收藏的专辑id
          */
-        idAlbums:number[]
+        idAlbums: number[],
+        /**
+         * 用户自己自己的歌单
+         */
+        myPlaylists: Playlist[]
     }
 }

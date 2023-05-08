@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import { LikeSongsRes, SongLikeRes, SongLevel, SongDataRes, SongLyricKeyFrameRes, SongCheckRes, SongLyricRes } from './interfaces'
+import { AddSongToPlaylistRes, LikeSongsRes, SongLikeRes, SongLevel, SongDataRes, SongLyricKeyFrameRes, SongCheckRes, SongLyricRes } from './interfaces'
 
 
 /**
@@ -52,3 +52,21 @@ export const toggleLikeSong = (id: number, like: boolean) => {
  * 获取当前用户喜欢的音乐列表 (需要登陆)
  */
 export const getLikeSongList = () => request.get<LikeSongsRes>('/likelist')
+
+
+/**
+ * 添加歌曲到歌单
+ * @param op - 添加/删除操作
+ * @param pid - 歌单id
+ * @param tracks - 歌曲id
+ * @returns 
+ */
+export const addSongToPlaylist = (op: 'add' | 'del', pid: number, tracks: number) => {
+    return request.get<AddSongToPlaylistRes>('/playlist/tracks', {
+        params: {
+            op,
+            pid,
+            tracks
+        }
+    })
+}

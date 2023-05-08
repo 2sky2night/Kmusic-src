@@ -153,3 +153,15 @@ export interface LikeSongsRes {
     code: number;
     ids: number[];
 }
+
+export interface AddSongToPlaylistRes {
+    body: {
+        cloudCount: number;
+        code: number;
+        count: number;
+        trackIds: string;
+        message: string;
+    };
+    cookie: string[];
+    status: number;
+}
