@@ -1,5 +1,5 @@
 <template>
-    <n-scrollbar style="max-height: 500px">
+    <n-scrollbar style="max-height: 400px">
         <div class="hot-and-history">
             <SearchHistory v-if="searchStore.history.length" />
             <SearchHot :hot-list="hotList" />
@@ -25,7 +25,7 @@ const searchStore = useSearchStore()
 </script>
 <style scoped>
 .hot-and-history {
-    height: 500px;
+    height: 400px;
     box-sizing: border-box;
     padding:10px 5px;
 }

@@ -245,7 +245,11 @@ const useUserStore = defineStore('user', {
     },
     getters: {
         isLoginState(state) {
-            return state.cookie && state.isLogin
+            if (state.cookie && state.isLogin) {
+                return true
+            } else {
+                return false
+            }
         }
     },
     // 开启数据持久化

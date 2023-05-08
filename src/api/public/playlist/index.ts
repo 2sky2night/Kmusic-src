@@ -14,6 +14,11 @@ export const toCreatePlaylist = (name: string) => {
     })
 }
 
+/**
+ * 删除歌单
+ * @param ids  - 歌单列表
+ * @returns 
+ */
 export const toDeletePlaylist = (ids: number[]) => {
     return request.get<DeletePlaylistRes>('/playlist/delete', {
         params: {

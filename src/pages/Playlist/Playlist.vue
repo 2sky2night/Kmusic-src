@@ -80,19 +80,32 @@
                 <!--歌单时间信息-->
                 <div class="list-time">
                     <div v-once>
-                        创建时间 <span v-text="timeFormat((playlistInfor as PlaylistInfor).createTime)"></span>
+                        <span>创建时间 </span>
+                        <span v-text="timeFormat((playlistInfor as PlaylistInfor).createTime)">
+                        </span>
                     </div>
                     <div v-once>
-                        更新时间 <span v-text="timeFormat((playlistInfor as PlaylistInfor).updateTime)"></span>
+                        <span>更新时间 </span>
+                        <span v-text="timeFormat((playlistInfor as PlaylistInfor).updateTime)">
+                        </span>
                     </div>
-                    <n-button strong secondary v-if="userStore.userData.id !== playlistInfor?.creator.userId"
+                    <n-button strong secondary
+                        v-if="userStore.isLoginState && userStore.userData.id !== playlistInfor?.creator.userId"
                         @click.stop="toSubscribe" size="small" :type="isSub ? 'warning' : 'default'">
                         {{ isSub ? '已收藏' : '收藏' }}
                     </n-button>
+                    <n-button :loading="isLoading" strong secondary @click="showDeleteModel = true" size="small"
+                        type="success"
+                        v-if="userStore.isLoginState && userStore.userData.id === playlistInfor?.creator.userId && songs.length">
+                        移除当前页的歌曲
+                    </n-button>
                     <n-button strong secondary size="small" class="check-desc" v-if="playlistInfor?.description"
-                        @click="showDes" style="margin-left: 5px;">查看简介</n-button>
-                    <n-button @click="goToPlaylistCmt" size="small" strong secondary type="info"
-                        style="margin-left: 5px;">评论 {{ countFormat(playlistDynamic?.commentCount as number) }}</n-button>
+                        @click="showDes" style="margin-left: 5px;">
+                        查看简介
+                    </n-button>
+                    <n-button @click="goToPlaylistCmt" size="small" strong secondary type="info" style="margin-left: 5px;">
+                        评论 {{ countFormat(playlistDynamic?.commentCount as number) }}
+                    </n-button>
                 </div>
             </div>
             <ul v-if="!isLoading && songs.length">
@@ -107,7 +120,7 @@
         </div>
         <PlaylistSkeleton v-if="firstLoading" />
         <!--修改歌单封面的模态框-->
-        <n-modal v-model:show="showCoverModal" @after-leave="resetFile">
+        <n-modal v-if="userStore.isLoginState" v-model:show="showCoverModal" @after-leave="resetFile">
             <n-card style="width: 60%;max-width: 350px;" title="歌单封面上传" :bordered="false" role="dialog" aria-modal="true">
                 <template #header-extra>
                     <n-icon class="text" size="30" @click="showCoverModal = false">
@@ -133,7 +146,7 @@
             </n-card>
         </n-modal>
         <!--修改歌单名称的模态框-->
-        <n-modal v-model:show="showNameModal">
+        <n-modal v-if="userStore.isLoginState" v-model:show="showNameModal">
             <n-card style="width: 60%;max-width: 350px;" title="歌单名称修改" :bordered="false" role="dialog" aria-modal="true">
                 <template #header-extra>
                     <n-icon class="text" size="30" @click="showNameModal = false">
@@ -149,6 +162,36 @@
                 </template>
             </n-card>
         </n-modal>
+        <!--移除当前页的歌曲的模态框-->
+        <n-modal v-if="userStore.isLoginState" v-model:show="showDeleteModel" @after-leave="resetDel">
+            <n-card style="width: 80%;max-width:450px;" title="移除歌曲" :bordered="false" role="dialog" aria-modal="true">
+                <template #header-extra>
+                    <n-icon class="text" size="30" @click="showDeleteModel = false">
+                        <IosClose />
+                    </n-icon>
+                </template>
+
+                <n-checkbox-group v-model:value="delSongsId">
+                    <n-grid :y-gap="8" :cols="2">
+                        <n-gi v-for="item in songs" :key="item.id">
+                            <n-checkbox :value="item.id">
+                                <n-ellipsis style="max-width: 150px">
+                                    {{ item.name }}
+                                </n-ellipsis>
+                            </n-checkbox>
+                        </n-gi>
+                    </n-grid>
+                </n-checkbox-group>
+
+                <template #footer>
+                    <div class="btns">
+                        <n-button style="margin-right: 5px;" strong secondary @click="showDeleteModel = false">取消</n-button>
+                        <n-button :loading="isLoading" type="primary" strong secondary @click="toRemoveSongs"
+                            :disabled="formatDeleSong">确认</n-button>
+                    </div>
+                </template>
+            </n-card>
+        </n-modal>
     </div>
 </template>
 <script lang='ts' setup>
@@ -160,10 +203,11 @@ import ImgCutter from 'vue-img-cutter'
 import type { Song } from '@/api/public/indexfaces';
 import type { PlaylistInfor, PlaylistDynamicRes } from '@/api/Playlist/interfaces';
 // api
+import { removeSongToPlaylist } from '@/api/public/song';
 import { updatePlaylistName, getPlaylistInfor, getPlaylistDynamic, getPlaylistSong, toggleSubPlaylist, updatePlaylistCover } from '@/api/Playlist';
 // 钩子
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
-import { onMounted, ref, reactive, watch } from 'vue';
+import { onMounted, ref, reactive, watch, computed } from 'vue';
 import useUserStore from '@/store/user';
 // 工具函数
 import { checkPage } from '@/utils/tools'
@@ -176,8 +220,12 @@ import { IosClose } from '@vicons/ionicons4';
 
 // 歌单名称
 const playlistName = ref('')
+// 删除歌单的模态框
+const showDeleteModel = ref(false)
 // 修改歌单名称的模态框
 const showNameModal = ref(false)
+// 要被删除的歌单id
+const delSongsId = ref<number[] | null>(null)
 // 局部加载
 const loading = ref(false)
 // 裁剪的图片
@@ -217,6 +265,50 @@ const options = [
     },
 ]
 
+/**
+ * 重置需要被删除的歌曲
+ */
+function resetDel() {
+    delSongsId.value = null
+}
+
+/**
+ * 移除歌曲
+ */
+async function toRemoveSongs() {
+    isLoading.value = true
+    try {
+        const res = await removeSongToPlaylist((playlistInfor.value as PlaylistInfor).id, delSongsId.value as number[])
+        if (res.status !== 200) await Promise.reject();
+        // 删除对应的歌曲
+        (delSongsId.value as number[]).forEach(id => {
+            songs.some((song, index, arr) => {
+                if (song.id === id) {
+                    arr.splice(index, 1)
+                    return
+                }
+            })
+        })
+        // 若删除了全部歌曲就关闭模态框
+        if (songs.length === 0) showDeleteModel.value = false
+        // 更新用户仓库对应歌单的数据
+        userStore.updatePlaylist((playlistInfor.value as PlaylistInfor).id, "count", res.body.count);
+        delSongsId.value = null;
+        isLoading.value = false;
+        message("移除歌曲成功 😙", "success");
+    } catch (error) {
+        message("移除歌曲失败 😄", "warning")
+    }
+}
+
+// 当前是否选择了需要被删除的歌曲
+const formatDeleSong = computed(() => {
+    if (delSongsId.value && delSongsId.value.length) {
+        return false
+    } else {
+        return true
+    }
+})
 
 /**
  * 更新歌单的名称

@@ -154,6 +154,9 @@ export interface LikeSongsRes {
     ids: number[];
 }
 
+/**
+ * 添加歌曲到歌单
+ */
 export interface AddSongToPlaylistRes {
     body: {
         cloudCount: number;
@@ -161,6 +164,19 @@ export interface AddSongToPlaylistRes {
         count: number;
         trackIds: string;
         message: string;
+    };
+    cookie: string[];
+    status: number;
+}
+
+/**
+ * 从歌单中删除歌曲
+ */
+export interface RemoveSongToPlaylistRes {
+    body: {
+        cloudCount: number;
+        code: number;
+        count: number;
     };
     cookie: string[];
     status: number;

@@ -3,7 +3,7 @@
         @dblclick="toSetPlayingSong">
         <div class="song-infor" v-once>
             <div style="min-width: 50px;max-width: 50px;margin-right: 10px;display: flex;">
-                <img :src="song.al.picUrl+'?param=60y60' || '../../../../public/cover.jpg'">
+                <img :src="song.al.picUrl + '?param=60y60' || '../../../../public/cover.jpg'">
             </div>
 
             <div>
@@ -82,13 +82,20 @@ import message from '@/utils/message'
 
 //音乐钩子
 const musicStore = useMusicStore()
+// 当前播放的歌曲
 const { playingSong } = storeToRefs(musicStore)
+// 用户仓库
 const userStore = useUserStore()
+// // 长按时间 根据长按 (移动端)
+// let touchTime = 0
+// // 长按计时器
+// let timer: any = null
 
+// 路由对象
 const $router = useRouter()
 // 是否喜欢当前音乐
 const isLike = ref(userStore.userData.ids.some(ele => ele === props.song.id))
-
+// 自定义属性
 const props = defineProps<{
     /**
      * 歌曲信息

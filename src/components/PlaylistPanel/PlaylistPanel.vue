@@ -1,59 +1,65 @@
 <template>
-    <n-card class="add-song-box" title="添加到歌单" :bordered="false" role="dialog" aria-modal="true">
-        <template #header-extra>
-            <n-icon size="30" style="cursor: pointer;" class="text" @click="() => emit('closeBox')">
-                <IosClose />
-            </n-icon>
-        </template>
-        <n-scrollbar style="max-height: 400px">
-            <ul>
-                <li @click="showModal = true" style="display: flex;align-items: center;height: 60px;">
-                    <div>
-                        <n-icon size="50">
-                            <IosAdd />
-                        </n-icon>
-                    </div>
-                    <div>新建歌单</div>
-                </li>
-                <li class='playlist-card' @click="() => toAddSong(item.id)" v-for="item in userStore.userData.myPlaylists"
-                    :key="item.id">
-                    <div>
-                        <img :src="item.coverImgUrl + '?param=60y60'">
+    <Transition name="playlist" :appear="render ? false : true">
+        <n-card @click.stop="" class="add-song-box" title="添加到歌单" v-if="isShow" :bordered="false" role="dialog"
+            aria-modal="true">
+            <template #header-extra>
+                <n-icon size="30" v-if="render" style="cursor: pointer;" class="text" @click="() => emit('closeBox')">
+                    <IosClose />
+                </n-icon>
+                <n-icon size="30" v-else style="cursor: pointer;" class="text" @click="closePanel">
+                    <IosClose />
+                </n-icon>
+            </template>
+            <n-scrollbar style="max-height: 400px">
+                <ul>
+                    <li @click="showModal = true" style="display: flex;align-items: center;height: 60px;">
                         <div>
-                            <span>{{ item.name }}</span>
-                            <span style="color:var(--text-dark);font-size: 12px;">{{ item.trackCount }} 首</span>
+                            <n-icon size="50">
+                                <IosAdd />
+                            </n-icon>
                         </div>
-                    </div>
+                        <div>新建歌单</div>
+                    </li>
+                    <li class='playlist-card' @click="() => toAddSong(item.id)"
+                        v-for="item in userStore.userData.myPlaylists" :key="item.id">
+                        <div>
+                            <img :src="item.coverImgUrl + '?param=60y60'">
+                            <div>
+                                <span>{{ item.name }}</span>
+                                <span style="color:var(--text-dark);font-size: 12px;">{{ item.trackCount }} 首</span>
+                            </div>
+                        </div>
 
-                    <div class="delete-btn" :title="`删除${item.name}`">
-                        <n-icon size="20" @click.stop="() => toDeletePlaylist(item.id, item.name)">
-                            <DeleteOutlined />
+                        <div class="delete-btn" :title="`删除${item.name}`">
+                            <n-icon size="20" @click.stop="() => toDeletePlaylist(item.id, item.name)">
+                                <DeleteOutlined />
+                            </n-icon>
+                        </div>
+
+                    </li>
+                </ul>
+            </n-scrollbar>
+            <n-modal v-model:show="showModal">
+                <n-card style="width: 60%;max-width:400px" title="新建歌单" :bordered="false" size="small" role="dialog"
+                    aria-modal="true">
+                    <template #header-extra>
+                        <n-icon size="30" style="cursor: pointer;" class="text" @click.stop="showModal = false">
+                            <IosClose />
                         </n-icon>
-                    </div>
+                    </template>
+                    <n-input v-model:value="name" placeholder="输入歌单的名称"></n-input>
+                    <template #footer>
+                        <div style="display: flex;justify-content: end;">
+                            <n-button @click.stop="showModal = false" strong secondary size="small"
+                                style="margin-right: 10px;">取消</n-button>
+                            <n-button @click="toCreatePlaylist" strong secondary size="small" type="primary">确认</n-button>
+                        </div>
 
-                </li>
-            </ul>
-        </n-scrollbar>
-        <n-modal v-model:show="showModal">
-            <n-card style="width: 60%;max-width:400px" title="新建歌单" :bordered="false" size="small" role="dialog"
-                aria-modal="true">
-                <template #header-extra>
-                    <n-icon size="30" style="cursor: pointer;" class="text" @click.stop="showModal = false">
-                        <IosClose />
-                    </n-icon>
-                </template>
-                <n-input v-model:value="name" placeholder="输入歌单的名称"></n-input>
-                <template #footer>
-                    <div style="display: flex;justify-content: end;">
-                        <n-button @click.stop="showModal = false" strong secondary size="small"
-                            style="margin-right: 10px;">取消</n-button>
-                        <n-button @click="toCreatePlaylist" strong secondary size="small" type="primary">确认</n-button>
-                    </div>
-
-                </template>
-            </n-card>
-        </n-modal>
-    </n-card>
+                    </template>
+                </n-card>
+            </n-modal>
+        </n-card>
+    </Transition>
 </template>
 <script lang='ts' setup>
 // api
@@ -70,6 +76,18 @@ import { IosAdd } from '@vicons/ionicons4'
 import { DeleteOutlined } from '@vicons/antd'
 import messagebox from '@/render/MessageBox';
 
+// 自定义属性
+const props = defineProps<{
+    /**
+     * 要添加的歌曲id
+     */
+    songId: number;
+    /**
+     * 以何种方式渲染组件? 真为模板假为函数
+     */
+    render: boolean;
+    closePanel?: () => void
+}>()
 // 新建歌单的模态框
 const showModal = ref(false)
 // 创建歌单的名称
@@ -80,30 +98,32 @@ const userStore = useUserStore()
 const emit = defineEmits<{
     (e: "closeBox"): void
 }>()
-// 自定义属性
-const props = defineProps<{
-    /**
-     * 要添加的歌曲id
-     */
-    songId: number;
-}>()
+// 该组件的显示和隐藏
+const isShow = ref(true)
+// 暴露出去的数据
+defineExpose({ isShow })
 
 /**
  * 添加歌曲到歌单
  * @param pid 
  */
 async function toAddSong(pid: number) {
-    if (!userStore.cookie && !userStore.isLogin) return message("请先登录 😛", "info")
+    if (!userStore.isLoginState) return message("请先登录 😛", "info")
     try {
-        const res = await addSongToPlaylist("add", pid, props.songId)
+        const res = await addSongToPlaylist(pid, props.songId)
         if (res.body.code === 502) {
             return message(res.body.message ? res.body.message : '添加歌曲失败', "info")
         } else if (res.body.code === 200) {
             message("添加歌曲成功 🥰", "success")
             // 更新对应的歌单数据
-            userStore.updatePlaylist(pid, "count",res.body.count)
+            userStore.updatePlaylist(pid, "count", res.body.count)
             // 添加成功关闭窗口
-            emit('closeBox')
+            if (props.render) {
+                emit('closeBox')
+            } else {
+                (props as any).closePanel()
+            }
+
         } else {
             await Promise.reject()
         }
@@ -138,8 +158,6 @@ async function toDeletePlaylist(pid: number, name: string) {
 <style scoped lang="scss">
 .add-song-box {
     width: 600px;
-
-
 
     ul {
         li:nth-child(1) {
@@ -207,6 +225,26 @@ async function toDeletePlaylist(pid: number, name: string) {
 @media screen and (max-width:700px) {
     .add-song-box {
         width: 80%;
+    }
+}
+
+.playlist-enter-active {
+    animation: panelMove 1 .3s ease-in-out;
+}
+
+.playlist-leave-active {
+    animation: panelMove 1 .3s ease-in-out reverse;
+}
+
+@keyframes panelMove {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }
 </style>

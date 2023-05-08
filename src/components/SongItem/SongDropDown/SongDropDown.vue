@@ -4,8 +4,10 @@
 </template>
 
 <script lang="ts" setup>
+// 组件
 import { NIcon } from "naive-ui";
-import { MessageOutlined as MessageOutlinedIcon} from '@vicons/antd'
+// 图标
+import { MessageOutlined as MessageOutlinedIcon } from '@vicons/antd'
 import {
     IosMusicalNotes as IosMusicalNotesIcon,
     IosVideocam as IosVideocamIcon,
@@ -14,14 +16,25 @@ import {
     IosArrowForward as IosArrowForwardIcon,
     MdFolderOpen as MdFolderOpenIcon
 } from "@vicons/ionicons4";
-import { ref, nextTick, h, reactive } from 'vue'
+// 工具函数
 import PubSub from 'pubsub-js'
-import { Song } from '@/api/public/indexfaces'
+import message from "@/utils/message";
+// 接口
+import type { Song } from '@/api/public/indexfaces'
+// 钩子
 import { useRouter } from "vue-router";
+import { ref, nextTick, h, reactive } from 'vue'
 import useMusicStore from "@/store/music";
+import useUserStore from '@/store/user'
+// 渲染函数
+import playlistPanel from '@/render/PlaylistPanel'
 
+
+// 音乐仓库
 const musicStore = useMusicStore()
-
+// 用户仓库
+const userStore = useUserStore()
+// 路由实例
 const $router = useRouter()
 
 //  要渲染的内容
@@ -86,7 +99,7 @@ function handleSelect(key: string | number) {
         case 'mv': $router.push(`/mv/${data.mv}`); break;
         case 'song-infor': $router.push(`/song/${data.id}`); break;
         case 'play-next': console.log('play-next'); break;
-        case 'add-playlist': console.log('add-playlist'); break;
+        case 'add-playlist': toAddPlaylist(); break;
         case 'play-now': toSetPlayingSong(); break;
         case 'song-album': $router.push(`/album/${data.al.id}`); break;
         case 'song-comment': $router.push(`/song-comment/${data.id}`); break;
@@ -135,6 +148,16 @@ function toSetPlayingSong() {
     })
 }
 
+/**
+ * 歌曲添加到歌单
+ */
+function toAddPlaylist() {
+    if (userStore.isLoginState) {
+        playlistPanel((song as Song).id)
+    } else {
+        message("请先登录 👀", "info")
+    }
+}
 
 
 </script>

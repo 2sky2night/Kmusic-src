@@ -53,7 +53,7 @@
             </div>
         </div>
         <n-modal v-model:show="showModal">
-            <PlaylistPanel :song-id="(song as Song).id" @close-box="showModal=false" />
+            <PlaylistPanel :render="true" :song-id="(song as Song).id" @close-box="showModal=false" />
         </n-modal>
     </div>
 </template>

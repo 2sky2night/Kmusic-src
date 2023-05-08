@@ -12,7 +12,7 @@
 import message from '@/utils/message';
 // 组件
 import Music from './components/Music/Music.vue'
-import { SongData } from '@/api/public/song/interfaces'
+import type { SongData } from '@/api/public/song/interfaces'
 // api
 import { getSongs } from '@/api/ArtistSongs';
 import { checkSong, getSongData, getSongKeyFrameLyric, getSongLyric } from '@/api/public/song';
