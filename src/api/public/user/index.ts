@@ -34,3 +34,8 @@ export const followUser = (uid: number, t: number) => {
  * @returns 
  */
 export const getReSongs = () => request.get<ReSongsRes>('/recommend/songs')
+
+/**
+ * 登出
+ */
+export const logout = () => request.get<{ code: number }>('/logout')

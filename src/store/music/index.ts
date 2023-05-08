@@ -60,11 +60,17 @@ const useMusicStore = defineStore('music', {
             // 需要检测当前要添加歌曲是否存在，存在则需要删除
             this.history.some((ele, index, arr) => {
                 if (ele.id === song.id) {
-                    arr.splice(index,1)
+                    arr.splice(index, 1)
                     return true
                 }
             })
             this.history.unshift(song)
+        },
+        /**
+         * 清空所有历史记录
+         */
+        clearHistory() {
+            this.history.length = 0;
         }
     }
 })

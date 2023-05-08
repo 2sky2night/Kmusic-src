@@ -25,7 +25,7 @@ const useSearchStore = defineStore('search', {
     state: () => data,
     actions: {
         /**
-         * 增加历史记录
+         * 增加历史记录 历史记录只保存十个
          * @param name - 搜索的关键词
         * @param time - 搜索的时间
          */
@@ -37,6 +37,10 @@ const useSearchStore = defineStore('search', {
                 this.history.splice(index, 1)
             }
             this.history.unshift({ name, time })
+            // 历史记录只保存前十个
+            if (this.history.length > 10) {
+                this.history = this.history.slice(0, 10)
+            }
         },
         /**
          * 删除历史记录
@@ -48,6 +52,12 @@ const useSearchStore = defineStore('search', {
                     return
                 }
             })
+        },
+        /**
+         * 删除所有历史记录
+         */
+        clearHistory() {
+            this.history.length = 0;
         }
     }
 })

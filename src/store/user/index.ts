@@ -1,7 +1,9 @@
 // 钩子
 import { defineStore } from 'pinia'
-// 获取根仓库
+// 仓库
 import store from '@/store'
+import { useSearchStoreWithout } from '../search'
+import { useMusicStoreWithout } from '../music'
 // 接口
 import UserStoreState from './interfaces'
 // 工具函数
@@ -12,6 +14,7 @@ import { getLikeSongList } from '@/api/public/song'
 import { getStarAlbum } from '@/api/My/Album'
 import { getUserPlayList } from '@/api/public/user'
 import { toCreatePlaylist, toDeletePlaylist } from '@/api/public/playlist'
+import { logout } from '@/api/public/user'
 
 // 用户的初始数据
 const data: UserStoreState = {
@@ -28,7 +31,7 @@ const data: UserStoreState = {
     }
 }
 
-// 若本地有cookie值,就从本地加载数据
+// 若本地有cookie值,说明当前是登陆状态就从本地加载数据
 const cookie = localStorage.getItem('cookie')
 // 若有cookie就设置为登录状态
 if (cookie) {
@@ -36,8 +39,6 @@ if (cookie) {
     data.isLogin = true
     // 若本地有用户数据,就从本地加载数据
     const userData: any = getLocal('userData')
-    console.log(userData);
-
     if (userData !== null) {
         // 本地有数据
         data.userData.avatar = userData.avatar
@@ -63,14 +64,14 @@ const useUserStore = defineStore('user', {
             this.isLogin = value
         },
         setCookie(value: string | null) {
-            // 获取cookie说明用户登录成功,需要获取用户当前喜欢的歌曲列表以及用户收藏的专辑和用户自己创建的歌单
             this.cookie = value
+        },
+        setUserId(value: number) {
+            // 获取用户id说明通过cookie获取用户id成功,登录成功,需要获取用户当前喜欢的歌曲列表以及用户收藏的专辑和用户自己创建的歌单
+            this.userData.id = value
             this.toGetSongLikeList()
             this.toGetStarAlbum()
             this.toGetUserPlaylist()
-        },
-        setUserId(value: number) {
-            this.userData.id = value
         },
         setUserData(nickname: string, avatar: string, level: number) {
             this.userData.avatar = avatar
@@ -206,6 +207,34 @@ const useUserStore = defineStore('user', {
 
             } catch (error) {
                 message("删除歌单失败 😨", "warning")
+            }
+        },
+        /**
+         * 登出用户 清除用户数据和搜索记录和播放的历史记录
+         */
+        async toLogout() {
+            try {
+                const res = await logout()
+                if (res.code !== 200) await Promise.reject()
+                // 登出成功则清空cookie 登出状态和所有用户数据以及用户模块的本地存储
+                this.setLogin(false);
+                this.setCookie(null);
+                this.userData = {
+                    id: null,
+                    nickname: null,
+                    avatar: 'https://p4.music.126.net/SUeqMM8HOIpHv9Nhl9qt9w==/109951165647004069.jpg',
+                    level: 0,
+                    ids: [],
+                    idAlbums: [],
+                    myPlaylists: []
+                }
+                useMusicStoreWithout().clearHistory()
+                useSearchStoreWithout().clearHistory()
+                // 清除本地的cookie
+                localStorage.removeItem('cookie')
+                message("登出账户成功 ✨", "success");
+            } catch (error) {
+                message("登出失败 😴", "warning")
             }
         }
     },

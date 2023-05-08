@@ -35,11 +35,8 @@ function handleSelect(v: string) {
 async function logout() {
     try {
         await messagebox('真的要退出吗?', '提示')
-        // 重置仓库信息 reset方法不生效???
-        userStore.setCookie(null)
-        userStore.setLogin(false)
-        // 清空本地数据
-        localStorage.clear()
+        // 退出登陆
+        userStore.toLogout()
         // 返回首页
         $router.push('/')
     } catch (error) {

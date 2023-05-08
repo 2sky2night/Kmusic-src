@@ -22,6 +22,7 @@
     </div>
 </template>
 <script lang='ts' setup>
+// 组件
 import CodeLogin from './components/CodeLogin/CodeLogin.vue'
 </script>
 <style scoped>

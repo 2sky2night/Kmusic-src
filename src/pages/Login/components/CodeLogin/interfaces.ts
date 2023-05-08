@@ -11,5 +11,6 @@ export default interface CodeData {
     /**
      * 用户cookie值
      */
-    cookie: null | string
+    cookie: null | string;
+    username: string | null;
 }

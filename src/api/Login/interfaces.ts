@@ -39,4 +39,5 @@ export interface CodeState {
      */
     cookie: string;
     message: string;
+    nickname: string;
 }

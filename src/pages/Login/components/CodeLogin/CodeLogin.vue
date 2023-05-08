@@ -5,16 +5,14 @@
             <div class="code-out" v-if="codeData.code === 800 && codeData.unikey">
                 二维码过期
             </div>
-            <qrcode-vue v-if="codeData.unikey" :size="150" level="H" :background="themeStroe.theme ? '' : '#fff'"
-                foreground="#4098fc" :value="`https://music.163.com/login?codekey=${codeData.unikey}`" />
+            <qrcode-vue v-if="codeData.unikey" :size="150" level="H" background="#fff" foreground="#4098fc"
+                :value="`https://music.163.com/login?codekey=${codeData.unikey}`" />
         </div>
         <n-button v-if="codeData.code === 800 && codeData.unikey" size="small" @click="startCode">刷新二维码</n-button>
         <span class="tips">请打开云音乐&nbsp;APP&nbsp;扫码登陆</span>
-        <n-button @click="loginWithout" size="small" style="font-size: 12px;">测试账户直接登陆😎</n-button>
     </div>
 </template>
 <script lang='ts' setup>
-import useThemeStore from '@/store/theme'
 import { useMessage } from 'naive-ui'
 import QrcodeVue from 'qrcode.vue'
 import CodeData from './interfaces'
@@ -22,9 +20,6 @@ import { getCodeState, getKeyCode, createCode } from '@/api/Login'
 import { reactive, onMounted, computed, onUnmounted } from 'vue'
 import useUserStore from '@/store/user'
 import { useRouter } from 'vue-router'
-
-// 获取主题仓库
-const themeStroe = useThemeStore()
 
 // 获取用户仓库
 const userStore = useUserStore()
@@ -37,14 +32,14 @@ let timer: any = null
 // 组件的消息提示钩子
 const message = useMessage()
 // 二维码信息
-const codeData = reactive<CodeData>({ unikey: '', code: 800, cookie: null })
+const codeData = reactive<CodeData>({ unikey: '', code: 800, cookie: null, username: null })
 
 // 二维码的提示信息
 const codeTips = computed(() => {
     switch (codeData.code) {
         case 800: return '二维码过期或还没生成二维码'
         case 801: return '等待扫码'
-        case 802: return '等待授权'
+        case 802: return `${codeData.username} 等待授权`
         case 803: return '登录成功'
     }
 })
@@ -61,16 +56,16 @@ async function toCreateKey() {
             codeData.unikey = resKey.data.unikey
         }
         else {
-            Promise.reject()
+            await Promise.reject()
         }
         // 根据key值创建二维码
         const resCode = await createCode(codeData.unikey)
         if (resCode.code !== 200) {
-            Promise.reject()
+            await Promise.reject()
         }
     }
     catch (error) {
-        message.error("出错啦!!")
+        message.error("创建二维码失败 😋")
     }
 }
 
@@ -86,9 +81,15 @@ async function toGetCodeState() {
             login()
         } else if (res.code === 800) {
             // 二维码过期的回调
-            //  关闭计时器
-            clearInterval(timer)
-            timer = null
+            //  关闭计时器 清空用户名等其他信息
+            clearInterval(timer);
+            timer = null;
+            codeData.username = null
+            codeData.code = 800;
+            codeData.cookie = '';
+        } else if (res.code === 802) {
+            // 等待用户确认授权
+            codeData.username = res.nickname;
         }
         codeData.code = res.code
     } catch (error) {
@@ -135,24 +136,6 @@ onMounted(startCode)
 onUnmounted(() => {
     clearInterval(timer)
 })
-
-
-// 直接登陆,将来需要被删除,只是测试哈.
-function loginWithout() {
-    const cookie = '_ga=GA1.1.1791282890.1681301868; _ga_MD3K4WETFE=GS1.1.1681301867.1.0.1681301871.0.0.0; MUSIC_U=2cd1c71b9baf7f53f26ef7f5dfe0de09ee0ec6254d4c74d3bbf95eea378226762db2b90205957188578daf23a96d51d11e3b34d47767323186dd7c53440873a002d144fc052de05ed4dbf082a8813684; __csrf=e752de12f1a9bee2096f705c5d6b749e; NMTID=00OSs5nHVx9OY_IK0RYgVlrPcc_SAQAAAGH-NCW4Q'
-    message.success("登录成功!")
-    //  登录成功关闭计时器
-    clearInterval(timer)
-    // 获取用户cookie值,并设置登录成功
-
-    userStore.setCookie(cookie)
-    // 设置登录状态为成功
-    userStore.setLogin(true)
-    // 将cookie保存在本地
-    localStorage.setItem('cookie', cookie)
-    // 跳转至用户页面
-    $router.push('/my')
-}
 
 </script>
 <style scoped lang="scss">
