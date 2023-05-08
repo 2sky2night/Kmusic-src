@@ -2,7 +2,7 @@
     <li class="artist-infor" v-once>
 
         <div class="artist-cover" @click="toArtistInfor">
-            <img :src="picUrl">
+            <img :src="picUrl + '?param=500y500'">
             <div class="artist-icon-box">
                 <div class="artist-icon">
                     <n-icon color="#fff" size="50">

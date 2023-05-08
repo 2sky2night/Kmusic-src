@@ -2,7 +2,7 @@
     <li>
         <div @click="toPlaylistInfor" class="play-list-img" @mouseenter="isHover = true" @mouseleave="isHover = false">
 
-            <img :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" :src="coverImgUrl"
+            <img :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" :src="coverImgUrl + '?param=200y200'"
                 :style="{ maskImage: isHover ? 'linear-gradient(to bottom,rgba(150,150,150,.618) 0,#fff 100%,transparent 100%)' : '' }" />
 
             <Transition name="play">

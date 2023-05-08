@@ -1,7 +1,7 @@
 <template>
     <li class="song-card">
         <div class="song-cover" @click="goToSong">
-            <img :src="picUrl">
+            <img :src="picUrl + '?param=200y200'">
             <div class="song-more">
 
                 <div class="item">

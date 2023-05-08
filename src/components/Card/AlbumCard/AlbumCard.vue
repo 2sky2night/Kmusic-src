@@ -1,7 +1,7 @@
 <template>
     <li>
         <div @click="toAlbumInfor" class="album-cover" @mouseenter="isHover = true" @mouseleave="isHover = false">
-            <n-image :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" preview-disabled :src="picUrl" :lazy="true"
+            <n-image :class="isHover ? 'img-hover' : ''" @load="imgDoneHander" preview-disabled :src="picUrl + '?param=200y200'" :lazy="true"
                 :style="{ maskImage: isHover ? 'linear-gradient(to bottom,rgba(150,150,150,.618) 0,#fff 100%,transparent 100%)' : '' }" />
             <Transition name="play">
                 <div class="play-btn" v-if="!isLoading && isHover" @mouseenter="isHover = true">
