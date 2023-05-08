@@ -65,8 +65,8 @@ export default {
         console.log(config.params);
         return request.get(url, config)
     },
-    post<T = any>(url: string, config: AxiosRequestConfig = {}): Promise<T> {
+    post<T = any>(url: string, data: any = {}, config: AxiosRequestConfig = {}): Promise<T> {
         Reflect.set(config.params, 'timestamp', Date.now())
-        return request.get(url, config)
+        return request.post(url, data, config)
     }
 }

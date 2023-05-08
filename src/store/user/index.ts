@@ -159,14 +159,19 @@ const useUserStore = defineStore('user', {
             }
         },
         /**
-         * 添加歌单成功需要更新对应歌单的数据 歌单中的歌曲数量
-         * @param pid - 歌单的id
-         * @param count - 更新后的歌曲数量
+         * 更新我的歌单数据
+         * @param pid - 歌单id
+         * @param type - 更新类型
+         * @param value - 更新的值
          */
-        updatePlaylist(pid: number, count: number) {
+        updatePlaylist(pid: number, type: "count" | "cover" | "name", value: string | number) {
             this.userData.myPlaylists.some(ele => {
                 if (ele.id === pid) {
-                    ele.trackCount = count;
+                    switch (type) {
+                        case 'count': ele.trackCount = value as number; break;
+                        case 'cover': ele.coverImgUrl = value as string; break;
+                        case 'name': ele.name = value as string; break;
+                    }
                     return
                 }
             })
@@ -236,6 +241,11 @@ const useUserStore = defineStore('user', {
             } catch (error) {
                 message("登出失败 😴", "warning")
             }
+        }
+    },
+    getters: {
+        isLoginState(state) {
+            return state.cookie && state.isLogin
         }
     },
     // 开启数据持久化

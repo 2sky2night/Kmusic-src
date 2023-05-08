@@ -3,7 +3,7 @@
         <!--歌手信息-->
         <div class="artist-infor" v-if="!isLoading">
             <div class="artist-cover">
-                <img :src="artistData?.artist.avatar" />
+                <img :src="artistData?.artist.avatar" @click="previewPhoto((artistData as ArtistData).artist.avatar)" />
             </div>
             <div class="artist-data">
                 <h1>{{ artistData?.artist.name }}</h1>
@@ -81,6 +81,7 @@ import message from '@/utils/message';
 import { MusicalNotes, Albums as AlbumsIcon, Videocam } from '@vicons/ionicons5'
 // 渲染函数
 import { messageboxWithout } from '@/render/MessageBox';
+import previewPhoto from '@/render/PreviewPhoto'
 
 const $router = useRouter()
 const $route = useRoute()

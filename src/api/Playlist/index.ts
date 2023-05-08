@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import { PlaylistDetialRes, PlaylistDynamicRes, PlaylistSongList } from './interfaces'
+import { PlaylistDetialRes, PlaylistDynamicRes, PlaylistSongList, UpdatePlaylistCoverRes } from './interfaces'
 
 
 /**
@@ -43,6 +43,35 @@ export const getPlaylistSong = (id: number, page: number, limit: number = 20) =>
             id,
             offset: (page - 1) * limit,
             limit
+        }
+    })
+}
+
+/**
+ * 修改歌单的封面
+ * @param id  - 歌单id
+ * @param data  - 文件数据
+ * @returns 
+ */
+export const updatePlaylistCover = (id: number, data:FormData) => {
+    return request.post<UpdatePlaylistCoverRes>('/playlist/cover/update', data, {
+        params: {
+            id
+        }
+    })
+}
+
+/**
+ * 修改歌单的名称
+ * @param id - 歌单id
+ * @param name - 歌单名称
+ * @returns 
+ */
+export const updatePlaylistName = (id: number, name: string) => {
+    return request.get<{ code: number }>('/playlist/name/update', {
+        params: {
+            id,
+            name
         }
     })
 }

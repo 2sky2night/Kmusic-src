@@ -129,3 +129,15 @@ export interface PlaylistSongList {
 }
 
 
+/**
+ * 生成歌单封面的响应体
+ */
+export interface UpdatePlaylistCoverRes {
+    code: number;
+    data: {
+        code: number;
+        imgId: string;
+        url: string;
+        url_pre: string;
+    }
+}

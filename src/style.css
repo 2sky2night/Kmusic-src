@@ -8,6 +8,9 @@
   -webkit-font-smoothing: antialiased;
 }
 
+body{
+  overflow: hidden !important;
+}
 html {
   user-select: none;
   background-color: var(--bg-color);

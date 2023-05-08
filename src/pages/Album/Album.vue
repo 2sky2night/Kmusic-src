@@ -64,8 +64,8 @@ import PlaylistSkeleton from '@/components/PageSkeleton/PlaylistSkeleton/Playlis
 import Cover from '@/components/Cover/Cover.vue';
 import SongItem from '@/components/SongItem/SongItem.vue';
 // 接口
-import { Song } from '@/api/public/indexfaces';
-import { AlbumMore } from '@/api/Album/interfaces'
+import type { Song } from '@/api/public/indexfaces';
+import type { AlbumMore } from '@/api/Album/interfaces'
 // api
 import { getAlbumInfor, toggleSubAlbum } from '@/api/Album'
 import message from '@/utils/message';

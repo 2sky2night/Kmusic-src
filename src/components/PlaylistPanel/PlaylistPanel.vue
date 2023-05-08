@@ -101,7 +101,7 @@ async function toAddSong(pid: number) {
         } else if (res.body.code === 200) {
             message("添加歌曲成功 🥰", "success")
             // 更新对应的歌单数据
-            userStore.updatePlaylist(pid, res.body.count)
+            userStore.updatePlaylist(pid, "count",res.body.count)
             // 添加成功关闭窗口
             emit('closeBox')
         } else {
