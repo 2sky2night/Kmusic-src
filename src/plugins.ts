@@ -22,6 +22,7 @@ import SongItem from '@/components/SongItem/SongItem.vue'
 import SongItemSkeleton from '@/components/SkeletonList/SongItemSkeletonList/SongItemSkeletonList.vue'
 import Cover from '@/components/Cover/Cover.vue'
 import UserCard from '@/components/Card/UserCard/UserCard.vue'
+import SongList from '@/components/SongList/SongList.vue'
 export default {
     install(app: App) {
         // 安装pinia仓库
@@ -30,6 +31,7 @@ export default {
         app.use(router)
         // 安装全局组件
         app.component('Button', Button)
+        app.component('SongList', SongList)
         app.component('SkeletonList', SkeletonList)
         app.component('PlayListCard', PlayListCard)
         app.component('AlbumCard', AlbumCard)

@@ -8,6 +8,11 @@ const themeOverrides: GlobalThemeOverrides = {
         primaryColorHover: '#79bbff',
         primaryColorPressed: '#79bbff'
     },
+    Slider: {
+        fillColor: '#409eff',
+        fillColorHover: '#409eff',
+        handleColor: '#409eff',
+    }
 }
 
 // 局部重写组件的主题

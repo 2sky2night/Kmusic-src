@@ -14,7 +14,7 @@
         </div>
         <div class="list">
             <ul v-if="!isLoading">
-                <SongItem v-for="item in songs" :song="item" :key="item.id" />
+                <SongList :song-list="songs" />
                 <div class="pagination" v-if="pages > 1">
                     <n-pagination v-model:page="page" :page-count="pages">
                         <template #prefix>
@@ -37,7 +37,6 @@ import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 // 接口
 import type { Song } from '@/api/public/indexfaces';
 // 组件
-import SongItem from '@/components/SongItem/SongItem.vue';
 import SongItemSkeletonList from '@/components/SkeletonList/SongItemSkeletonList/SongItemSkeletonList.vue';
 // 工具函数
 import message from '@/utils/message';

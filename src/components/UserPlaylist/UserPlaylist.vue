@@ -6,7 +6,9 @@
         <TitleHeader title="用户的歌单" v-if="!isFirstLoading&&userPlaylist.length" />
         <ul style="padding:0 10px;">
             <PlayListCard v-for="item in userPlaylist" :key="item.id" :cover-img-url="item.coverImgUrl" :id="item.id"
-                :name="item.name" :play-count="item.playCount" />
+                :name="item.name" :play-count="item.playCount" >
+                <span style="position: relative;top:-10px">{{ item.trackCount }} 首</span>
+            </PlayListCard>
         </ul>
 
         <TitleHeader title="用户收藏的歌单"  v-if="!isFirstLoading && starPlaylist.length"  />

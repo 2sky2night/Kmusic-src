@@ -17,10 +17,10 @@ export const countFormat = (value: number) => {
  * @param value 
  */
 export const durationFormat = (value: number) => {
-    const secends = value / 1000
-    const minute = Math.round(secends / 60)
-    const second = Math.round(secends % 60)
-    return `${minute}:${second > 9 ? second : '0' + second}`
+    const seconds = value / 1000
+    const minute = Math.round(seconds / 60)
+    const second = Math.round(seconds % 60)
+    return `${minute > 9 ? minute : '0' + minute}:${second > 9 ? second : '0' + second}`
 }
 
 /**
@@ -47,4 +47,13 @@ export const countPage = (limit: number, count: number) => {
 export const timeFormat = (time: number) => {
     const date = new Date(time)
     return date.toLocaleDateString().replaceAll('/', '-')
+}
+
+/**
+ * 格式化秒为 MM:SS
+ */
+export const playingTimeFormat = (value: number) => {
+    const second = Math.floor(value % 60);
+    const minute = Math.floor(value / 60);
+    return `${minute > 9 ? minute : '0' + minute}:${second > 9 ? second : '0' + second}`
 }

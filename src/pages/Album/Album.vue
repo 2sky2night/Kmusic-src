@@ -48,10 +48,7 @@
                 <span>发行公司: {{ (album as AlbumMore).company || '无' }}</span>
 
             </div>
-
-            <ul style="margin-right: 10px;">
-                <SongItem v-for="song in songs" :key="song.id" :song="song" />
-            </ul>
+            <SongList style="margin-right: 10px;" :song-list="songs"  />
         </div>
     </div>
 </template>

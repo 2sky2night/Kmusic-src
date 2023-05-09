@@ -92,6 +92,21 @@ export interface SongLyricKeyFrameRes {
     ytlrc: Ytlrc;
 }
 
+/**
+ * 歌曲的歌词信息
+ */
+export interface SongLyricKeyFrame {
+    klyric: Klyric;
+    lrc: Lrc;
+    qfy: boolean;
+    romalrc: Romalrc;
+    sfy: boolean;
+    sgc: boolean;
+    tlyric: Tlyric;
+    yrc: Yrc;
+    ytlrc: Ytlrc;
+}
+
 export interface Klyric {
     lyric: string;
     version: number;

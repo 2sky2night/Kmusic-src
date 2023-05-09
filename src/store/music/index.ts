@@ -7,13 +7,17 @@ import type { Song } from "@/api/public/indexfaces";
 // 工具函数
 import message from "@/utils/message";
 import { getLocal, setLocal } from "@/utils/localStorage";
+// 图标
 import { h } from "vue";
 import { NIcon } from "naive-ui";
 import { IosMusicalNote } from '@vicons/ionicons4'
+// api
+import { getSongKeyFrameLyric, getSongLyric } from '@/api/public/song';
 
 let data: StoreData = {
-    playingSong: { id: null, isPlaying: false, name: '', src: '', isLike: false, artists: [], album: { id: 0, name: '', picUrl: '' }, isVip: false },
-    history: []
+    playingSong: { id: null, isPlaying: false, name: '', src: '', isLike: false, artists: [], album: { id: 0, name: '', picUrl: '' }, isVip: false, songLyric: null, duration: 0, currentTime: 0, volume: 1 },
+    history: [],
+    songList: []
 }
 
 // 若本地有数据就初始化仓库数据为本地的
@@ -50,7 +54,7 @@ const useMusicStore = defineStore('music', {
          * 重置当前播放的歌曲
          */
         resetPlaysons() {
-            this.playingSong = { id: null, isPlaying: false, name: '', src: '', isLike: false, artists: [], album: { id: 0, name: '', picUrl: '' }, isVip: false }
+            this.playingSong = { id: null, isPlaying: false, name: '', src: '', isLike: false, artists: [], album: { id: 0, name: '', picUrl: '' }, isVip: false, songLyric: null, currentTime: 0, duration: 0, volume: 1 }
         },
         /**
          * 增加一条历史记录
@@ -71,6 +75,61 @@ const useMusicStore = defineStore('music', {
          */
         clearHistory() {
             this.history.length = 0;
+        },
+        /**
+         * 获取歌曲的歌词
+         */
+        async getSongLyric() {
+            try {
+                const res = await getSongKeyFrameLyric(this.playingSong.id as number);
+                if (res.code !== 200) await Promise.reject()
+                this.playingSong.songLyric = {
+                    romalrc: res.romalrc,
+                    qfy: res.qfy,
+                    klyric: res.klyric,
+                    lrc: res.lrc,
+                    sfy: res.sfy,
+                    sgc: res.sgc,
+                    tlyric: res.tlyric,
+                    yrc: res.yrc,
+                    ytlrc: res.ytlrc
+                }
+            } catch (error) {
+                message("获取歌词失败 🤔", "warning")
+            }
+        },
+        /**
+         * 清空播放列表
+         */
+        clearSongList() {
+            this.songList.length = 0;
+        },
+        /**
+         * 更新播放列表
+         * @param list - 音乐列表
+         */
+        updateSongList(list: Song[]) {
+            this.songList = list;
+        },
+        /**
+         * 下一首播放
+         * @param song - 下一首歌曲的信息
+         */
+        addSongToList(song: Song) {
+            // 检查当前音乐是否已经存在
+            const index = this.songList.findIndex(ele => ele.id === song.id)
+            if (index !== -1) {
+                // 若存在则删除那首歌曲
+                this.songList.splice(index,1)
+            }
+            // 将歌曲添加到对应位置
+            this.songList.some((ele,index,arr) => {
+                if (ele.id === this.playingSong.id) {
+                    arr.splice(index+1, 0, song)
+                    return
+                }
+            })
+            message("添加成功 😎","success")
         }
     }
 })

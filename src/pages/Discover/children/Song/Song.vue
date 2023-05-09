@@ -1,7 +1,7 @@
 <template>
     <div class="discover-song">
         <ul class="song-list" v-if="!isLoading">
-            <SongItem v-for="song in songsPage" :key="song.id" :song="song" />
+            <SongList :song-list="songsPage" />
             <div class="pagination" v-if="songsPage.length">
                 <n-pagination :page-slot="6" v-model:page="page" v-model:page-size="limit" show-size-picker
                     :page-sizes="pageSizes" :item-count="songs.length" />
@@ -19,6 +19,7 @@ import { getSongs } from '@/api/ArtistSongs';
 import { Song } from '@/api/public/indexfaces';
 // 工具函数
 import message from '@/utils/message';
+import PubSub from 'pubsub-js';
 import { checkPage } from '@/utils/tools';
 // 钩子 
 import { ref, reactive, onMounted, computed, watch } from 'vue'
@@ -82,6 +83,23 @@ watch(page, (v) => {
         path: $route.path,
         query: {
             page: v
+        }
+    })
+})
+
+/**
+ * 分页更新需要重置到第一页
+ */
+watch(limit, () => {
+    if (page.value === 1) {
+        // 若当前就是第一页 滚动到顶部即可
+        PubSub.publish('to-top')
+        return
+    }
+    $router.push({
+        path: $route.path,
+        query: {
+            page: 1
         }
     })
 })

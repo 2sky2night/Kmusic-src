@@ -3,13 +3,13 @@
         <n-layout-header style="height: 60px;" bordered>
             <Header />
         </n-layout-header>
-        <n-layout position="absolute" style="top: 60px; bottom: 60px;" has-sider>
+        <n-layout position="absolute" style="top: 60px; bottom: 75px;" has-sider>
             <n-layout-content :native-scrollbar="true" style="background-color:var(--main-bg-color);" ref="contentRef">
                 <Main />
                 <SongDropDown />
             </n-layout-content>
         </n-layout>
-        <n-layout-footer position="absolute" style="height: 60px;" bordered>
+        <n-layout-footer position="absolute" style="height: 75px;">
             <Footer />
         </n-layout-footer>
     </n-layout>

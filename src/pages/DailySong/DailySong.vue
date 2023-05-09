@@ -3,7 +3,8 @@
         <!--头部标题-->
         <div v-once>
             <h2>
-                <span class="date">{{ new Date().getDate() >= 10 ? new Date().getDate() : '0' + new Date().getDate() }}</span>
+                <span class="date">{{ new Date().getDate() >= 10 ? new Date().getDate() : '0' + new Date().getDate()
+                }}</span>
                 <n-icon size="90" color="#4098fc">
                     <IosCalendarIcon />
                 </n-icon>
@@ -14,13 +15,10 @@
             </h2>
         </div>
         <SongItemSkeleton v-if="isLoading" :length="10" />
-        <ul v-else>
-            <SongItem v-for="item in songs" :key="item.id" :song="item" />
-        </ul>
+        <SongList v-else :song-list="songs" />
     </div>
 </template>
 <script lang='ts' setup>
-
 import { IosCalendar as IosCalendarIcon } from '@vicons/ionicons4'
 import type { Song } from '@/api/public/indexfaces';
 import { getReSongs } from '@/api/public/user';

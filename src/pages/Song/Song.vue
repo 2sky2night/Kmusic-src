@@ -53,7 +53,7 @@
             </div>
         </div>
         <n-modal v-model:show="showModal">
-            <PlaylistPanel :render="true" :song-id="(song as Song).id" @close-box="showModal=false" />
+            <PlaylistPanel :render="true" :song-id="(song as Song).id" @close-box="showModal = false" />
         </n-modal>
     </div>
 </template>
@@ -189,7 +189,7 @@ function goToComment() {
  */
 async function toToggleLike() {
     if (!userStore.isLogin && !userStore.cookie) {
-        return message("请登录后再进行操作 😂", "warning")
+        return message("请先登陆 👀", "info")
     }
     const id = (song.value as Song).id
     try {

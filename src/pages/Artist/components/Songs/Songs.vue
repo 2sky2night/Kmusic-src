@@ -1,7 +1,7 @@
 <template>
     <div class="hot-songs">
         <ul v-if="!isLoading">
-            <SongItem v-for="item in songs" :key="item.id" :song="item" />
+            <SongList  :song-list="songs"  />
             <n-button v-if="songs.length" style="margin:10px 0;align-self: center;padding: 0 50px;" strong secondary
                 @click="goToArtistSongs">查看歌手的全部歌曲</n-button>
         </ul>

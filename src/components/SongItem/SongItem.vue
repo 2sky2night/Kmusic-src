@@ -102,6 +102,10 @@ const props = defineProps<{
      */
     song: Song;
 }>()
+// 自定义事件
+const emit = defineEmits<{
+    (e: "playMusic"): void
+}>()
 
 /**去音乐页面 */
 function goToSong() {
@@ -135,7 +139,7 @@ function openDropDown(e: MouseEvent) {
  */
 async function toToggleLike() {
     if (!userStore.cookie && !userStore.isLogin) {
-        return message("请登录后再进行操作 😂", "warning")
+        return message("请先登录 👀", "info")
     }
     const id = props.song.id
     try {
@@ -159,9 +163,13 @@ async function toToggleLike() {
 }
 
 /**
- * 播放歌曲
+ * 播放歌曲，更新播放列表
  */
 function toSetPlayingSong() {
+    // 若点击的歌曲就是当前播放的音乐就无操作
+    if (props.song.id === musicStore.playingSong.id) return
+    //  通知父组件播放歌曲了
+    emit("playMusic")
     // 将当前歌曲的数据发送给仓库中去,修改当前播放的歌曲信息
     musicStore.setPlayingSong({
         id: props.song.id,

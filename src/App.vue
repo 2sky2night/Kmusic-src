@@ -41,6 +41,11 @@ musicStore.$onAction(({ after }) => {
   })
 })
 
+// 检查到音乐仓库的数据源更新 就将最新数据保存在本地中
+musicStore.$subscribe((_,state) => {
+  setLocal('musicData', state)
+})
+
 // 检查到搜索仓库的方法执行就将当前最新的数据保存在本地中
 searchStore.$onAction(({ after }) => {
   after(() => {

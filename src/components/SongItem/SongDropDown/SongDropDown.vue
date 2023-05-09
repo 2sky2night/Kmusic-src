@@ -98,7 +98,7 @@ function handleSelect(key: string | number) {
     switch (key) {
         case 'mv': $router.push(`/mv/${data.mv}`); break;
         case 'song-infor': $router.push(`/song/${data.id}`); break;
-        case 'play-next': console.log('play-next'); break;
+        case 'play-next':musicStore.addSongToList(data); break;
         case 'add-playlist': toAddPlaylist(); break;
         case 'play-now': toSetPlayingSong(); break;
         case 'song-album': $router.push(`/album/${data.al.id}`); break;
@@ -134,9 +134,10 @@ PubSub.subscribe('open', (_, res: { data: Song, x: number, y: number }) => {
 })
 
 /**
- * 播放歌曲
+ * 播放歌曲,通知歌曲列表组件需要更新歌曲列表了
  */
 function toSetPlayingSong() {
+    PubSub.publish('playMusic')
     const data = song as Song
     // 将当前歌曲的数据发送给仓库中去,修改当前播放的歌曲信息
     musicStore.setPlayingSong({

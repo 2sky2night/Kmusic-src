@@ -1,10 +1,7 @@
 <template>
-    <div class="music-controller">
-        <audio v-if="!isLoading" controls autoplay name="media">
-            <source :src="(songData as SongData).url" type="audio/mpeg">
-        </audio>
+    <div class="music-box">
+        <Music v-if="!isLoading" :url="(songData as SongData).url" />
         <span v-else>暂无歌曲</span>
-
     </div>
 </template>
 <script lang='ts' setup>
@@ -15,7 +12,7 @@ import Music from './components/Music/Music.vue'
 import type { SongData } from '@/api/public/song/interfaces'
 // api
 import { getSongs } from '@/api/ArtistSongs';
-import { checkSong, getSongData, getSongKeyFrameLyric, getSongLyric } from '@/api/public/song';
+import { checkSong, getSongData } from '@/api/public/song';
 // 钩子
 import useMusicStore from '@/store/music';
 import { ref } from 'vue'
@@ -29,7 +26,7 @@ const songData = ref<SongData>()
 // 歌曲仓库
 const musicStore = useMusicStore()
 
-// 监听仓库的方法执行,若当前设置了要播放的歌曲就获取歌曲的数据
+// 监听仓库的方法执行,若当前设置了要播放的歌曲就获取歌曲的数据从而播放歌曲
 musicStore.$onAction((e) => {
     if (e.name === 'setPlayingSong') {
         // 若为设置当前播放的歌曲方法 获取歌曲数据
@@ -37,7 +34,9 @@ musicStore.$onAction((e) => {
     }
 })
 
-// 设置当前播放的歌曲方法更新后的回调
+/**
+ * 获取歌曲的url 播放歌曲
+ */
 async function musicSetAfter() {
     isLoading.value = true
     const id = musicStore.playingSong.id as number
@@ -62,6 +61,9 @@ async function musicSetAfter() {
             // 将歌曲的基本信息保存在仓库中
             musicStore.addHistory({ ...resSongInfor.songs[0], privilege: resSongInfor.privileges[0] })
 
+            // 获取歌词
+            await musicStore.getSongLyric()
+
             isLoading.value = false
 
         } else {
@@ -79,11 +81,11 @@ async function musicSetAfter() {
 
 </script>
 <style scoped>
-.music-controller {
+.music-box {
     box-sizing: border-box;
     display: flex;
-    justify-content: center;
-    align-items: center;
     height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 </style>

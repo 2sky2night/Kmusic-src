@@ -233,7 +233,9 @@ const useUserStore = defineStore('user', {
                     idAlbums: [],
                     myPlaylists: []
                 }
-                useMusicStoreWithout().clearHistory()
+                const musicStore = useMusicStoreWithout()
+                musicStore.clearHistory()
+                musicStore.clearSongList()
                 useSearchStoreWithout().clearHistory()
                 // 清除本地的cookie
                 localStorage.removeItem('cookie')

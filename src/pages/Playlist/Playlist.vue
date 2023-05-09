@@ -99,6 +99,8 @@
                         v-if="userStore.isLoginState && userStore.userData.id === playlistInfor?.creator.userId && songs.length">
                         移除当前页的歌曲
                     </n-button>
+                    <n-button strong secondary size="small" style="margin-left: 5px;" @click="deletePlaylist"
+                        v-if="userStore.isLoginState && userStore.userData.id === playlistInfor?.creator.userId">删除歌单</n-button>
                     <n-button strong secondary size="small" class="check-desc" v-if="playlistInfor?.description"
                         @click="showDes" style="margin-left: 5px;">
                         查看简介
@@ -108,9 +110,7 @@
                     </n-button>
                 </div>
             </div>
-            <ul v-if="!isLoading && songs.length">
-                <SongItem v-for="item in songs" :key="item.id" :song="item" />
-            </ul>
+            <SongList  v-if="!isLoading && songs.length" :song-list="songs"  />
             <EmptyPage description="当前页没有任何一首歌曲 😉" :show-btn="true" v-if="songs.length === 0 && !isLoading" />
             <SongItemSkeletonList :length="20" v-if="isLoading" />
             <div class="pagination" v-if="pages > 1 && songs.length">
@@ -120,7 +120,8 @@
         </div>
         <PlaylistSkeleton v-if="firstLoading" />
         <!--修改歌单封面的模态框-->
-        <n-modal v-if="userStore.isLoginState" v-model:show="showCoverModal" @after-leave="resetFile">
+        <n-modal v-if="userStore.isLoginState && !firstLoading && userStore.userData.id === playlistInfor?.creator.userId"
+            v-model:show="showCoverModal" @after-leave="resetFile">
             <n-card style="width: 60%;max-width: 350px;" title="歌单封面上传" :bordered="false" role="dialog" aria-modal="true">
                 <template #header-extra>
                     <n-icon class="text" size="30" @click="showCoverModal = false">
@@ -146,7 +147,8 @@
             </n-card>
         </n-modal>
         <!--修改歌单名称的模态框-->
-        <n-modal v-if="userStore.isLoginState" v-model:show="showNameModal">
+        <n-modal v-if="userStore.isLoginState && !firstLoading && userStore.userData.id === playlistInfor?.creator.userId"
+            v-model:show="showNameModal">
             <n-card style="width: 60%;max-width: 350px;" title="歌单名称修改" :bordered="false" role="dialog" aria-modal="true">
                 <template #header-extra>
                     <n-icon class="text" size="30" @click="showNameModal = false">
@@ -163,7 +165,8 @@
             </n-card>
         </n-modal>
         <!--移除当前页的歌曲的模态框-->
-        <n-modal v-if="userStore.isLoginState" v-model:show="showDeleteModel" @after-leave="resetDel">
+        <n-modal v-if="userStore.isLoginState && !firstLoading && userStore.userData.id === playlistInfor?.creator.userId"
+            v-model:show="showDeleteModel" @after-leave="resetDel">
             <n-card style="width: 80%;max-width:450px;" title="移除歌曲" :bordered="false" role="dialog" aria-modal="true">
                 <template #header-extra>
                     <n-icon class="text" size="30" @click="showDeleteModel = false">
@@ -213,7 +216,7 @@ import useUserStore from '@/store/user';
 import { checkPage } from '@/utils/tools'
 import { timeFormat, countFormat, countPage } from '@/utils/computed'
 import message from '@/utils/message';
-import { messageboxWithout } from '@/render/MessageBox';
+import messagebox, { messageboxWithout } from '@/render/MessageBox';
 import previewPhoto from '@/render/PreviewPhoto'
 // 图标
 import { IosClose } from '@vicons/ionicons4';
@@ -264,6 +267,26 @@ const options = [
         key: "change-cover"
     },
 ]
+
+async function deletePlaylist() {
+    const infor = playlistInfor.value as PlaylistInfor
+    try {
+        await messagebox(`真的要删除歌单 ${infor.name} 吗 😭`, "提示");
+    } catch (error) {
+        message("取消了删除歌单 👀", "warning")
+        return
+    }
+
+    try {
+        await userStore.deletePlaylist(infor.id)
+        // 删除成功则跳转至首页
+        $router.push('/')
+    } catch (error) {
+
+    }
+
+
+}
 
 /**
  * 重置需要被删除的歌曲

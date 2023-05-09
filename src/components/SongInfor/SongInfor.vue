@@ -137,7 +137,7 @@ function toDone(e: MouseEvent) {
 
     switch (value) {
         case 'play-now': toSetPlayingSong(); break;
-        case 'play-next': console.log('下一首播放'); break;
+        case 'play-next': musicStore.addSongToList(props.song); break;
         case 'add-playlist': toAddPlaylist(); break;
         case 'mv': (window as any).$push(`/mv/${props.song.mv}`); break;
         case 'infor': (window as any).$push(`/song/${props.song.id}`); break;
@@ -161,6 +161,8 @@ function goToArtist(id: number) {
  * 播放歌曲
  */
 function toSetPlayingSong() {
+    // 通知歌曲列表组件播放歌曲了哟
+    PubSub.publish('playMusic')
     // 将当前歌曲的数据发送给仓库中去,修改当前播放的歌曲信息
     musicStore.setPlayingSong({
         id: props.song.id,

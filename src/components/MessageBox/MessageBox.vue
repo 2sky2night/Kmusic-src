@@ -1,12 +1,11 @@
 <template>
   <Transition name="msg" appear>
-    <div v-if="isShow" class="msg-box"
-      :style="{ top: isFirst ? 'unset' : currentOffset.y + 'px', left: isFirst ? 'unset' : currentOffset.x + 'px' }">
-      <div class="msg-top-bar" @pointerdown="tapTopBar" ref="topBar">
+    <div v-if="isShow" class="msg-box">
+      <div class="msg-top-bar" ref="topBar">
         <span>{{ title }}</span>
-        <button  @click="toCloseBox(false)">
+        <button @click="toCloseBox(false)">
           <n-icon size="20">
-            <CloseIcon/>
+            <CloseIcon />
           </n-icon>
         </button>
       </div>
@@ -17,36 +16,24 @@
         <span>{{ content }}</span>
       </div>
       <div class="msg-btns">
-        <button @click="toCloseBox(false)">取消</button>
-        <button @click="toCloseBox(true)">确认</button>
+        <NButton style="margin-right: 10px;" strong secondary size="small" @click="toCloseBox(false)">取消</NButton>
+        <NButton strong secondary size="small" @click="toCloseBox(true)" type="info">确认</NButton>
       </div>
     </div>
   </Transition>
 </template>
 <script lang='ts' setup>
+import { NButton } from 'naive-ui';
 import { IosWarning as IosWarningIcon } from '@vicons/ionicons4'
 import { Close as CloseIcon } from '@vicons/ionicons5'
-import { onMounted, reactive, ref } from 'vue';
+import { ref } from 'vue';
 // 控制模态框的显示和隐藏
 const isShow = ref(true)
 const topBar = ref<HTMLElement | null>(null)
-// 第一次时居中展示
-const isFirst = ref<boolean>(true)
 
 // 暴露出的数据源
 defineExpose({ isShow })
 
-// 鼠标在容器里面的坐标
-const clientOffset = {
-  x: 0,
-  y: 0
-}
-
-// 计算后的偏移量
-const currentOffset = reactive({
-  x: 0,
-  y: 0
-})
 
 interface MsgBoxProps {
   title: string;
@@ -55,36 +42,6 @@ interface MsgBoxProps {
 }
 
 const props = defineProps<MsgBoxProps>()
-
-function tapTopBar(e: MouseEvent) {
-  // 鼠标在容器里面的坐标
-  clientOffset.x = e.offsetX;
-  clientOffset.y = e.offsetY;
-
-  // 鼠标点击并移动时绑定事件
-  (topBar.value as HTMLElement).addEventListener("mousemove", moveModal);
-}
-
-// 鼠标抬起时解绑事件
-onMounted(() => {
-  (topBar.value as HTMLElement).addEventListener("pointerup", () => {
-    (topBar.value as HTMLElement).removeEventListener("mousemove", moveModal)
-  });
-  (topBar.value as HTMLElement).addEventListener("mouseleave", () => {
-    (topBar.value as HTMLElement).removeEventListener("mousemove", moveModal)
-  })
-})
-
-// 移动模态框
-function moveModal(e: MouseEvent) {
-  if (isFirst.value) {
-    isFirst.value = false
-  }
-
-  // 计算出当前的偏移量
-  currentOffset.x = e.pageX - clientOffset.x;
-  currentOffset.y = e.pageY - clientOffset.y;
-}
 
 /**
  * 关闭模态框
@@ -102,7 +59,6 @@ function toCloseBox(flag: boolean) {
   justify-content: space-between;
   height: 40px;
   align-items: center;
-  cursor: move;
   border: unset;
 }
 
@@ -124,7 +80,7 @@ function toCloseBox(flag: boolean) {
 }
 
 .msg-box {
-  color:var(--text-color);
+  color: var(--text-color);
   padding: 0 20px;
   user-select: none;
   border-radius: 3px;
@@ -139,19 +95,6 @@ function toCloseBox(flag: boolean) {
   margin-top: 20px;
   display: flex;
   justify-content: flex-end;
-}
-
-.msg-btns>button {
-  border: none;
-  padding: 5px 15px;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.msg-btns>button:nth-child(2) {
-  margin-left: 10px;
-  background-color: rgb(64, 158, 255);
-  color: white;
 }
 
 .msg-enter-active {
