@@ -22,7 +22,7 @@
                             <IosArrowUp />
                         </n-icon>
                     </div>
-                    <img :src="song.album.picUrl + '?param60y60'">
+                    <img :src="song.album.picUrl + '?param=60y60'">
                 </div>
                 <!--歌曲名称和歌曲歌词或歌曲作者-->
                 <div class="music">
@@ -40,17 +40,17 @@
             <!--功能按钮组-->
             <div class="btns">
                 <div class="pre">
-                    <n-icon size="35">
+                    <n-icon size="35" title="上一首" @click="preSong">
                         <MdArrowDropleft />
                     </n-icon>
                 </div>
                 <div @click="togglePauseMusic" class="pause-or-play">
-                    <n-icon size="40">
+                    <n-icon size="40" :title="isPause ? '播放' : '暂停'">
                         <component :is="isPause?IosPlayCircle:PauseCircle" />
                     </n-icon>
                 </div>
                 <div class="next">
-                    <n-icon size="35">
+                    <n-icon size="35" title="下一首" @click="nextSong">
                         <MdArrowDropright />
                     </n-icon>
                 </div>
@@ -60,15 +60,26 @@
                     </n-icon>
                     <n-slider size="small" v-model:value="song.volume" :step="0.1" :max="1" />
                 </div>
+                <div class="playing-type">
+                    <n-icon :size="25" @click="musicStore.changeType">
+                        <component :is="playType" />
+                    </n-icon>
+                </div>
                 <div class="list">
-                    <n-icon size="25">
+                    <n-icon size="25" title="打开播放列表" @click="showList = true">
                         <List />
                     </n-icon>
+                    <n-drawer :z-index="888" v-model:show="showList" style="width:100%;max-width: 500px;">
+                        <n-drawer-content title="播放列表" closable :native-scrollbar="false">
+                            <SongCardWithoutVue @close-drawer="showList = false" v-for="song in songList" :key="song.id"
+                                :song="song" />
+                        </n-drawer-content>
+                    </n-drawer>
                 </div>
             </div>
         </div>
 
-        <audio autoplay name="media" ref="musicEle">
+        <audio :loop="musicStore.playingSong.playType === 1" autoplay name="media" ref="musicEle">
             <source :src="url" type="audio/mpeg">
         </audio>
 
@@ -85,15 +96,21 @@ import { playingTimeFormat } from '@/utils/computed';
 // 图标
 import { IosArrowUp, IosPlayCircle, MdArrowDropright, MdArrowDropleft } from '@vicons/ionicons4'
 import { PauseCircle, List } from '@vicons/ionicons5'
+// 组件
+import SongCardWithoutVue from '@/components/Card/SongCard/SongCardWithout.vue';
 
+// 音乐仓库
+const musicStore = useMusicStore()
 // 自定义属性
 const props = defineProps<{
     url: string;
 }>()
+// 展示播放列表
+const showList = ref(false)
 // 路由实例
 const $router = useRouter()
-// 正在播放的歌曲信息
-const { playingSong: song } = storeToRefs(useMusicStore())
+// 正在播放的歌曲信息和播放列表
+const { playingSong: song, songList } = storeToRefs(musicStore)
 // 音频播放器的DOM元素
 const musicEle = ref<HTMLAudioElement | null>(null)
 // 当前播放歌曲的时间格式化
@@ -116,11 +133,17 @@ const volumeFormat = computed(() => {
         return 'MdVolumeOff'
     }
 })
+// 歌曲播放的类型
+const playType = computed(() => {
+    switch (musicStore.playingSong.playType) {
+        case 0: return 'RepeatOutline';
+        case 1: return 'ReloadOutline';
+        case 2: return 'MdPulse';
+    }
 
-// 监听音量变化的回调,更新audio标签的音量大小
-watch(() => song.value.volume, (v) => {
-    (musicEle.value as HTMLAudioElement).volume = v
 })
+
+
 /**
  * 用户滑动控制条值更新的回调
  * @param value - 更新的值
@@ -157,19 +180,53 @@ function goToArtist() {
     $router.push(`/artist/${song.value.artists[0].id}`);
 }
 
+/**
+ * 点击按钮上一首
+ */
+function preSong() {
+    if (song.value.playType === 0) {
+        // 顺序播放上一首
+        musicStore.preSong()
+    } else if (song.value.playType === 1) {
+        // 循环播放重置即可
+        (musicEle.value as HTMLAudioElement).load()
+    } else {
+        // 随机播放
+        musicStore.randomPlay()
+    }
+}
+
+/**
+ * 点击按钮下一首
+ */
+function nextSong() {
+    if (song.value.playType === 0) {
+        // 顺序播放上一首
+        musicStore.nextSong()
+    } else if (song.value.playType === 1) {
+        // 循环播放重置即可
+        (musicEle.value as HTMLAudioElement).load()
+    } else {
+        // 随机播放
+        musicStore.randomPlay()
+    }
+}
+
 onMounted(() => {
     console.dir(musicEle.value);
     const element = (musicEle.value as HTMLAudioElement);
 
     // 歌曲全部加载完成的回调
-    element.addEventListener("canplaythrough", (e) => {
+    element.addEventListener("canplaythrough", async (e) => {
         console.log('歌曲加载完毕');
         console.log(element.duration);
         // 获取歌曲时长
         song.value.duration = element.duration
         song.value.currentTime = element.currentTime
         // 将audio的音量保持用户设置的音量一致
-        element.volume = song.value.volume
+        element.volume = song.value.volume;
+        // 根据当前audio标签的状态播放状态设置isPause
+        isPause.value = element.paused;
     });
 
     // 歌曲当前播放的时间发生变化时的回调
@@ -188,18 +245,39 @@ onMounted(() => {
         isPause.value = false
     })
 
+    // 歌曲播放完成的回调
+    element.addEventListener("ended", () => {
+        console.log('歌曲播放完成~~');
+        if (song.value.playType === 0) {
+            // 若为循环播放就执行顺序下一首歌曲方法
+            musicStore.nextSong()
+        } else {
+            // 随机播放
+            musicStore.randomPlay()
+        }
+    })
 
 })
+
+// 监听音量变化的回调,更新audio标签的音量大小
+watch(() => song.value.volume, (v) => {
+    (musicEle.value as HTMLAudioElement).volume = v
+})
+
 
 </script>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { MdVolumeHigh, MdVolumeLow, MdVolumeOff } from '@vicons/ionicons4'
+import { RepeatOutline, ReloadOutline } from '@vicons/ionicons5'
+import { MdVolumeHigh, MdVolumeLow, MdVolumeOff, MdPulse } from '@vicons/ionicons4'
 export default defineComponent({
     components: {
         MdVolumeHigh,
         MdVolumeLow,
-        MdVolumeOff
+        MdVolumeOff,
+        ReloadOutline,
+        RepeatOutline,
+        MdPulse
     }
 })
 </script>
@@ -284,6 +362,12 @@ export default defineComponent({
 
             .pre i {
                 left: -2px;
+            }
+
+            .playing-type {
+                display: flex;
+                align-items: center;
+                cursor: pointer;
             }
 
             .pre:hover,
@@ -376,6 +460,12 @@ export default defineComponent({
     }
 }
 
+@media screen and (max-width:475px) {
+    .playing-type {
+        display: none !important;
+    }
+}
+
 @media screen and (max-width:450px) {
     .music-infor .name {
         font-size: 13px;
@@ -385,4 +475,5 @@ export default defineComponent({
     .next {
         display: none !important;
     }
-}</style>
+}
+</style>

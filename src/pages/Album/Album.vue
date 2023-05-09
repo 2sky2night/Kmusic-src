@@ -2,7 +2,7 @@
     <div class="page page-layout">
         <PlaylistSkeleton v-if="isLoading" />
         <div class="music-infor" v-if="!isLoading">
-            <div class="cover">
+            <div class="cover" @click="previewPhtot((album as AlbumMore).picUrl)">
                 <Cover :img="(album as AlbumMore).picUrl" />
             </div>
             <div class="infor">
@@ -59,7 +59,6 @@ import { reactive, ref, onMounted } from 'vue'
 // 组件
 import PlaylistSkeleton from '@/components/PageSkeleton/PlaylistSkeleton/PlaylistSkeleton.vue';
 import Cover from '@/components/Cover/Cover.vue';
-import SongItem from '@/components/SongItem/SongItem.vue';
 // 接口
 import type { Song } from '@/api/public/indexfaces';
 import type { AlbumMore } from '@/api/Album/interfaces'
@@ -71,6 +70,8 @@ import { messageboxWithout } from '@/render/MessageBox'
 import { timeFormat } from '@/utils/computed';
 // 仓库
 import useUserStore from '@/store/user';
+// 渲染函数
+import previewPhtot from '@/render/PreviewPhoto';
 
 // 正在加载
 const isLoading = ref(true)

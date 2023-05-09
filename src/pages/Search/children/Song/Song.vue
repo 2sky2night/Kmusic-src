@@ -1,8 +1,8 @@
 <template>
     <div class="search-tab">
         <ul v-if="!isLoading">
-            <SongItem v-for="song in songs" :key="song.id" :song="song" />
-            <n-pagination v-if="total / pageSize > 1 && songs.length" style="align-self: center;" :page-slot="6"
+            <SongList :song-list="songs" />
+            <n-pagination v-if="total / pageSize > 1 && songs.length" style="align-self: center;" :page-slot="5"
                 v-model:page="page" :item-count="total" v-model:page-size="pageSize" show-size-picker
                 :page-sizes="pageSizes">
                 <template #prefix>

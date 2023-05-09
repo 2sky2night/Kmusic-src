@@ -21,7 +21,11 @@ export interface PlayingSongData {
     /**
      * 音量
      */
-    volume: number
+    volume: number;
+    /**
+     * 0列表播放 1单曲循环播放 2随机播放 
+     */
+    playType: 0 | 1 | 2
 }
 
 export interface StoreData {

@@ -15,7 +15,7 @@ import { IosMusicalNote } from '@vicons/ionicons4'
 import { getSongKeyFrameLyric, getSongLyric } from '@/api/public/song';
 
 let data: StoreData = {
-    playingSong: { id: null, isPlaying: false, name: '', src: '', isLike: false, artists: [], album: { id: 0, name: '', picUrl: '' }, isVip: false, songLyric: null, duration: 0, currentTime: 0, volume: 1 },
+    playingSong: { id: null, isPlaying: false, name: '', src: '', isLike: false, artists: [], album: { id: 0, name: '', picUrl: '' }, isVip: false, songLyric: null, duration: 0, currentTime: 0, volume: 1, playType: 0 },
     history: [],
     songList: []
 }
@@ -54,7 +54,7 @@ const useMusicStore = defineStore('music', {
          * 重置当前播放的歌曲
          */
         resetPlaysons() {
-            this.playingSong = { id: null, isPlaying: false, name: '', src: '', isLike: false, artists: [], album: { id: 0, name: '', picUrl: '' }, isVip: false, songLyric: null, currentTime: 0, duration: 0, volume: 1 }
+            this.playingSong = { id: null, isPlaying: false, name: '', src: '', isLike: false, artists: [], album: { id: 0, name: '', picUrl: '' }, isVip: false, songLyric: null, currentTime: 0, duration: 0, volume: 1, playType: 0 }
         },
         /**
          * 增加一条历史记录
@@ -112,24 +112,100 @@ const useMusicStore = defineStore('music', {
             this.songList = list;
         },
         /**
-         * 下一首播放
+         * 添加播放列表到下一首播放
          * @param song - 下一首歌曲的信息
          */
         addSongToList(song: Song) {
+            if (song.id === this.playingSong.id) {
+                return message("这首歌不是在播放吗? 试试循环播放~🤔", "info")
+            }
             // 检查当前音乐是否已经存在
             const index = this.songList.findIndex(ele => ele.id === song.id)
             if (index !== -1) {
                 // 若存在则删除那首歌曲
-                this.songList.splice(index,1)
+                this.songList.splice(index, 1)
             }
             // 将歌曲添加到对应位置
-            this.songList.some((ele,index,arr) => {
+            this.songList.some((ele, index, arr) => {
                 if (ele.id === this.playingSong.id) {
-                    arr.splice(index+1, 0, song)
+                    arr.splice(index + 1, 0, song)
                     return
                 }
             })
-            message("添加成功 😎","success")
+            message("添加成功 😎", "success")
+        },
+        /**
+         * 顺序播放上一首歌曲
+         */
+        preSong() {
+            // 获取到当前播放的歌曲
+            let index = this.songList.findIndex(ele => ele.id === this.playingSong.id);
+            if (index <= 0) {
+                // 若当前为第一首歌曲或未找到,则播放倒数第一首歌曲
+                index = this.songList.length - 1
+            } else {
+                index--
+            }
+            // 确定当前要播放的歌曲
+            const song = this.songList[index];
+            this.playSong(song)
+        },
+        /**
+         * 顺序播放下一首歌曲
+         */
+        nextSong() {
+            // 获取到当前播放的歌曲
+            let index = this.songList.findIndex(ele => ele.id === this.playingSong.id);
+
+            if (index >= 0 && index < this.songList.length - 1) {
+                index++;
+            } else {
+                // 若当前未找到或为最后一首歌曲就播放第一首歌曲
+                index = 0;
+            }
+
+            // 确定当前要播放的歌曲
+            const song = this.songList[index];
+            this.playSong(song)
+        },
+        /**
+         * 更新播放歌曲的方式
+         */
+        changeType() {
+            switch (this.playingSong.playType) {
+                case 0: this.playingSong.playType++; message("单曲循环 😙", "info"); break;
+                case 1: this.playingSong.playType++; message("随机播放 😨", "info"); break;
+                case 2: this.playingSong.playType = 0; message("列表播放 😀", "info"); break;
+            }
+        },
+        /**
+         * 随机播放歌曲
+         */
+        randomPlay() {
+            // 获取当前播放的歌曲索引
+            const currentIndex = this.songList.findIndex(ele => ele.id === this.playingSong.id);
+            // 生成随机数
+            for (; ;) {
+                const index = Math.floor(Math.random() * this.songList.length);
+                console.log(index);
+                if (index !== currentIndex) {
+                    this.playSong(this.songList[index])
+                    break;
+                }
+            }
+        },
+        /**
+         * 播放歌曲
+         * @param song 
+         */
+        playSong(song: Song) {
+            this.setPlayingSong({
+                id: song.id,
+                name: song.name,
+                album: { name: song.al.name, id: song.al.id, picUrl: song.al.picUrl },
+                artists: song.ar,
+                isVip: song.privilege.freeTrialPrivilege.resConsumable
+            })
         }
     }
 })

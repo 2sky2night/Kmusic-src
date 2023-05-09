@@ -3,26 +3,39 @@
         <n-layout-header style="height: 60px;" bordered>
             <Header />
         </n-layout-header>
-        <n-layout position="absolute" style="top: 60px; bottom: 75px;" has-sider>
+        <n-layout position="absolute" :style="{ top: '60px', bottom: showFooter ? '75px' : '0px' }" has-sider>
             <n-layout-content :native-scrollbar="true" style="background-color:var(--main-bg-color);" ref="contentRef">
                 <Main />
                 <SongDropDown />
             </n-layout-content>
         </n-layout>
-        <n-layout-footer position="absolute" style="height: 75px;">
-            <Footer />
-        </n-layout-footer>
+
+            <n-layout-footer  position="absolute"
+                :style="{ height: showFooter ? '75px' : '0px',transition:'.2s' }">
+                <Footer @show-footer="showFooter=true" @hide-footer="showFooter=false" />
+            </n-layout-footer>
+
     </n-layout>
 </template>
 <script lang='ts' setup>
+// 组件
 import Footer from './Footer/Footer.vue';
 import SongDropDown from '@/components/SongItem/SongDropDown/SongDropDown.vue';
 import Main from './Main/Main.vue';
 import Header from './Header/Header.vue';
+// 钩子
 import { useMessage, LayoutInst } from 'naive-ui';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import useMusicStore from '@/store/music'
+// 工具函数
 import PubSub from 'pubsub-js';
+
+// 音乐仓库
+const musicStore = useMusicStore();
+// 是否显示footer
+const showFooter=ref(false)
+
 
 // 获取路由元数据
 const $route = useRoute();

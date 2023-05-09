@@ -1,7 +1,6 @@
 <template>
     <div class="music-box">
         <Music v-if="!isLoading" :url="(songData as SongData).url" />
-        <span v-else>暂无歌曲</span>
     </div>
 </template>
 <script lang='ts' setup>
@@ -15,7 +14,7 @@ import { getSongs } from '@/api/ArtistSongs';
 import { checkSong, getSongData } from '@/api/public/song';
 // 钩子
 import useMusicStore from '@/store/music';
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 // 正在加载数据
 const isLoading = ref(true)
@@ -25,6 +24,12 @@ const songData = ref<SongData>()
 
 // 歌曲仓库
 const musicStore = useMusicStore()
+
+// 自定义事件
+const emit = defineEmits<{
+    (e: "showFooter"): void;
+    (e: "hideFooter"): void
+}>()
 
 // 监听仓库的方法执行,若当前设置了要播放的歌曲就获取歌曲的数据从而播放歌曲
 musicStore.$onAction((e) => {
@@ -38,6 +43,7 @@ musicStore.$onAction((e) => {
  * 获取歌曲的url 播放歌曲
  */
 async function musicSetAfter() {
+    emit("hideFooter")
     isLoading.value = true
     const id = musicStore.playingSong.id as number
     // 检查歌曲 获取歌曲信息 获取歌曲歌词
@@ -65,19 +71,39 @@ async function musicSetAfter() {
             await musicStore.getSongLyric()
 
             isLoading.value = false
-
+            emit("showFooter")
         } else {
             // 若歌曲无法正常播放
             message(resCheck.message, "warning")
             // 歌曲无法播放就重置当前播放的歌曲
             musicStore.resetPlaysons()
+            emit("hideFooter")
         }
     } catch (error) {
         message("播放歌曲出错啦 😱", "error")
         // 歌曲无法播放就重置当前播放的歌曲
         musicStore.resetPlaysons()
+        emit("hideFooter")
     }
 }
+
+/**
+ * 若音乐仓库中有歌曲数据,则直接加载歌曲 但是不能直接播放歌曲
+ */
+onMounted(() => {
+    if (musicStore.playingSong.id) {
+        // 根据歌曲id获取当前播放的歌曲
+        const index = musicStore.songList.findIndex(ele => ele.id === musicStore.playingSong.id)
+        const song = musicStore.songList[index === -1 ? 0 : index]
+        musicStore.setPlayingSong({
+            id: song.id,
+            name: song.name,
+            album: { name: song.al.name, id: song.al.id, picUrl: song.al.picUrl },
+            artists: song.ar,
+            isVip: song.privilege.freeTrialPrivilege.resConsumable
+        })
+    }
+})
 
 </script>
 <style scoped>
