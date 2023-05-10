@@ -1,0 +1,39 @@
+.drop-down-box {
+  margin: 0 5px;
+  transition: 0.5s;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.drop-down-box:hover {
+  background-color: var(--hover-bg-color);
+}
+.drop-down-box > div {
+  display: flex;
+  align-items: center;
+  margin-left: 4px;
+}
+
+.drop-down-box i {
+  position: relative;
+  left: 2px;
+}
+
+.drop-down-box span {
+  font-size: 14px;
+  margin-left: 12px;
+}
+
+.dark .drop-down-box {
+  color: #fff;
+}
+
+.dark .drop-down-box:hover {
+  background-color: #59595e;
+}
+
+.dark .drop-down-header {
+  color: #fff;
+}
