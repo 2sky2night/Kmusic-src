@@ -21,13 +21,11 @@ const $router = useRouter()
 
 // 点击某一项时的回调,可以根据v的值来执行对应的事情.
 function handleSelect(v: string) {
-    console.log(v);
     switch (v) {
         case 'login': $router.push('/login'); break;
         case 'logout': logout(); break;
         case 'remmon': $router.push('/daily-song'); break;
         case 'history': $router.push('/history'); break;
-        default: console.log('点击了某一项');
     }
 }
 

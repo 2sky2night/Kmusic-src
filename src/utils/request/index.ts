@@ -39,7 +39,7 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 request.interceptors.response.use((response: AxiosResponse) => {
     // 停止进度条
     nProgress.done()
-    console.log('状态码:' + response.status);
+
 
     if (response.status !== 200) {
         message('加载数据错误 😅', "error")
@@ -62,7 +62,6 @@ request.interceptors.response.use((response: AxiosResponse) => {
 export default {
     get<T = any>(url: string, config: AxiosRequestConfig = { params: {} }): Promise<T> {
         Reflect.set(config.params, 'timestamp', Date.now())
-        console.log(config.params);
         return request.get(url, config)
     },
     post<T = any>(url: string, data: any = {}, config: AxiosRequestConfig = {}): Promise<T> {

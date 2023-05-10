@@ -158,7 +158,6 @@ const showLyricDesktop = ref(false)
  * @param value - 更新的值
  */
 function timeUpdateHandler(value: number) {
-    console.log(value);
     (musicEle.value as HTMLAudioElement).currentTime = value;
 }
 
@@ -227,8 +226,6 @@ onMounted(() => {
 
     // 歌曲全部加载完成的回调
     element.addEventListener("canplaythrough", async (e) => {
-        console.log('歌曲加载完毕');
-        console.log(element.duration);
         // 获取歌曲时长
         song.value.duration = element.duration
         song.value.currentTime = element.currentTime
@@ -256,7 +253,6 @@ onMounted(() => {
 
     // 歌曲播放完成的回调
     element.addEventListener("ended", () => {
-        console.log('歌曲播放完成~~');
         if (song.value.playType === 0) {
             // 若为循环播放就执行顺序下一首歌曲方法
             musicStore.nextSong()

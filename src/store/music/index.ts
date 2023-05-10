@@ -192,7 +192,6 @@ const useMusicStore = defineStore('music', {
             // 生成随机数
             for (; ;) {
                 const index = Math.floor(Math.random() * this.songList.length);
-                console.log(index);
                 if (index !== currentIndex) {
                     this.playSong(this.songList[index])
                     break;

@@ -19,7 +19,7 @@ const lyric = reactive(lyricFormat(lyricString as string).map(ele => {
     return { ...ele, flag: false }
 }).filter(ele => ele.text))
 
-console.log(lyric);
+
 
 
 // 监听当前音乐播放的时间,根据当前时间

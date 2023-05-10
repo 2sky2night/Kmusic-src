@@ -169,7 +169,6 @@ function goToUser(id: number) {
 
 // 监听当前分类的变化 重置页数
 watch(tag, (v) => {
-    console.log('tag');
     page.value = 1
     $router.push({
         path: $route.path,
@@ -182,7 +181,6 @@ watch(tag, (v) => {
 
 // 监听页数变化
 watch(page, (v) => {
-    console.log('page');
     $router.push({
         path: $route.path,
         query: {
@@ -194,7 +192,6 @@ watch(page, (v) => {
 
 // 每页条数变化 切换条数需要重置当前页数为1
 watch(limit, () => {
-    console.log('limit');
     // 若当前就是1 则直接获取最新数据
     if (page.value === 1) {
         // 滚动到顶部
@@ -223,7 +220,6 @@ onBeforeRouteUpdate((to) => {
 // 获取数据
 onMounted(async () => {
     await getTags()
-    console.log(tags);
     await getPlaylistData()
 })
 

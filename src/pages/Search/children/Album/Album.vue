@@ -34,8 +34,6 @@ const { keywords, page, pageSize, pageSizes, isLoading, total } = useSearchList(
  * 获取搜索的专辑
  */
 async function getAlbum() {
-    console.log('请求获取数据');
-
     albums.length = 0;
     try {
         const res = await getSearchAlbum(keywords.value, page.value, pageSize.value)

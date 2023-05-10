@@ -95,7 +95,7 @@ const useStarList = <T, D>(cb: (page: number, limit?: number) => Promise<T>, nam
 
     // 路由的动态参数发生变化就更新page的值
     watch(() => $route.params.page, (v) => {
-        console.log(v);
+
         if (v) {
             page.value = +v
         }

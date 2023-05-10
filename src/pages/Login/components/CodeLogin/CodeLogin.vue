@@ -116,7 +116,6 @@ function login() {
 async function startCode() {
     if (timer) {
         // 若开启了定时器应该取消上次的定时器
-        console.log('清除定时器');
         clearInterval(timer)
     }
     try {

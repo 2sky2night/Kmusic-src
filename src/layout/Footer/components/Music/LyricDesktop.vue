@@ -174,10 +174,6 @@ watch(currentIndex, (v) => {
     list.children[v].scrollIntoView({ behavior: "smooth", block: "center" })
 })
 
-onMounted(() => {
-    console.log(listDOM.value);
-})
-
 /**
  * 更新当前播放的歌曲时间
  * @param value 

@@ -35,8 +35,6 @@ router.beforeEach((to, from, next) => {
         }
     }
 
-    // 访问无权限页面
-    console.log('访问无权限页面');
     next()
 })
 

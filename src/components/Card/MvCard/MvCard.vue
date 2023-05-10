@@ -74,7 +74,6 @@ function toUserPage(id: number) {
 
 function toMvPage() {
     const id = props.vid
-    console.log(id);
     if (isNaN(+id)) {
         message("该mv由用户上传,由于安全问题暂时不能访问  😀", "info")
     } else {
