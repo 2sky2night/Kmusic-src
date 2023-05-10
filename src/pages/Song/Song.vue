@@ -10,7 +10,9 @@
                 <!--歌曲名称 作者等信息-->
                 <div class="song-data">
                     <h2>
-                        <span>{{ song?.name }}</span>
+                        <n-ellipsis :line-clamp="2">
+                            {{ song?.name }}
+                        </n-ellipsis>
                     </h2>
                     <div>
                         <span>歌手: </span>
@@ -237,7 +239,8 @@ function goToMv() {
     display: flex;
 
     h2 {
-        font-size: 30px;
+        font-size: 20px;
+        margin: 0 !important;
     }
 
     .artist {
@@ -278,7 +281,6 @@ function goToMv() {
 
         // 歌手
         div:nth-child(2) {
-            margin-top: 10px;
             color: var(--text-dark);
             font-size: 12px;
         }

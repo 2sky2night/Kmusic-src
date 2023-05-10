@@ -25,14 +25,11 @@ import Main from './Main/Main.vue';
 import Header from './Header/Header.vue';
 // 钩子
 import { useMessage, LayoutInst } from 'naive-ui';
-import { ref, watch, computed } from 'vue';
+import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import useMusicStore from '@/store/music'
 // 工具函数
 import PubSub from 'pubsub-js';
 
-// 音乐仓库
-const musicStore = useMusicStore();
 // 是否显示footer
 const showFooter=ref(false)
 

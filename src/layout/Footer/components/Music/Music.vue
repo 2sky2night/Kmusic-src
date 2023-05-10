@@ -5,7 +5,7 @@
             <div class="time">
                 {{ nowTime }}
             </div>
-            <n-slider size="small" @update:value="timeUpdateHandler" :step="1" :max="song.duration" :tooltip="false"
+            <n-slider size="small" @update:value="timeUpdateHandler" :step=".1" :max="song.duration" :tooltip="false"
                 :value="song.currentTime" />
             <div class="time">
                 {{ durationTime }}
@@ -16,7 +16,7 @@
             <!--歌曲信息和实时歌词-->
             <div class="music-infor">
                 <!--歌曲封面-->
-                <div class="cover">
+                <div class="cover" @click="showLyricDesktop = true">
                     <div>
                         <n-icon color="#fff" size="20">
                             <IosArrowUp />
@@ -32,8 +32,8 @@
                         </n-ellipsis>
                     </div>
                     <div>
-                        <span v-if="!song.songLyric?.klyric" class="artist" @click="goToArtist">{{ song.artists[0].name
-                        }}</span>
+                        <SongLyric v-if="song.songLyric && song.songLyric.klyric" />
+                        <span v-else class="artist" @click="goToArtist">{{ song.artists[0].name }}</span>
                     </div>
                 </div>
             </div>
@@ -79,6 +79,12 @@
             </div>
         </div>
 
+        <!--歌词桌面-->
+        <Transition name="desktop">
+            <LyricDesktop :is-pause="isPause" @next="nextSong" @time-update="timeUpdateHandler" @toggle-pause="togglePauseMusic"
+                @pre="preSong" @to-close="showLyricDesktop = false" v-if="showLyricDesktop" />
+        </Transition>
+        <!--音源-->
         <audio :loop="musicStore.playingSong.playType === 1" autoplay name="media" ref="musicEle">
             <source :src="url" type="audio/mpeg">
         </audio>
@@ -98,6 +104,8 @@ import { IosArrowUp, IosPlayCircle, MdArrowDropright, MdArrowDropleft } from '@v
 import { PauseCircle, List } from '@vicons/ionicons5'
 // 组件
 import SongCardWithoutVue from '@/components/Card/SongCard/SongCardWithout.vue';
+import SongLyric from './SongLyric.vue';
+import LyricDesktop from './LyricDesktop.vue';
 
 // 音乐仓库
 const musicStore = useMusicStore()
@@ -142,7 +150,8 @@ const playType = computed(() => {
     }
 
 })
-
+// 是否显示歌词桌面
+const showLyricDesktop = ref(false)
 
 /**
  * 用户滑动控制条值更新的回调
@@ -387,14 +396,19 @@ export default defineComponent({
 
             // 歌曲封面
             .cover {
-                height: 45px;
-                height: 45px;
+                min-height: 45px;
+                min-width: 45px;
+                max-width: 45px;
+                max-height: 45px;
                 position: relative;
                 border-radius: 5px;
                 overflow: hidden;
                 cursor: pointer;
 
                 div {
+                    height: 45px;
+                    width: 45px;
+                    border-radius: 5px;
                     position: absolute;
                     top: 0;
                     left: 0;
@@ -410,6 +424,7 @@ export default defineComponent({
                 }
 
                 img {
+                    border-radius: 5px;
                     width: 45px;
                     height: 45px;
                     transition: .2s;
@@ -427,6 +442,7 @@ export default defineComponent({
                     font-weight: 600;
                     cursor: pointer;
                     transition: .3s;
+                    align-self: start;
                 }
 
                 .artist {
@@ -447,10 +463,30 @@ export default defineComponent({
             }
 
             .cover:hover>img {
-                transform: scale(1.2);
+                transform: scale(1.1);
             }
         }
 
+    }
+}
+
+
+// 桌面歌词的弹出动画
+.desktop-enter-active {
+    animation: desktop .5s 1 ease-in-out;
+}
+
+.desktop-leave-active {
+    animation: desktop .5s 1 ease-in-out reverse;
+}
+
+@keyframes desktop {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
     }
 }
 

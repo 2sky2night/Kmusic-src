@@ -12,7 +12,7 @@ import { h } from "vue";
 import { NIcon } from "naive-ui";
 import { IosMusicalNote } from '@vicons/ionicons4'
 // api
-import { getSongKeyFrameLyric, getSongLyric } from '@/api/public/song';
+import { getSongKeyFrameLyric } from '@/api/public/song';
 
 let data: StoreData = {
     playingSong: { id: null, isPlaying: false, name: '', src: '', isLike: false, artists: [], album: { id: 0, name: '', picUrl: '' }, isVip: false, songLyric: null, duration: 0, currentTime: 0, volume: 1, playType: 0 },
@@ -116,9 +116,14 @@ const useMusicStore = defineStore('music', {
          * @param song - 下一首歌曲的信息
          */
         addSongToList(song: Song) {
+            if (!this.playingSong.id) {
+                return message("播放列表没有任何歌曲呢,先播放一首歌曲吧~ 🤗", "info")
+            }
             if (song.id === this.playingSong.id) {
+                // 若要添加的歌曲就是当前播放的歌曲禁止操作
                 return message("这首歌不是在播放吗? 试试循环播放~🤔", "info")
             }
+
             // 检查当前音乐是否已经存在
             const index = this.songList.findIndex(ele => ele.id === song.id)
             if (index !== -1) {
