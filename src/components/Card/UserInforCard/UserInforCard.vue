@@ -1,12 +1,12 @@
 <template>
-    <li class="user-infor-card">
+    <li class="user-infor-card" @click="goToUser">
         <div class="user-infor">
             <div class="user-cover">
                 <img :src="data.avatarUrl">
             </div>
             <div class="user-data">
                 <div>
-                    <span class="text" style="font-size: 14px;font-weight: bolder;" @click="goToUser">{{ data.nickname
+                    <span class="text" style="font-size: 14px;font-weight: bolder;">{{ data.nickname
                     }}</span>
                     <n-icon style="position: relative;top:2px;left: 3px;" size="15"
                         :color="data.gender === 1 ? 'skyblue' : 'pink'">
@@ -20,15 +20,15 @@
                 </div>
 
                 <div class="follows">
-                    <span @click="goToFollow" class="text" style="font-size: 12px;">关注:{{ data.follows }}</span>
-                    <span @click="goToFans"  class="text" style="font-size: 12px;">粉丝:{{ data.followeds }}</span>
+                    <span @click.stop="goToFollow" class="text" style="font-size: 12px;">关注:{{ data.follows }}</span>
+                    <span @click.stop="goToFans"  class="text" style="font-size: 12px;">粉丝:{{ data.followeds }}</span>
                 </div>
                 <n-ellipsis style="max-width: 240px" :tooltip="false">
                     <span style="font-size: 12px; color:var(--text-dark)">{{ data.signature }}</span>
                 </n-ellipsis>
             </div>
         </div>
-        <n-button size="small" @click="toFollowUser" strong secondary :type="data.followed ? 'info' : 'default'">{{
+        <n-button size="small" @click.stop="toFollowUser" strong secondary :type="data.followed ? 'info' : 'default'">{{
             data.followed ? '已关注' : '关注' }}</n-button>
     </li>
 </template>

@@ -1,7 +1,16 @@
 <template>
-    <div class="lyric-desktop" :style="{ backgroundImage: `url(${playingSong.album.picUrl})` }">
+    <div class="lyric-desktop">
+        <!--专辑封面背景-->
+        <div class="album-cover">
+            <img :src="playingSong.album.picUrl">
+        </div>
         <!--遮罩层-->
         <div class="mask">
+            <Transition name="lyric">
+                <div v-if="!showLyric" class="mobile-cover">
+                    <img :src="playingSong.album.picUrl">
+                </div>
+            </Transition>
             <div class="contianer">
                 <!--歌曲信息以及控制器-->
                 <div class="controller-and-infor">
@@ -59,13 +68,16 @@
                 </div>
                 <!--歌词-->
                 <Transition name="lyric">
-                    <div v-if="showLyric" class="lyric-container">
-                        <ul class="lyric-list" ref="listDOM" v-if="lyricArr.length">
-                            <li class="btn" @click="() => changeCurrentTime(item.time)" v-for="(item, index) in lyricArr"
-                                :key="item.time" :class="index === currentIndex ? 'active' : ''">
-                                <span>{{ item.text }}</span>
-                            </li>
-                        </ul>
+                    <div v-show="showLyric" class="lyric-container">
+                        <template v-if="lyricArr.length">
+                            <ul class="lyric-list" ref="listDOM">
+                                <li class="btn" @click="() => changeCurrentTime(item.time)"
+                                    v-for="(item, index) in lyricArr" :key="item.time"
+                                    :class="index === currentIndex ? 'active' : ''">
+                                    <span>{{ item.text }}</span>
+                                </li>
+                            </ul>
+                        </template>
                         <div v-else class="empty">
                             <h1>纯音乐</h1>
                             <h2>敬请欣赏</h2>
@@ -74,7 +86,7 @@
                 </Transition>
             </div>
             <!--关闭的按钮-->
-            <div class="btn" @click="() => emit('toClose')">
+            <div class="btn" id="close" @click="() => emit('toClose')">
                 <n-icon size="35">
                     <IosArrowDown />
                 </n-icon>
@@ -310,6 +322,7 @@ export default defineComponent({
             font-size: 25px;
             transition: .2s;
             margin: 20px 0;
+            text-align: center;
             color: #ffffff69;
         }
 
@@ -348,12 +361,34 @@ export default defineComponent({
     right: 0;
     top: 0;
     bottom: 0;
-    background-repeat: no-repeat;
-    background-size: 150% 150%;
-    background-position: center;
+
+    // 专辑封面
+    .album-cover {
+        img {
+            width: 100%;
+            object-fit: cover;
+            height: 100%;
+        }
+
+        width: 100%;
+        height: 100%;
+    }
 
     // 遮罩层样式
     .mask {
+
+        // 移动端封面
+        .mobile-cover {
+            display: none;
+
+            img {
+                width: 50vw;
+                height: 50vw;
+            }
+        }
+
+        position: absolute;
+        top: 0;
         box-sizing: border-box;
         padding: 10px;
         height: 100%;
@@ -437,7 +472,13 @@ export default defineComponent({
     .contianer {
         align-items: start;
         padding-top: 25px;
+
+        .empty {
+            margin: 0;
+        }
     }
+
+
 
     .contianer .controller-and-infor {
         height: 20vh !important;
@@ -457,8 +498,19 @@ export default defineComponent({
         }
     }
 
+    .lyric-desktop .mask {
+        .mobile-cover {
+            display: block;
+            position: absolute;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+    }
+
     .contianer .lyric-container {
         height: 80vh;
+
+
     }
 }
 
@@ -466,24 +518,45 @@ export default defineComponent({
     .lyric-desktop {
         .contianer {
             width: 100%;
+
+            .lyric-list {
+                li {
+                    font-size: 14px;
+                }
+            }
+
+            .empty {
+                h1 {
+                    font-size: 30px;
+                }
+            }
         }
     }
 
+    #close {
+        transform: scale(.8);
+        right: 0px;
+    }
+
     .showLyric {
-        display: none;
+        transform: scale(.8);
+        right: 0px;
+        top: 80px;
     }
 }
 
 @media screen and (max-width:500px) {
     .contianer {
-        .controller-and-infor{
-            .song-name{
+        .controller-and-infor {
+            .song-name {
                 font-size: 17px !important;
             }
-            span{
+
+            span {
                 font-size: 12px;
             }
         }
+
         .lyric-list {
             margin-left: 0px;
             margin-right: 0px;
@@ -494,9 +567,11 @@ export default defineComponent({
             }
         }
     }
-    .contianer+.btn{
-        top:5px;
+
+    .contianer+.btn {
+        top: 5px;
         right: 5px;
         transform: scale(.7);
     }
-}</style>
+}
+</style>

@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import nProgress from 'nprogress';
 import routes from "./routes";
 import { useUserStoreWithout } from '@/store/user';
@@ -6,7 +6,7 @@ import { useUserStoreWithout } from '@/store/user';
 const userStore = useUserStoreWithout()
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes,
     // 滚动条置于窗口顶部(滑动到顶部)
     // scrollBehavior() {

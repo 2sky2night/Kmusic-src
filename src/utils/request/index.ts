@@ -1,13 +1,13 @@
 import axios from 'axios'
 import nProgress from 'nprogress'
-import { useUserStoreWithout } from '@/store/user'
 import type { InternalAxiosRequestConfig, AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios'
 import message from '../message'
 
-const userStore = useUserStoreWithout()
+// const userStore = useUserStoreWithout()
 
 const request = axios.create({
-    baseURL: 'http://127.0.0.1:3000'
+    baseURL: '/api',
+    // baseURL:'https://autumnfish.cn/'
 })
 
 // 配置跨域请求携带cookie
@@ -20,12 +20,16 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig) => {
         // 开启进度条
         nProgress.start()
     }
-    // 若当前仓库有cookie值就带上cookie
-    if (userStore.cookie && userStore.isLogin) {
-        document.cookie = userStore.cookie
-    } else {
-        document.cookie = ''
-    }
+    // // 若当前仓库有cookie值就带上cookie
+    // if (userStore.cookie && userStore.isLogin) {
+    //     console.log(userStore.cookie);
+
+    //     document.cookie = userStore.cookie
+    // } else {
+    //     document.cookie = ''
+    // }
+    const cookie = localStorage.getItem('cookie')
+    document.cookie = cookie ? cookie : ''
 
     return config
 }, (error: AxiosError) => {
